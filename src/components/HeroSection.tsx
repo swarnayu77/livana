@@ -31,14 +31,18 @@ const HeroSection = () => {
 
           {/* Main Headline */}
           <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 animate-slide-up">
-            Your Intelligent
-            <span className="block text-gradient mt-2">Nutrition Companion</span>
+            <span className="text-gradient">LIVANA</span>
           </h1>
+          
+          {/* Tagline */}
+          <p className="text-2xl md:text-3xl font-semibold text-foreground/90 mb-4 animate-slide-up">
+            Fuel Your Best Self
+          </p>
 
           {/* Subheadline */}
           <p className="text-lg md:text-xl text-muted-foreground max-w-2xl mx-auto mb-10 animate-slide-up delay-100">
-            Build a healthier body with personalized meal plans, smart nutrition insights, 
-            and AI-powered guidance designed for your unique goals.
+            Transform your health with AI-powered meal plans, smart nutrient analysis, 
+            and personalized guidance — all designed for your unique goals.
           </p>
 
           {/* CTA Buttons */}

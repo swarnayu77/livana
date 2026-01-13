@@ -4,13 +4,16 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Send, 
-  Bot, 
   User,
-  Lightbulb
+  Lightbulb,
+  Sparkles,
+  Leaf
 } from "lucide-react";
+import livanaLogo from "@/assets/livana-logo.png";
 
 type Message = {
   id: string;
@@ -34,7 +37,7 @@ const AICoach = () => {
     {
       id: "1",
       role: "assistant",
-      content: "Hi! I'm your AI nutrition coach. 🌿 I'm here to help you make healthier food choices, understand your nutrition needs, and reach your goals. What would you like to know about nutrition today?",
+      content: "Hello! I'm **Mr. Livana**, your personal AI nutrition coach. 🌿\n\nI'm here to help you make healthier food choices, understand your nutrition needs, and reach your wellness goals. Whether you're looking to lose weight, build muscle, or simply eat better — I've got you covered!\n\nWhat would you like to know about nutrition today?",
       timestamp: new Date()
     }
   ]);
@@ -47,6 +50,14 @@ const AICoach = () => {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [messages]);
+
+  const formatMessage = (content: string) => {
+    // Simple markdown-like formatting
+    return content
+      .replace(/\*\*(.*?)\*\*/g, '<strong class="text-primary font-semibold">$1</strong>')
+      .replace(/\*(.*?)\*/g, '<em>$1</em>')
+      .replace(/\n/g, '<br/>');
+  };
 
   const sendMessage = async (text: string) => {
     if (!text.trim() || isLoading) return;
@@ -157,51 +168,92 @@ const AICoach = () => {
 
   return (
     <PageLayout 
-      title="AI Nutrition Coach" 
-      subtitle="Chat with your personal nutrition assistant for guidance on food choices and healthy habits."
+      title="Mr. Livana" 
+      subtitle="Your personal AI nutrition coach — ask anything about healthy eating, meal planning, and wellness."
     >
-      <div className="max-w-3xl mx-auto">
+      <div className="max-w-4xl mx-auto">
+        {/* AI Coach Header Card */}
+        <Card className="glass mb-6 p-4">
+          <div className="flex items-center gap-4">
+            <div className="relative">
+              <Avatar className="w-16 h-16 border-2 border-primary/50">
+                <AvatarImage src={livanaLogo} alt="Mr. Livana" />
+                <AvatarFallback className="bg-primary/20">
+                  <Leaf className="w-8 h-8 text-primary" />
+                </AvatarFallback>
+              </Avatar>
+              <span className="absolute bottom-0 right-0 w-4 h-4 bg-primary rounded-full border-2 border-background" />
+            </div>
+            <div className="flex-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-xl font-bold">Mr. Livana</h3>
+                <Sparkles className="w-5 h-5 text-primary" />
+              </div>
+              <p className="text-muted-foreground text-sm">AI Nutrition Expert • Always here to help</p>
+            </div>
+          </div>
+        </Card>
+
         {/* Chat Container */}
         <Card className="glass overflow-hidden">
           {/* Messages */}
-          <ScrollArea className="h-[500px] p-4" ref={scrollRef}>
-            <div className="space-y-4">
+          <ScrollArea className="h-[450px] p-6" ref={scrollRef}>
+            <div className="space-y-6">
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                  className={`flex gap-4 ${message.role === "user" ? "flex-row-reverse" : ""}`}
                 >
-                  <div className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 ${
-                    message.role === "assistant" 
-                      ? "bg-primary/20" 
-                      : "bg-accent/20"
-                  }`}>
-                    {message.role === "assistant" ? (
-                      <Bot className="w-4 h-4 text-primary" />
-                    ) : (
-                      <User className="w-4 h-4 text-accent" />
+                  {message.role === "assistant" ? (
+                    <Avatar className="w-10 h-10 shrink-0 border border-primary/30">
+                      <AvatarImage src={livanaLogo} alt="Mr. Livana" />
+                      <AvatarFallback className="bg-primary/20">
+                        <Leaf className="w-5 h-5 text-primary" />
+                      </AvatarFallback>
+                    </Avatar>
+                  ) : (
+                    <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
+                      <User className="w-5 h-5 text-accent" />
+                    </div>
+                  )}
+                  <div className={`max-w-[75%] ${message.role === "user" ? "text-right" : ""}`}>
+                    {message.role === "assistant" && (
+                      <p className="text-xs text-primary font-medium mb-1">Mr. Livana</p>
                     )}
-                  </div>
-                  <div className={`max-w-[80%] rounded-2xl px-4 py-3 ${
-                    message.role === "assistant"
-                      ? "bg-muted/50 rounded-tl-sm"
-                      : "bg-primary text-primary-foreground rounded-tr-sm"
-                  }`}>
-                    <p className="text-sm whitespace-pre-line">{message.content}</p>
+                    <div className={`rounded-2xl px-4 py-3 ${
+                      message.role === "assistant"
+                        ? "bg-muted/50 rounded-tl-sm text-left"
+                        : "bg-primary text-primary-foreground rounded-tr-sm"
+                    }`}>
+                      <p 
+                        className="text-sm leading-relaxed"
+                        dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
+                      />
+                    </div>
+                    <p className="text-xs text-muted-foreground mt-1.5">
+                      {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                    </p>
                   </div>
                 </div>
               ))}
               
               {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
-                <div className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                    <Bot className="w-4 h-4 text-primary" />
-                  </div>
-                  <div className="bg-muted/50 rounded-2xl rounded-tl-sm px-4 py-3">
-                    <div className="flex gap-1">
-                      <span className="w-2 h-2 rounded-full bg-primary/50 animate-bounce" />
-                      <span className="w-2 h-2 rounded-full bg-primary/50 animate-bounce delay-100" />
-                      <span className="w-2 h-2 rounded-full bg-primary/50 animate-bounce delay-200" />
+                <div className="flex gap-4">
+                  <Avatar className="w-10 h-10 border border-primary/30">
+                    <AvatarImage src={livanaLogo} alt="Mr. Livana" />
+                    <AvatarFallback className="bg-primary/20">
+                      <Leaf className="w-5 h-5 text-primary" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="text-xs text-primary font-medium mb-1">Mr. Livana</p>
+                    <div className="bg-muted/50 rounded-2xl rounded-tl-sm px-4 py-3">
+                      <div className="flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-primary animate-bounce" />
+                        <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:150ms]" />
+                        <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:300ms]" />
+                        <span className="text-xs text-muted-foreground ml-2">Thinking...</span>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -210,22 +262,23 @@ const AICoach = () => {
           </ScrollArea>
 
           {/* Input */}
-          <div className="border-t border-border/50 p-4">
-            <form onSubmit={handleSubmit} className="flex gap-2">
+          <div className="border-t border-border/50 p-4 bg-muted/20">
+            <form onSubmit={handleSubmit} className="flex gap-3">
               <Input
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask about nutrition, meals, or healthy habits..."
-                className="flex-1 bg-muted/50 border-border/50 focus:border-primary"
+                placeholder="Ask Mr. Livana about nutrition, meals, or healthy habits..."
+                className="flex-1 bg-background/50 border-border/50 focus:border-primary h-12"
                 disabled={isLoading}
               />
               <Button 
                 type="submit" 
                 variant="hero" 
                 size="icon"
+                className="h-12 w-12"
                 disabled={!input.trim() || isLoading}
               >
-                <Send className="w-4 h-4" />
+                <Send className="w-5 h-5" />
               </Button>
             </form>
           </div>
@@ -234,7 +287,7 @@ const AICoach = () => {
         {/* Quick Prompts */}
         <div className="mt-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
-            <Lightbulb className="w-4 h-4" />
+            <Lightbulb className="w-4 h-4 text-primary" />
             <span>Try asking:</span>
           </div>
           <div className="flex flex-wrap gap-2">
