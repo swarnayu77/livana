@@ -1,14 +1,14 @@
 import { useState, useRef, useEffect } from "react";
 import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Send, 
   Bot, 
   User,
-  Sparkles,
   Lightbulb
 } from "lucide-react";
 
@@ -26,7 +26,10 @@ const quickPrompts = [
   "Suggest a healthy snack under 200 calories"
 ];
 
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+
 const AICoach = () => {
+  const { toast } = useToast();
   const [messages, setMessages] = useState<Message[]>([
     {
       id: "1",
@@ -59,39 +62,92 @@ const AICoach = () => {
     setInput("");
     setIsLoading(true);
 
-    // Simulate AI response
-    setTimeout(() => {
-      const aiMessage: Message = {
-        id: (Date.now() + 1).toString(),
-        role: "assistant",
-        content: getAIResponse(text),
-        timestamp: new Date()
-      };
-      setMessages(prev => [...prev, aiMessage]);
-      setIsLoading(false);
-    }, 1500);
-  };
+    let assistantContent = "";
 
-  const getAIResponse = (query: string): string => {
-    const lowerQuery = query.toLowerCase();
-    
-    if (lowerQuery.includes("workout") || lowerQuery.includes("exercise")) {
-      return "Great question! Before a workout, aim to eat 1-2 hours prior. Focus on easily digestible carbs for energy and moderate protein. Good options include:\n\n• Banana with almond butter\n• Greek yogurt with berries\n• Oatmeal with honey\n• Whole grain toast with eggs\n\nAvoid high-fat or high-fiber foods right before exercise as they can cause discomfort. Stay hydrated! 💪";
+    try {
+      const chatMessages = [...messages, userMessage].map(m => ({
+        role: m.role,
+        content: m.content
+      }));
+
+      const response = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({ messages: chatMessages, type: "coach" }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to get response");
+      }
+
+      if (!response.body) {
+        throw new Error("No response body");
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+      let textBuffer = "";
+
+      const upsertAssistant = (nextChunk: string) => {
+        assistantContent += nextChunk;
+        setMessages(prev => {
+          const last = prev[prev.length - 1];
+          if (last?.role === "assistant" && last.id.startsWith("stream-")) {
+            return prev.map((m, i) => 
+              i === prev.length - 1 ? { ...m, content: assistantContent } : m
+            );
+          }
+          return [...prev, { 
+            id: `stream-${Date.now()}`, 
+            role: "assistant", 
+            content: assistantContent, 
+            timestamp: new Date() 
+          }];
+        });
+      };
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        
+        textBuffer += decoder.decode(value, { stream: true });
+
+        let newlineIndex: number;
+        while ((newlineIndex = textBuffer.indexOf("\n")) !== -1) {
+          let line = textBuffer.slice(0, newlineIndex);
+          textBuffer = textBuffer.slice(newlineIndex + 1);
+
+          if (line.endsWith("\r")) line = line.slice(0, -1);
+          if (line.startsWith(":") || line.trim() === "") continue;
+          if (!line.startsWith("data: ")) continue;
+
+          const jsonStr = line.slice(6).trim();
+          if (jsonStr === "[DONE]") break;
+
+          try {
+            const parsed = JSON.parse(jsonStr);
+            const content = parsed.choices?.[0]?.delta?.content as string | undefined;
+            if (content) upsertAssistant(content);
+          } catch {
+            textBuffer = line + "\n" + textBuffer;
+            break;
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Chat error:", error);
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to send message",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
     }
-    
-    if (lowerQuery.includes("protein")) {
-      return "Increasing protein intake is a smart goal! Here are some tips:\n\n• Start your day with eggs or Greek yogurt\n• Add chicken, fish, or legumes to lunch and dinner\n• Snack on cottage cheese, edamame, or protein bars\n• Consider a protein shake post-workout\n\nFor your weight loss goal, aim for about 1.6-2.2g of protein per kg of body weight. This helps preserve muscle while losing fat! 🥗";
-    }
-    
-    if (lowerQuery.includes("fasting") || lowerQuery.includes("intermittent")) {
-      return "Intermittent fasting can be effective for some people! The most popular methods are:\n\n• 16:8 (fast 16 hours, eat in 8-hour window)\n• 5:2 (eat normally 5 days, restrict 2 days)\n\nBased on your goals, 16:8 might work well. However, it's important to maintain adequate nutrition during eating windows. Would you like me to suggest a meal plan that fits this approach? 🕐";
-    }
-    
-    if (lowerQuery.includes("snack") || lowerQuery.includes("calories")) {
-      return "Here are some healthy snacks under 200 calories:\n\n• Apple with 1 tbsp peanut butter (180 kcal)\n• 1 cup Greek yogurt (120 kcal)\n• Handful of almonds (160 kcal)\n• Cottage cheese with cucumber (100 kcal)\n• Hard-boiled egg (70 kcal)\n• Baby carrots with hummus (150 kcal)\n\nThese provide good nutrition while keeping you satisfied between meals! 🍎";
-    }
-    
-    return "That's a great question! Based on your goal of weight loss while maintaining muscle, I'd recommend focusing on:\n\n• Adequate protein at each meal\n• Plenty of vegetables for fiber and nutrients\n• Complex carbs for sustained energy\n• Healthy fats in moderation\n\nWould you like specific meal suggestions or want to explore any of these areas further? I'm here to help! 🌱";
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -136,7 +192,7 @@ const AICoach = () => {
                 </div>
               ))}
               
-              {isLoading && (
+              {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
                 <div className="flex gap-3">
                   <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
                     <Bot className="w-4 h-4 text-primary" />

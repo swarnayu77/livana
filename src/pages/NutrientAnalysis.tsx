@@ -3,10 +3,8 @@ import PageLayout from "@/components/PageLayout";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Textarea } from "@/components/ui/textarea";
-import { Badge } from "@/components/ui/badge";
-import { Progress } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 import { 
-  Search, 
   Sparkles, 
   Flame, 
   Beef, 
@@ -14,38 +12,78 @@ import {
   Droplet,
   Leaf,
   Zap,
-  Heart
+  Heart,
+  Loader2
 } from "lucide-react";
 
-const NutrientAnalysis = () => {
-  const [mealInput, setMealInput] = useState("");
-  const [analysis, setAnalysis] = useState<null | {
-    name: string;
-    calories: number;
-    macros: { protein: number; carbs: number; fat: number; fiber: number };
-    insights: string[];
-    suggestions: string[];
-    score: number;
-  }>(null);
+type Analysis = {
+  name: string;
+  calories: number;
+  macros: { protein: number; carbs: number; fat: number; fiber: number };
+  insights: string[];
+  suggestions: string[];
+  score: number;
+};
 
-  const handleAnalyze = () => {
-    // Simulated analysis result
-    setAnalysis({
-      name: "Grilled Chicken Salad with Quinoa",
-      calories: 485,
-      macros: { protein: 38, carbs: 42, fat: 18, fiber: 8 },
-      insights: [
-        "High protein content - great for muscle recovery",
-        "Good fiber intake from quinoa and vegetables",
-        "Moderate fat from olive oil dressing"
-      ],
-      suggestions: [
-        "Add avocado for healthy fats and vitamin E",
-        "Include more leafy greens for iron",
-        "Consider adding chickpeas for extra protein"
-      ],
-      score: 85
-    });
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
+
+const NutrientAnalysis = () => {
+  const { toast } = useToast();
+  const [mealInput, setMealInput] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [analysis, setAnalysis] = useState<Analysis | null>(null);
+
+  const handleAnalyze = async () => {
+    if (!mealInput.trim()) {
+      toast({
+        title: "Please describe a meal",
+        description: "Enter what you ate or a recipe to analyze",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsLoading(true);
+    setAnalysis(null);
+
+    try {
+      const response = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messages: [{ role: "user", content: `Analyze this meal: ${mealInput}` }],
+          type: "analysis",
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to analyze meal");
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content;
+      
+      if (!content) {
+        throw new Error("No analysis returned");
+      }
+
+      // Parse the JSON response
+      const parsed = JSON.parse(content);
+      setAnalysis(parsed);
+    } catch (error) {
+      console.error("Analysis error:", error);
+      toast({
+        title: "Analysis failed",
+        description: error instanceof Error ? error.message : "Could not analyze the meal",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -72,9 +110,19 @@ const NutrientAnalysis = () => {
               variant="hero" 
               className="gap-2"
               onClick={handleAnalyze}
+              disabled={isLoading || !mealInput.trim()}
             >
-              <Sparkles className="w-4 h-4" />
-              Analyze with AI
+              {isLoading ? (
+                <>
+                  <Loader2 className="w-4 h-4 animate-spin" />
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <Sparkles className="w-4 h-4" />
+                  Analyze with AI
+                </>
+              )}
             </Button>
           </div>
         </CardContent>
