@@ -5,6 +5,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Checkbox } from "@/components/ui/checkbox";
+import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { 
   ArrowLeft, 
   Mail, 
@@ -12,14 +15,17 @@ import {
   User,
   Eye,
   EyeOff,
-  Sparkles
+  Sparkles,
+  Chrome
 } from "lucide-react";
 import livanaLogo from "@/assets/livana-logo.png";
 
 const Auth = () => {
   const [searchParams] = useSearchParams();
+  const { toast } = useToast();
   const [isSignUp, setIsSignUp] = useState(searchParams.get("mode") === "signup");
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -27,10 +33,64 @@ const Auth = () => {
     agreeTerms: false
   });
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleGoogleSignIn = async () => {
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: {
+          redirectTo: `${window.location.origin}/`
+        }
+      });
+      if (error) throw error;
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to sign in with Google",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Auth logic will be implemented with Supabase
-    console.log("Form submitted:", formData);
+    setIsLoading(true);
+    
+    try {
+      if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email: formData.email,
+          password: formData.password,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+            data: {
+              full_name: formData.name
+            }
+          }
+        });
+        if (error) throw error;
+        toast({
+          title: "Account created!",
+          description: "Check your email to verify your account.",
+        });
+      } else {
+        const { error } = await supabase.auth.signInWithPassword({
+          email: formData.email,
+          password: formData.password,
+        });
+        if (error) throw error;
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: error instanceof Error ? error.message : "Authentication failed",
+        variant: "destructive",
+      });
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -160,9 +220,29 @@ const Auth = () => {
                   </div>
                 )}
 
-                <Button type="submit" variant="hero" className="w-full gap-2">
+                <Button type="submit" variant="hero" className="w-full gap-2" disabled={isLoading}>
                   <Sparkles className="w-4 h-4" />
-                  {isSignUp ? "Create Account" : "Sign In"}
+                  {isLoading ? "Please wait..." : (isSignUp ? "Create Account" : "Sign In")}
+                </Button>
+
+                {/* Divider */}
+                <div className="relative my-6">
+                  <Separator className="bg-border/50" />
+                  <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 bg-card px-3 text-xs text-muted-foreground">
+                    or continue with
+                  </span>
+                </div>
+
+                {/* Google Sign In */}
+                <Button 
+                  type="button"
+                  variant="glass" 
+                  className="w-full gap-3 hover:border-primary/40"
+                  onClick={handleGoogleSignIn}
+                  disabled={isLoading}
+                >
+                  <Chrome className="w-5 h-5" />
+                  Continue with Google
                 </Button>
               </form>
 
