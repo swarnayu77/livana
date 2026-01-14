@@ -9,7 +9,7 @@ const Footer = () => {
           {/* Logo */}
           <div className="flex items-center gap-3">
             <img src={livanaLogo} alt="LIVANA" className="h-8 w-auto" />
-            <span className="text-xl font-bold text-gradient">LIVANA</span>
+            <span className="text-xl font-heading font-bold text-gradient">LIVANA</span>
           </div>
 
           {/* Links */}

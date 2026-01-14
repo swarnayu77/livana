@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Sparkles } from "lucide-react";
+import { Link } from "react-router-dom";
 import heroFood from "@/assets/hero-food.jpg";
 
 const HeroSection = () => {
@@ -30,12 +31,12 @@ const HeroSection = () => {
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-bold leading-tight mb-6 animate-slide-up">
+          <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-6 animate-slide-up">
             <span className="text-gradient">LIVANA</span>
           </h1>
           
           {/* Tagline */}
-          <p className="text-2xl md:text-3xl font-semibold text-foreground/90 mb-4 animate-slide-up">
+          <p className="text-2xl md:text-3xl font-heading font-semibold text-foreground/90 mb-4 animate-slide-up">
             Fuel Your Best Self
           </p>
 
@@ -47,27 +48,31 @@ const HeroSection = () => {
 
           {/* CTA Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 animate-slide-up delay-200">
-            <Button variant="hero" size="xl" className="group">
-              Start Your Journey
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
-            <Button variant="heroOutline" size="xl">
-              See How It Works
-            </Button>
+            <Link to="/auth">
+              <Button variant="hero" size="xl" className="group">
+                Start Your Journey
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
+            <Link to="/#features">
+              <Button variant="heroOutline" size="xl">
+                See How It Works
+              </Button>
+            </Link>
           </div>
 
           {/* Stats */}
           <div className="grid grid-cols-3 gap-8 max-w-lg mx-auto mt-16 animate-fade-in delay-300">
             <div className="text-center">
-              <p className="text-2xl md:text-3xl font-bold text-gradient">10K+</p>
+              <p className="text-2xl md:text-3xl font-heading font-bold text-gradient">10K+</p>
               <p className="text-sm text-muted-foreground mt-1">Active Users</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl md:text-3xl font-bold text-gradient">500+</p>
+              <p className="text-2xl md:text-3xl font-heading font-bold text-gradient">500+</p>
               <p className="text-sm text-muted-foreground mt-1">Recipes</p>
             </div>
             <div className="text-center">
-              <p className="text-2xl md:text-3xl font-bold text-gradient">95%</p>
+              <p className="text-2xl md:text-3xl font-heading font-bold text-gradient">95%</p>
               <p className="text-sm text-muted-foreground mt-1">Success Rate</p>
             </div>
           </div>
