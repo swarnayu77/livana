@@ -25,7 +25,7 @@ const Navbar = () => {
               alt="LIVANA" 
               className="h-10 lg:h-12 w-auto transition-transform duration-300 group-hover:scale-105" 
             />
-            <span className="text-xl lg:text-2xl font-bold text-gradient">LIVANA</span>
+            <span className="text-xl lg:text-2xl font-heading font-bold text-gradient">LIVANA</span>
           </Link>
 
           {/* Desktop Navigation */}

@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const benefits = [
   "Personalized meal plans for your goals",
@@ -19,7 +20,7 @@ const CTASection = () => {
 
       <div className="container mx-auto px-4 relative z-10">
         <div className="max-w-3xl mx-auto text-center">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-6">
             Ready to Transform Your
             <span className="block text-gradient mt-2">Nutrition Journey?</span>
           </h2>
@@ -43,10 +44,12 @@ const CTASection = () => {
 
           {/* CTA */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-            <Button variant="hero" size="xl" className="group">
-              Get Started Free
-              <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <Link to="/auth">
+              <Button variant="hero" size="xl" className="group">
+                Start Your Journey
+                <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+            </Link>
             <p className="text-sm text-muted-foreground">
               No credit card required
             </p>
