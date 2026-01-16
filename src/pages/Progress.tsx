@@ -1,7 +1,11 @@
+import { useState } from "react";
 import PageLayout from "@/components/PageLayout";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { Progress as ProgressBar } from "@/components/ui/progress";
+import { useToast } from "@/hooks/use-toast";
 import { 
   TrendingUp, 
   TrendingDown,
@@ -11,8 +15,14 @@ import {
   Calendar,
   Droplet,
   Moon,
-  Footprints
+  Footprints,
+  Bot,
+  Sparkles,
+  Loader2,
+  Lightbulb
 } from "lucide-react";
+
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const stats = [
   {
@@ -66,13 +76,104 @@ const achievements = [
   { name: "Veggie Lover", description: "Eat 5 servings of vegetables daily", completed: false }
 ];
 
+type AIInsight = {
+  summary: string;
+  strengths: string[];
+  improvements: string[];
+  nextWeekFocus: string;
+  motivationalMessage: string;
+};
+
 const ProgressDashboard = () => {
+  const { toast } = useToast();
   const maxCalories = Math.max(...weeklyData.map(d => d.calories));
+  
+  // AI state
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [userNotes, setUserNotes] = useState("");
+  const [aiInsight, setAIInsight] = useState<AIInsight | null>(null);
+
+  const analyzeProgress = async () => {
+    setIsAnalyzing(true);
+    setAIInsight(null);
+
+    try {
+      const avgCalories = Math.round(weeklyData.reduce((sum, d) => sum + d.calories, 0) / weeklyData.length);
+      const avgProtein = Math.round(weeklyData.reduce((sum, d) => sum + d.protein, 0) / weeklyData.length);
+      const completedAchievements = achievements.filter(a => a.completed).length;
+
+      const response = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messages: [{ 
+            role: "user", 
+            content: `Analyze this weekly nutrition progress and provide insights:
+
+Weekly Stats:
+- Average daily calories: ${avgCalories} (target: 2000)
+- Average daily protein: ${avgProtein}g (target: 140g)
+- Water intake: 2.5L/day (target: 3L)
+- Sleep: 7.5h/day (target: 8h)
+- Achievements completed: ${completedAchievements}/${achievements.length}
+
+Daily breakdown:
+${weeklyData.map(d => `${d.day}: ${d.calories} kcal, ${d.protein}g protein`).join('\n')}
+
+${userNotes ? `User notes: ${userNotes}` : ''}
+
+Return ONLY a JSON object with:
+{
+  "summary": "brief 1-2 sentence summary of the week",
+  "strengths": ["strength 1", "strength 2", "strength 3"],
+  "improvements": ["improvement area 1", "improvement area 2"],
+  "nextWeekFocus": "specific focus for next week",
+  "motivationalMessage": "personalized encouraging message"
+}
+
+Return ONLY the JSON object, no other text.`
+          }],
+          type: "analysis",
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to analyze progress");
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content;
+      
+      if (!content) {
+        throw new Error("No analysis returned");
+      }
+
+      const parsed = JSON.parse(content);
+      setAIInsight(parsed);
+      toast({
+        title: "Progress analyzed! 📊",
+        description: "AI insights are ready",
+      });
+    } catch (error) {
+      console.error("Analysis error:", error);
+      toast({
+        title: "Analysis failed",
+        description: error instanceof Error ? error.message : "Could not analyze progress",
+        variant: "destructive",
+      });
+    } finally {
+      setIsAnalyzing(false);
+    }
+  };
 
   return (
     <PageLayout 
-      title="Progress Dashboard" 
-      subtitle="Track your nutrition journey with insights and adaptive recommendations."
+      title="AI Progress Dashboard" 
+      subtitle="Track your nutrition journey with AI-powered insights and adaptive recommendations."
     >
       {/* Stats Grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
@@ -96,6 +197,102 @@ const ProgressDashboard = () => {
           </Card>
         ))}
       </div>
+
+      {/* AI Analysis Section */}
+      <Card className="glass mb-6 border-primary/30">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+              <Bot className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold">AI Progress Analyzer</h3>
+              <p className="text-sm text-muted-foreground">Get personalized insights on your nutrition journey</p>
+            </div>
+          </div>
+          <Textarea
+            placeholder="Add any notes about your week (e.g., 'Had a stressful week, skipped workouts on Wed', 'Felt low energy', 'Started meal prepping')..."
+            value={userNotes}
+            onChange={(e) => setUserNotes(e.target.value)}
+            className="min-h-[80px] bg-muted/50 border-border/50 focus:border-primary mb-4"
+          />
+          <Button 
+            variant="hero" 
+            className="gap-2"
+            onClick={analyzeProgress}
+            disabled={isAnalyzing}
+          >
+            {isAnalyzing ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Analyzing...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                Analyze My Progress
+              </>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* AI Insights */}
+      {aiInsight && (
+        <Card className="glass mb-6 border-primary/30 animate-slide-up">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Lightbulb className="w-5 h-5 text-primary" />
+              AI Insights
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-6">
+            <div className="p-4 rounded-lg bg-primary/10 border border-primary/30">
+              <p className="text-lg">{aiInsight.summary}</p>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <h4 className="font-semibold mb-3 flex items-center gap-2 text-primary">
+                  <TrendingUp className="w-4 h-4" />
+                  Strengths
+                </h4>
+                <ul className="space-y-2">
+                  {aiInsight.strengths.map((s, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm">
+                      <span className="text-primary">✓</span>
+                      <span className="text-muted-foreground">{s}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <h4 className="font-semibold mb-3 flex items-center gap-2 text-accent">
+                  <Target className="w-4 h-4" />
+                  Areas to Improve
+                </h4>
+                <ul className="space-y-2">
+                  {aiInsight.improvements.map((imp, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm">
+                      <span className="text-accent">→</span>
+                      <span className="text-muted-foreground">{imp}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+
+            <div className="p-4 rounded-lg bg-accent/10 border border-accent/30">
+              <p className="text-sm font-medium text-accent mb-1">Next Week Focus</p>
+              <p className="text-muted-foreground">{aiInsight.nextWeekFocus}</p>
+            </div>
+
+            <div className="p-4 rounded-lg bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20">
+              <p className="text-center italic">{aiInsight.motivationalMessage}</p>
+            </div>
+          </CardContent>
+        </Card>
+      )}
 
       <div className="grid lg:grid-cols-3 gap-6">
         {/* Weekly Chart */}

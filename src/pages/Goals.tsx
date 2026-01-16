@@ -6,6 +6,8 @@ import { Badge } from "@/components/ui/badge";
 import { Slider } from "@/components/ui/slider";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Target, 
   Dumbbell, 
@@ -14,8 +16,12 @@ import {
   Check,
   Sparkles,
   Scale,
-  Activity
+  Activity,
+  Bot,
+  Loader2
 } from "lucide-react";
+
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const goals = [
   {
@@ -64,13 +70,28 @@ const restrictionOptions = [
   { id: "low-sodium", label: "Low Sodium" }
 ];
 
+type AIRecommendation = {
+  dailyCalories: number;
+  macros: { protein: number; carbs: number; fat: number };
+  mealTimings: string[];
+  tips: string[];
+  supplements: string[];
+  weeklyGoal: string;
+};
+
 const Goals = () => {
+  const { toast } = useToast();
   const [selectedGoal, setSelectedGoal] = useState("weight-loss");
   const [calorieTarget, setCalorieTarget] = useState([2000]);
   const [activityLevel, setActivityLevel] = useState([3]);
   const [dietary, setDietary] = useState<string[]>([]);
   const [restrictions, setRestrictions] = useState<string[]>(["dairy-free"]);
   const [autoAdjust, setAutoAdjust] = useState(true);
+  
+  // AI state
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [additionalInfo, setAdditionalInfo] = useState("");
+  const [aiRecommendation, setAIRecommendation] = useState<AIRecommendation | null>(null);
 
   const toggleOption = (id: string, list: string[], setList: (list: string[]) => void) => {
     setList(list.includes(id) ? list.filter(i => i !== id) : [...list, id]);
@@ -78,9 +99,79 @@ const Goals = () => {
 
   const activityLabels = ["Sedentary", "Light", "Moderate", "Active", "Very Active"];
 
+  const generatePlan = async () => {
+    setIsGenerating(true);
+    setAIRecommendation(null);
+
+    try {
+      const selectedGoalData = goals.find(g => g.id === selectedGoal);
+      const response = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messages: [{ 
+            role: "user", 
+            content: `Generate a personalized nutrition plan based on these goals:
+
+Goal: ${selectedGoalData?.title}
+Current Calorie Target: ${calorieTarget[0]} kcal
+Activity Level: ${activityLabels[activityLevel[0] - 1]}
+Dietary Preferences: ${dietary.length > 0 ? dietary.map(d => dietaryOptions.find(o => o.id === d)?.label).join(", ") : "None specified"}
+Restrictions: ${restrictions.length > 0 ? restrictions.map(r => restrictionOptions.find(o => o.id === r)?.label).join(", ") : "None"}
+${additionalInfo ? `Additional Info: ${additionalInfo}` : ''}
+
+Return ONLY a JSON object with:
+{
+  "dailyCalories": recommended_calories_number,
+  "macros": { "protein": grams, "carbs": grams, "fat": grams },
+  "mealTimings": ["meal 1 timing and suggestion", "meal 2", "meal 3", "meal 4"],
+  "tips": ["tip 1", "tip 2", "tip 3"],
+  "supplements": ["supplement 1 if needed", "supplement 2"],
+  "weeklyGoal": "specific weekly goal"
+}
+
+Return ONLY the JSON object, no other text.`
+          }],
+          type: "analysis",
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to generate plan");
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content;
+      
+      if (!content) {
+        throw new Error("No plan returned");
+      }
+
+      const parsed = JSON.parse(content);
+      setAIRecommendation(parsed);
+      toast({
+        title: "Plan generated! ✨",
+        description: "Your personalized nutrition plan is ready",
+      });
+    } catch (error) {
+      console.error("Generation error:", error);
+      toast({
+        title: "Generation failed",
+        description: error instanceof Error ? error.message : "Could not generate plan",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <PageLayout 
-      title="Goals & Preferences" 
+      title="AI Goals & Preferences" 
       subtitle="Customize your nutrition plan based on your goals, dietary preferences, and restrictions."
     >
       <div className="grid lg:grid-cols-3 gap-6">
@@ -229,6 +320,24 @@ const Goals = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Additional Info for AI */}
+          <Card className="glass border-primary/30">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Bot className="w-5 h-5 text-primary" />
+                Additional Information (Optional)
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                placeholder="Tell us more about yourself (e.g., age, weight, health conditions, specific goals like 'lose 10 lbs in 3 months', workout routine...)"
+                value={additionalInfo}
+                onChange={(e) => setAdditionalInfo(e.target.value)}
+                className="min-h-[100px] bg-muted/50 border-border/50 focus:border-primary"
+              />
+            </CardContent>
+          </Card>
         </div>
 
         {/* Summary Sidebar */}
@@ -290,12 +399,91 @@ const Goals = () => {
                 </p>
               </div>
 
-              <Button variant="hero" className="w-full gap-2 mt-4">
-                <Sparkles className="w-4 h-4" />
-                Generate My Plan
+              <Button 
+                variant="hero" 
+                className="w-full gap-2 mt-4"
+                onClick={generatePlan}
+                disabled={isGenerating}
+              >
+                {isGenerating ? (
+                  <>
+                    <Loader2 className="w-4 h-4 animate-spin" />
+                    Generating...
+                  </>
+                ) : (
+                  <>
+                    <Sparkles className="w-4 h-4" />
+                    Generate My Plan
+                  </>
+                )}
               </Button>
             </CardContent>
           </Card>
+
+          {/* AI Recommendations */}
+          {aiRecommendation && (
+            <Card className="glass border-primary/30 animate-slide-up">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg">
+                  <Bot className="w-5 h-5 text-primary" />
+                  AI Recommendations
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="p-3 rounded-lg bg-primary/10">
+                  <p className="text-sm text-muted-foreground mb-1">Recommended Calories</p>
+                  <p className="text-2xl font-bold text-primary">{aiRecommendation.dailyCalories} kcal</p>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Daily Macros</p>
+                  <div className="grid grid-cols-3 gap-2 text-center">
+                    <div className="p-2 rounded-lg bg-muted/50">
+                      <p className="font-bold text-primary">{aiRecommendation.macros.protein}g</p>
+                      <p className="text-xs text-muted-foreground">Protein</p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-muted/50">
+                      <p className="font-bold text-accent">{aiRecommendation.macros.carbs}g</p>
+                      <p className="text-xs text-muted-foreground">Carbs</p>
+                    </div>
+                    <div className="p-2 rounded-lg bg-muted/50">
+                      <p className="font-bold text-secondary">{aiRecommendation.macros.fat}g</p>
+                      <p className="text-xs text-muted-foreground">Fat</p>
+                    </div>
+                  </div>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Meal Schedule</p>
+                  <ul className="space-y-1">
+                    {aiRecommendation.mealTimings.map((timing, i) => (
+                      <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
+                        <span className="text-primary">•</span>
+                        {timing}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div>
+                  <p className="text-sm font-medium mb-2">Tips</p>
+                  <ul className="space-y-1">
+                    {aiRecommendation.tips.map((tip, i) => (
+                      <li key={i} className="text-xs text-muted-foreground flex items-start gap-2">
+                        <span className="text-primary">✓</span>
+                        {tip}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+
+                <div className="p-3 rounded-lg bg-accent/10 border border-accent/30">
+                  <p className="text-sm font-medium text-accent mb-1">Weekly Goal</p>
+                  <p className="text-sm text-muted-foreground">{aiRecommendation.weeklyGoal}</p>
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </PageLayout>
