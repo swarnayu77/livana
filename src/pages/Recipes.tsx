@@ -4,9 +4,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { useToast } from "@/hooks/use-toast";
 import { 
   Clock, 
   Flame, 
@@ -19,9 +21,13 @@ import {
   BookOpen,
   CheckCircle2,
   Timer,
-  UtensilsCrossed
+  UtensilsCrossed,
+  Loader2,
+  Bot
 } from "lucide-react";
 import mealBowl from "@/assets/meal-bowl.jpg";
+
+const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
 
 const categories = [
   { id: "all", label: "All Recipes" },
@@ -37,7 +43,7 @@ const dietFilters = [
   "Gluten-Free", "Dairy-Free", "Keto", "Quick & Easy"
 ];
 
-const recipes = [
+const defaultRecipes = [
   {
     id: 1,
     name: "Mediterranean Buddha Bowl",
@@ -132,173 +138,39 @@ const recipes = [
     ],
     nutrition: { protein: 32, carbs: 45, fat: 12, fiber: 8 },
     liked: true
-  },
-  {
-    id: 4,
-    name: "Thai Coconut Curry",
-    image: mealBowl,
-    category: "dinner",
-    prepTime: 15,
-    cookTime: 25,
-    calories: 550,
-    servings: 4,
-    difficulty: "Medium",
-    tags: ["Vegetarian", "Dairy-Free", "Vegan"],
-    ingredients: [
-      "1 block extra-firm tofu, cubed",
-      "1 can coconut milk",
-      "2 tbsp Thai red curry paste",
-      "2 cups mixed vegetables",
-      "1 red bell pepper, sliced",
-      "2 cups jasmine rice, cooked",
-      "Fresh basil and lime for serving"
-    ],
-    instructions: [
-      "Press tofu and cut into cubes.",
-      "Heat oil in a large pan, crisp tofu on all sides. Set aside.",
-      "In the same pan, add curry paste and cook 1 minute.",
-      "Pour in coconut milk and stir well.",
-      "Add vegetables and simmer until tender, about 10 minutes.",
-      "Return tofu to pan, warm through.",
-      "Serve over rice with fresh basil and lime wedges."
-    ],
-    nutrition: { protein: 18, carbs: 55, fat: 28, fiber: 6 },
-    liked: false
-  },
-  {
-    id: 5,
-    name: "Avocado Chicken Wrap",
-    image: mealBowl,
-    category: "lunch",
-    prepTime: 10,
-    cookTime: 10,
-    calories: 450,
-    servings: 2,
-    difficulty: "Easy",
-    tags: ["Quick & Easy", "High Protein"],
-    ingredients: [
-      "2 whole wheat tortillas",
-      "2 grilled chicken breasts, sliced",
-      "1 large avocado, mashed",
-      "1 cup mixed greens",
-      "1/2 cup cherry tomatoes, halved",
-      "2 tbsp Greek yogurt",
-      "Salt, pepper, lime juice"
-    ],
-    instructions: [
-      "Grill chicken breasts until cooked through, then slice.",
-      "Mash avocado with lime juice, salt, and pepper.",
-      "Spread avocado mixture on tortillas.",
-      "Add a layer of Greek yogurt.",
-      "Top with sliced chicken, greens, and tomatoes.",
-      "Roll tightly, cut in half, and serve."
-    ],
-    nutrition: { protein: 38, carbs: 35, fat: 18, fiber: 10 },
-    liked: false
-  },
-  {
-    id: 6,
-    name: "Zucchini Noodles Primavera",
-    image: mealBowl,
-    category: "dinner",
-    prepTime: 15,
-    cookTime: 10,
-    calories: 280,
-    servings: 2,
-    difficulty: "Easy",
-    tags: ["Low Carb", "Vegetarian", "Keto", "Gluten-Free"],
-    ingredients: [
-      "4 medium zucchini, spiralized",
-      "1 cup cherry tomatoes, halved",
-      "4 cloves garlic, minced",
-      "1/4 cup parmesan cheese, grated",
-      "Fresh basil leaves",
-      "2 tbsp olive oil",
-      "Red pepper flakes"
-    ],
-    instructions: [
-      "Spiralize zucchini into noodles.",
-      "Heat olive oil in a large pan over medium heat.",
-      "Add garlic and cook until fragrant, about 1 minute.",
-      "Add cherry tomatoes and cook until slightly softened.",
-      "Toss in zucchini noodles and cook 2-3 minutes until just tender.",
-      "Remove from heat, add parmesan, basil, and red pepper flakes.",
-      "Season with salt and pepper, serve immediately."
-    ],
-    nutrition: { protein: 12, carbs: 18, fat: 18, fiber: 6 },
-    liked: true
-  },
-  {
-    id: 7,
-    name: "Berry Protein Smoothie Bowl",
-    image: mealBowl,
-    category: "breakfast",
-    prepTime: 5,
-    cookTime: 0,
-    calories: 320,
-    servings: 1,
-    difficulty: "Easy",
-    tags: ["Quick & Easy", "High Protein", "Vegetarian"],
-    ingredients: [
-      "1 cup frozen mixed berries",
-      "1 frozen banana",
-      "1 scoop protein powder",
-      "1/2 cup almond milk",
-      "Toppings: granola, fresh berries, coconut flakes, chia seeds"
-    ],
-    instructions: [
-      "Add frozen berries, banana, protein powder, and almond milk to blender.",
-      "Blend until thick and smooth (add more milk if needed).",
-      "Pour into a bowl.",
-      "Arrange toppings in rows: granola, fresh berries, coconut, chia.",
-      "Serve immediately and enjoy!"
-    ],
-    nutrition: { protein: 28, carbs: 42, fat: 8, fiber: 8 },
-    liked: false
-  },
-  {
-    id: 8,
-    name: "Greek Stuffed Peppers",
-    image: mealBowl,
-    category: "dinner",
-    prepTime: 20,
-    cookTime: 35,
-    calories: 420,
-    servings: 4,
-    difficulty: "Medium",
-    tags: ["High Protein", "Gluten-Free"],
-    ingredients: [
-      "4 large bell peppers",
-      "1 lb ground turkey",
-      "1 cup cooked rice",
-      "1 can diced tomatoes",
-      "1/2 cup feta cheese",
-      "1 tsp dried oregano",
-      "Fresh parsley"
-    ],
-    instructions: [
-      "Preheat oven to 375°F (190°C).",
-      "Cut tops off peppers and remove seeds.",
-      "Brown ground turkey in a pan, drain excess fat.",
-      "Mix turkey with rice, half the tomatoes, oregano, salt, and pepper.",
-      "Stuff peppers with mixture and place in baking dish.",
-      "Pour remaining tomatoes around peppers.",
-      "Bake 35 minutes, top with feta last 5 minutes.",
-      "Garnish with parsley and serve."
-    ],
-    nutrition: { protein: 32, carbs: 28, fat: 18, fiber: 5 },
-    liked: false
   }
 ];
 
+type Recipe = typeof defaultRecipes[0];
+
+type GeneratedRecipe = {
+  name: string;
+  prepTime: number;
+  cookTime: number;
+  calories: number;
+  servings: number;
+  difficulty: string;
+  tags: string[];
+  ingredients: string[];
+  instructions: string[];
+  nutrition: { protein: number; carbs: number; fat: number; fiber: number };
+};
+
 const Recipes = () => {
+  const { toast } = useToast();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [selectedFilters, setSelectedFilters] = useState<string[]>([]);
   const [likedRecipes, setLikedRecipes] = useState<number[]>(
-    recipes.filter(r => r.liked).map(r => r.id)
+    defaultRecipes.filter(r => r.liked).map(r => r.id)
   );
-  const [selectedRecipe, setSelectedRecipe] = useState<typeof recipes[0] | null>(null);
+  const [selectedRecipe, setSelectedRecipe] = useState<Recipe | null>(null);
+  const [recipes, setRecipes] = useState(defaultRecipes);
+  
+  // AI Generation state
+  const [isGenerating, setIsGenerating] = useState(false);
+  const [recipePrompt, setRecipePrompt] = useState("");
+  const [generatedRecipe, setGeneratedRecipe] = useState<GeneratedRecipe | null>(null);
 
   const toggleLike = (id: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -326,11 +198,226 @@ const Recipes = () => {
     return matchesSearch && matchesCategory && matchesFilters;
   });
 
+  const generateRecipe = async () => {
+    if (!recipePrompt.trim()) {
+      toast({
+        title: "Please describe a recipe",
+        description: "Enter what kind of recipe you want to create",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setIsGenerating(true);
+    setGeneratedRecipe(null);
+
+    try {
+      const response = await fetch(CHAT_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
+        },
+        body: JSON.stringify({
+          messages: [{ 
+            role: "user", 
+            content: `Create a detailed recipe for: ${recipePrompt}
+
+Return ONLY a JSON object with this structure:
+{
+  "name": "recipe name",
+  "prepTime": minutes as number,
+  "cookTime": minutes as number,
+  "calories": number,
+  "servings": number,
+  "difficulty": "Easy/Medium/Hard",
+  "tags": ["tag1", "tag2"],
+  "ingredients": ["ingredient 1", "ingredient 2"],
+  "instructions": ["step 1", "step 2"],
+  "nutrition": { "protein": grams, "carbs": grams, "fat": grams, "fiber": grams }
+}
+
+Return ONLY the JSON object, no other text.`
+          }],
+          type: "analysis",
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || "Failed to generate recipe");
+      }
+
+      const data = await response.json();
+      const content = data.choices?.[0]?.message?.content;
+      
+      if (!content) {
+        throw new Error("No recipe returned");
+      }
+
+      const parsed = JSON.parse(content);
+      setGeneratedRecipe(parsed);
+      toast({
+        title: "Recipe created! 🍳",
+        description: `${parsed.name} is ready`,
+      });
+    } catch (error) {
+      console.error("Generation error:", error);
+      toast({
+        title: "Generation failed",
+        description: error instanceof Error ? error.message : "Could not generate recipe",
+        variant: "destructive",
+      });
+    } finally {
+      setIsGenerating(false);
+    }
+  };
+
   return (
     <PageLayout 
-      title="Recipe Suggestions" 
-      subtitle="Discover healthy, delicious recipes tailored to your dietary preferences and available ingredients."
+      title="AI Recipe Generator" 
+      subtitle="Discover and create healthy recipes with AI-powered suggestions tailored to your preferences."
     >
+      {/* AI Recipe Generator */}
+      <Card className="glass mb-8 border-primary/30">
+        <CardContent className="p-6">
+          <div className="flex items-center gap-3 mb-4">
+            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
+              <Bot className="w-5 h-5 text-primary" />
+            </div>
+            <div>
+              <h3 className="font-semibold">AI Recipe Creator</h3>
+              <p className="text-sm text-muted-foreground">Describe any dish and AI will create a complete recipe</p>
+            </div>
+          </div>
+          <Textarea
+            placeholder="E.g., high protein chicken stir-fry with vegetables, keto-friendly salmon dinner, quick vegetarian pasta..."
+            value={recipePrompt}
+            onChange={(e) => setRecipePrompt(e.target.value)}
+            className="min-h-[80px] bg-muted/50 border-border/50 focus:border-primary mb-4"
+          />
+          <Button 
+            variant="hero" 
+            className="gap-2"
+            onClick={generateRecipe}
+            disabled={isGenerating}
+          >
+            {isGenerating ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Creating Recipe...
+              </>
+            ) : (
+              <>
+                <Sparkles className="w-4 h-4" />
+                Generate Recipe
+              </>
+            )}
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Generated Recipe Display */}
+      {generatedRecipe && (
+        <Card className="glass mb-8 border-primary/30 animate-slide-up">
+          <CardContent className="p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xl font-semibold text-primary">{generatedRecipe.name}</h3>
+              <Badge className="bg-primary/20 text-primary">AI Generated</Badge>
+            </div>
+            
+            {/* Quick Info */}
+            <div className="grid grid-cols-4 gap-4 mb-6 text-center">
+              <div className="p-3 rounded-lg bg-muted/50">
+                <Timer className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <p className="text-sm font-medium">{generatedRecipe.prepTime + generatedRecipe.cookTime} min</p>
+                <p className="text-xs text-muted-foreground">Total</p>
+              </div>
+              <div className="p-3 rounded-lg bg-muted/50">
+                <Flame className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <p className="text-sm font-medium">{generatedRecipe.calories}</p>
+                <p className="text-xs text-muted-foreground">Calories</p>
+              </div>
+              <div className="p-3 rounded-lg bg-muted/50">
+                <Users className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <p className="text-sm font-medium">{generatedRecipe.servings}</p>
+                <p className="text-xs text-muted-foreground">Servings</p>
+              </div>
+              <div className="p-3 rounded-lg bg-muted/50">
+                <ChefHat className="w-5 h-5 mx-auto mb-1 text-primary" />
+                <p className="text-sm font-medium">{generatedRecipe.difficulty}</p>
+                <p className="text-xs text-muted-foreground">Difficulty</p>
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2 mb-6">
+              {generatedRecipe.tags.map((tag) => (
+                <Badge key={tag} variant="secondary">{tag}</Badge>
+              ))}
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-6">
+              {/* Ingredients */}
+              <div>
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <UtensilsCrossed className="w-4 h-4 text-primary" />
+                  Ingredients
+                </h4>
+                <ul className="space-y-2">
+                  {generatedRecipe.ingredients.map((ing, i) => (
+                    <li key={i} className="flex items-start gap-2 text-sm">
+                      <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                      <span className="text-muted-foreground">{ing}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              {/* Instructions */}
+              <div>
+                <h4 className="font-semibold mb-3 flex items-center gap-2">
+                  <BookOpen className="w-4 h-4 text-primary" />
+                  Instructions
+                </h4>
+                <ol className="space-y-3">
+                  {generatedRecipe.instructions.map((step, i) => (
+                    <li key={i} className="flex gap-3 text-sm">
+                      <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0 text-xs font-medium">
+                        {i + 1}
+                      </span>
+                      <span className="text-muted-foreground">{step}</span>
+                    </li>
+                  ))}
+                </ol>
+              </div>
+            </div>
+
+            {/* Nutrition */}
+            <div className="mt-6 pt-6 border-t border-border/50">
+              <h4 className="font-semibold mb-3">Nutrition per Serving</h4>
+              <div className="grid grid-cols-4 gap-4 text-center">
+                <div>
+                  <p className="text-lg font-bold text-primary">{generatedRecipe.nutrition.protein}g</p>
+                  <p className="text-xs text-muted-foreground">Protein</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-accent">{generatedRecipe.nutrition.carbs}g</p>
+                  <p className="text-xs text-muted-foreground">Carbs</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-secondary">{generatedRecipe.nutrition.fat}g</p>
+                  <p className="text-xs text-muted-foreground">Fat</p>
+                </div>
+                <div>
+                  <p className="text-lg font-bold text-primary">{generatedRecipe.nutrition.fiber}g</p>
+                  <p className="text-xs text-muted-foreground">Fiber</p>
+                </div>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
       {/* Search & Filters */}
       <div className="space-y-4 mb-6">
         <div className="flex flex-col sm:flex-row gap-4">
@@ -343,10 +430,6 @@ const Recipes = () => {
               className="pl-10 bg-muted/50 border-border/50 focus:border-primary h-12"
             />
           </div>
-          <Button variant="hero" className="gap-2 h-12">
-            <Sparkles className="w-4 h-4" />
-            Generate Recipe
-          </Button>
         </div>
 
         {/* Category Tabs */}
@@ -386,7 +469,7 @@ const Recipes = () => {
       </div>
 
       {/* Recipes Grid */}
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {filteredRecipes.map((recipe) => (
           <Dialog key={recipe.id}>
             <DialogTrigger asChild>
@@ -483,12 +566,51 @@ const Recipes = () => {
                   <div className="p-3 rounded-lg bg-muted/50">
                     <ChefHat className="w-5 h-5 mx-auto mb-1 text-primary" />
                     <p className="text-sm font-medium">{recipe.difficulty}</p>
-                    <p className="text-xs text-muted-foreground">Level</p>
+                    <p className="text-xs text-muted-foreground">Difficulty</p>
                   </div>
                 </div>
 
-                {/* Nutrition */}
-                <div className="p-4 rounded-xl bg-primary/10 border border-primary/30">
+                <div className="flex flex-wrap gap-2">
+                  {recipe.tags.map((tag) => (
+                    <Badge key={tag} variant="secondary">{tag}</Badge>
+                  ))}
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <UtensilsCrossed className="w-4 h-4 text-primary" />
+                      Ingredients
+                    </h4>
+                    <ul className="space-y-2">
+                      {recipe.ingredients.map((ing, i) => (
+                        <li key={i} className="flex items-start gap-2 text-sm">
+                          <CheckCircle2 className="w-4 h-4 text-primary mt-0.5 shrink-0" />
+                          <span className="text-muted-foreground">{ing}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+
+                  <div>
+                    <h4 className="font-semibold mb-3 flex items-center gap-2">
+                      <BookOpen className="w-4 h-4 text-primary" />
+                      Instructions
+                    </h4>
+                    <ol className="space-y-3">
+                      {recipe.instructions.map((step, i) => (
+                        <li key={i} className="flex gap-3 text-sm">
+                          <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center shrink-0 text-xs font-medium">
+                            {i + 1}
+                          </span>
+                          <span className="text-muted-foreground">{step}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t border-border/50">
                   <h4 className="font-semibold mb-3">Nutrition per Serving</h4>
                   <div className="grid grid-cols-4 gap-4 text-center">
                     <div>
@@ -496,11 +618,11 @@ const Recipes = () => {
                       <p className="text-xs text-muted-foreground">Protein</p>
                     </div>
                     <div>
-                      <p className="text-lg font-bold text-primary">{recipe.nutrition.carbs}g</p>
+                      <p className="text-lg font-bold text-accent">{recipe.nutrition.carbs}g</p>
                       <p className="text-xs text-muted-foreground">Carbs</p>
                     </div>
                     <div>
-                      <p className="text-lg font-bold text-primary">{recipe.nutrition.fat}g</p>
+                      <p className="text-lg font-bold text-secondary">{recipe.nutrition.fat}g</p>
                       <p className="text-xs text-muted-foreground">Fat</p>
                     </div>
                     <div>
@@ -509,65 +631,11 @@ const Recipes = () => {
                     </div>
                   </div>
                 </div>
-
-                {/* Ingredients */}
-                <div>
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <UtensilsCrossed className="w-5 h-5 text-primary" />
-                    Ingredients
-                  </h4>
-                  <ul className="grid sm:grid-cols-2 gap-2">
-                    {recipe.ingredients.map((ing, i) => (
-                      <li key={i} className="flex items-center gap-2 text-sm">
-                        <div className="w-2 h-2 rounded-full bg-primary" />
-                        {ing}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* Instructions */}
-                <div>
-                  <h4 className="font-semibold mb-3 flex items-center gap-2">
-                    <BookOpen className="w-5 h-5 text-primary" />
-                    Instructions
-                  </h4>
-                  <ol className="space-y-3">
-                    {recipe.instructions.map((step, i) => (
-                      <li key={i} className="flex gap-3">
-                        <span className="w-6 h-6 rounded-full bg-primary/20 text-primary flex items-center justify-center text-sm font-medium shrink-0">
-                          {i + 1}
-                        </span>
-                        <p className="text-sm text-muted-foreground">{step}</p>
-                      </li>
-                    ))}
-                  </ol>
-                </div>
-
-                <div className="flex gap-3">
-                  <Button variant="hero" className="flex-1 gap-2">
-                    <CheckCircle2 className="w-4 h-4" />
-                    Add to Meal Plan
-                  </Button>
-                  <Button variant="glass" size="icon" onClick={(e) => toggleLike(recipe.id, e)}>
-                    <Heart className={`w-5 h-5 ${likedRecipes.includes(recipe.id) ? "fill-primary text-primary" : ""}`} />
-                  </Button>
-                </div>
               </div>
             </DialogContent>
           </Dialog>
         ))}
       </div>
-
-      {filteredRecipes.length === 0 && (
-        <div className="text-center py-16">
-          <ChefHat className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
-          <p className="text-muted-foreground mb-4">No recipes found. Try a different search or filter.</p>
-          <Button variant="glass" onClick={() => { setSearchQuery(""); setSelectedFilters([]); setSelectedCategory("all"); }}>
-            Clear Filters
-          </Button>
-        </div>
-      )}
     </PageLayout>
   );
 };
