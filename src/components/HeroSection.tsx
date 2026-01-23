@@ -31,8 +31,8 @@ const HeroSection = () => {
           </div>
 
           {/* Main Headline */}
-          <h1 className="text-4xl md:text-6xl lg:text-7xl font-heading font-bold leading-tight mb-6 animate-slide-up">
-            <span className="text-gradient">LIVANA</span>
+          <h1 className="text-5xl md:text-7xl lg:text-8xl font-display font-extrabold leading-tight mb-6 animate-slide-up tracking-tight">
+            <span className="text-gradient drop-shadow-lg">LIVANA</span>
           </h1>
           
           {/* Tagline */}
