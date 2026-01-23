@@ -6,6 +6,10 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Utensils, 
@@ -23,7 +27,17 @@ import {
   Droplet,
   Zap,
   Loader2,
-  Bot
+  Bot,
+  Leaf,
+  Fish,
+  Beef,
+  Wheat,
+  Milk,
+  Nut,
+  Shell,
+  Egg,
+  Target,
+  UtensilsCrossed
 } from "lucide-react";
 
 const weekDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
@@ -43,6 +57,53 @@ type Meal = {
   tags: string[];
   isCompleted: boolean;
 };
+
+const dietTypes = [
+  { value: "balanced", label: "Balanced", icon: Utensils },
+  { value: "vegetarian", label: "Vegetarian", icon: Leaf },
+  { value: "vegan", label: "Vegan", icon: Leaf },
+  { value: "keto", label: "Keto / Low Carb", icon: Beef },
+  { value: "paleo", label: "Paleo", icon: Beef },
+  { value: "mediterranean", label: "Mediterranean", icon: Fish },
+  { value: "high-protein", label: "High Protein", icon: Target },
+];
+
+const cuisineTypes = [
+  { value: "any", label: "Any Cuisine" },
+  { value: "american", label: "American" },
+  { value: "asian", label: "Asian" },
+  { value: "mediterranean", label: "Mediterranean" },
+  { value: "mexican", label: "Mexican" },
+  { value: "indian", label: "Indian" },
+  { value: "italian", label: "Italian" },
+  { value: "japanese", label: "Japanese" },
+  { value: "middle-eastern", label: "Middle Eastern" },
+];
+
+const allergyOptions = [
+  { value: "gluten", label: "Gluten", icon: Wheat },
+  { value: "dairy", label: "Dairy", icon: Milk },
+  { value: "nuts", label: "Nuts", icon: Nut },
+  { value: "shellfish", label: "Shellfish", icon: Shell },
+  { value: "eggs", label: "Eggs", icon: Egg },
+  { value: "soy", label: "Soy", icon: Leaf },
+  { value: "fish", label: "Fish", icon: Fish },
+];
+
+const goalOptions = [
+  { value: "maintain", label: "Maintain Weight" },
+  { value: "lose", label: "Weight Loss" },
+  { value: "gain", label: "Muscle Gain" },
+  { value: "energy", label: "More Energy" },
+  { value: "health", label: "General Health" },
+];
+
+const mealCountOptions = [
+  { value: "3", label: "3 Meals" },
+  { value: "4", label: "3 Meals + Snack" },
+  { value: "5", label: "3 Meals + 2 Snacks" },
+  { value: "6", label: "6 Small Meals" },
+];
 
 const defaultMeals: Meal[] = [
   {
@@ -112,7 +173,16 @@ const MealPlans = () => {
   const [meals, setMeals] = useState<Meal[]>(defaultMeals);
   const [completedMeals, setCompletedMeals] = useState<string[]>(["Breakfast", "Lunch"]);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [preferences, setPreferences] = useState("");
+  const [additionalNotes, setAdditionalNotes] = useState("");
+  
+  // New detailed options
+  const [dietType, setDietType] = useState("balanced");
+  const [calorieTarget, setCalorieTarget] = useState("2000");
+  const [mealCount, setMealCount] = useState("4");
+  const [cuisinePreference, setCuisinePreference] = useState("any");
+  const [goal, setGoal] = useState("maintain");
+  const [allergies, setAllergies] = useState<string[]>([]);
+  const [cookingTime, setCookingTime] = useState("moderate");
   
   const totalCalories = meals.reduce((sum, m) => sum + m.calories, 0);
   const totalProtein = meals.reduce((sum, m) => sum + m.protein, 0);
@@ -141,9 +211,49 @@ const MealPlans = () => {
     });
   };
 
+  const toggleAllergy = (allergy: string) => {
+    setAllergies(prev => 
+      prev.includes(allergy) ? prev.filter(a => a !== allergy) : [...prev, allergy]
+    );
+  };
+
   const generateMealPlan = async () => {
     setIsGenerating(true);
     try {
+      const selectedDiet = dietTypes.find(d => d.value === dietType)?.label || "Balanced";
+      const selectedGoal = goalOptions.find(g => g.value === goal)?.label || "Maintain Weight";
+      const selectedCuisine = cuisineTypes.find(c => c.value === cuisinePreference)?.label || "Any";
+      const allergyList = allergies.length > 0 ? allergies.join(", ") : "None";
+      const mealNumber = parseInt(mealCount);
+      
+      const prompt = `Generate a personalized daily meal plan with the following requirements:
+
+- Diet Type: ${selectedDiet}
+- Daily Calorie Target: ${calorieTarget} calories
+- Goal: ${selectedGoal}
+- Number of Meals: ${mealNumber}
+- Cuisine Preference: ${selectedCuisine}
+- Allergies/Restrictions: ${allergyList}
+- Cooking Time Preference: ${cookingTime === "quick" ? "Quick meals under 20 min" : cookingTime === "moderate" ? "Moderate 20-40 min" : "Elaborate meals, time not an issue"}
+${additionalNotes ? `- Additional Notes: ${additionalNotes}` : ""}
+
+Return ONLY a JSON array with exactly ${mealNumber} meals. Include breakfast, lunch, dinner, and snacks as needed.
+Each meal should have:
+{
+  "type": "Breakfast/Lunch/Snack/Dinner",
+  "time": "time like 7:00 AM",
+  "name": "meal name",
+  "description": "short description with key ingredients",
+  "calories": number,
+  "protein": number in grams,
+  "carbs": number in grams,
+  "fat": number in grams,
+  "tags": ["tag1", "tag2"] (2-3 relevant tags)
+}
+
+Ensure meals fit the diet type, respect allergies, and total calories are close to ${calorieTarget}.
+Return ONLY the JSON array, no other text.`;
+
       const response = await fetch(CHAT_URL, {
         method: "POST",
         headers: {
@@ -151,25 +261,7 @@ const MealPlans = () => {
           Authorization: `Bearer ${import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY}`,
         },
         body: JSON.stringify({
-          messages: [{ 
-            role: "user", 
-            content: `Generate a personalized daily meal plan. ${preferences ? `Preferences: ${preferences}` : 'Focus on balanced nutrition with healthy options.'}
-            
-Return ONLY a JSON array with 4 meals (breakfast, lunch, snack, dinner). Each meal should have:
-{
-  "type": "Breakfast/Lunch/Snack/Dinner",
-  "time": "time like 7:00 AM",
-  "name": "meal name",
-  "description": "short description",
-  "calories": number,
-  "protein": number in grams,
-  "carbs": number in grams,
-  "fat": number in grams,
-  "tags": ["tag1", "tag2"]
-}
-
-Return ONLY the JSON array, no other text.`
-          }],
+          messages: [{ role: "user", content: prompt }],
           type: "analysis",
         }),
       });
@@ -187,10 +279,10 @@ Return ONLY the JSON array, no other text.`
       }
 
       const parsed = JSON.parse(content);
-      const icons = [Coffee, Sun, Apple, Moon];
+      const icons = [Coffee, Sun, Apple, Moon, Coffee, Sun];
       const newMeals: Meal[] = parsed.map((m: any, i: number) => ({
         ...m,
-        icon: icons[i] || Coffee,
+        icon: icons[i % icons.length] || Coffee,
         isCompleted: false,
       }));
       
@@ -198,7 +290,7 @@ Return ONLY the JSON array, no other text.`
       setCompletedMeals([]);
       toast({
         title: "Meal plan generated! ✨",
-        description: "Your personalized AI meal plan is ready",
+        description: `${newMeals.length} meals created for your ${selectedDiet} plan`,
       });
     } catch (error) {
       console.error("Generation error:", error);
@@ -222,35 +314,179 @@ Return ONLY the JSON array, no other text.`
       {/* AI Generation Section */}
       <Card className="glass mb-6 border-primary/30">
         <CardContent className="p-6">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-xl bg-primary/20 flex items-center justify-center">
-              <Bot className="w-5 h-5 text-primary" />
+          <div className="flex items-center gap-3 mb-6">
+            <div className="w-12 h-12 rounded-xl bg-primary/20 flex items-center justify-center">
+              <Bot className="w-6 h-6 text-primary" />
             </div>
             <div>
-              <h3 className="font-semibold">AI Meal Plan Generator</h3>
-              <p className="text-sm text-muted-foreground">Let AI create a personalized meal plan for you</p>
+              <h3 className="text-lg font-semibold">AI Meal Plan Generator</h3>
+              <p className="text-sm text-muted-foreground">Customize your preferences and let AI create your perfect plan</p>
             </div>
           </div>
-          <Textarea
-            placeholder="Enter your preferences (e.g., high protein, vegetarian, low carb, 1800 calories target...)"
-            value={preferences}
-            onChange={(e) => setPreferences(e.target.value)}
-            className="min-h-[80px] bg-muted/50 border-border/50 focus:border-primary mb-4"
-          />
+          
+          {/* Diet Type Selection */}
+          <div className="mb-6">
+            <Label className="text-sm font-medium mb-3 block">Diet Type</Label>
+            <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-7 gap-2">
+              {dietTypes.map((diet) => {
+                const IconComponent = diet.icon;
+                return (
+                  <Button
+                    key={diet.value}
+                    variant={dietType === diet.value ? "hero" : "glass"}
+                    size="sm"
+                    className="gap-1.5 h-auto py-2 px-3"
+                    onClick={() => setDietType(diet.value)}
+                  >
+                    <IconComponent className="w-4 h-4" />
+                    <span className="text-xs">{diet.label}</span>
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Row of selects */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Calorie Target</Label>
+              <Select value={calorieTarget} onValueChange={setCalorieTarget}>
+                <SelectTrigger className="bg-muted/50 border-border/50">
+                  <SelectValue placeholder="Select calories" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="1200">1200 kcal</SelectItem>
+                  <SelectItem value="1500">1500 kcal</SelectItem>
+                  <SelectItem value="1800">1800 kcal</SelectItem>
+                  <SelectItem value="2000">2000 kcal</SelectItem>
+                  <SelectItem value="2200">2200 kcal</SelectItem>
+                  <SelectItem value="2500">2500 kcal</SelectItem>
+                  <SelectItem value="2800">2800 kcal</SelectItem>
+                  <SelectItem value="3000">3000 kcal</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Meal Count</Label>
+              <Select value={mealCount} onValueChange={setMealCount}>
+                <SelectTrigger className="bg-muted/50 border-border/50">
+                  <SelectValue placeholder="Number of meals" />
+                </SelectTrigger>
+                <SelectContent>
+                  {mealCountOptions.map(opt => (
+                    <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Cuisine</Label>
+              <Select value={cuisinePreference} onValueChange={setCuisinePreference}>
+                <SelectTrigger className="bg-muted/50 border-border/50">
+                  <SelectValue placeholder="Cuisine preference" />
+                </SelectTrigger>
+                <SelectContent>
+                  {cuisineTypes.map(c => (
+                    <SelectItem key={c.value} value={c.value}>{c.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div>
+              <Label className="text-sm font-medium mb-2 block">Goal</Label>
+              <Select value={goal} onValueChange={setGoal}>
+                <SelectTrigger className="bg-muted/50 border-border/50">
+                  <SelectValue placeholder="Your goal" />
+                </SelectTrigger>
+                <SelectContent>
+                  {goalOptions.map(g => (
+                    <SelectItem key={g.value} value={g.value}>{g.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          {/* Cooking Time */}
+          <div className="mb-6">
+            <Label className="text-sm font-medium mb-3 block">Cooking Time</Label>
+            <div className="flex flex-wrap gap-2">
+              {[
+                { value: "quick", label: "Quick (< 20 min)", icon: Zap },
+                { value: "moderate", label: "Moderate (20-40 min)", icon: Clock },
+                { value: "elaborate", label: "Elaborate (40+ min)", icon: UtensilsCrossed },
+              ].map((option) => {
+                const IconComponent = option.icon;
+                return (
+                  <Button
+                    key={option.value}
+                    variant={cookingTime === option.value ? "hero" : "glass"}
+                    size="sm"
+                    className="gap-2"
+                    onClick={() => setCookingTime(option.value)}
+                  >
+                    <IconComponent className="w-4 h-4" />
+                    {option.label}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Allergies */}
+          <div className="mb-6">
+            <Label className="text-sm font-medium mb-3 block">Allergies & Restrictions</Label>
+            <div className="flex flex-wrap gap-2">
+              {allergyOptions.map((allergy) => {
+                const IconComponent = allergy.icon;
+                const isSelected = allergies.includes(allergy.value);
+                return (
+                  <Button
+                    key={allergy.value}
+                    variant={isSelected ? "destructive" : "glass"}
+                    size="sm"
+                    className="gap-1.5"
+                    onClick={() => toggleAllergy(allergy.value)}
+                  >
+                    <IconComponent className="w-4 h-4" />
+                    {allergy.label}
+                    {isSelected && <span className="ml-1">✕</span>}
+                  </Button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Additional Notes */}
+          <div className="mb-6">
+            <Label className="text-sm font-medium mb-2 block">Additional Notes (Optional)</Label>
+            <Textarea
+              placeholder="Any specific preferences? (e.g., no spicy food, prefer cold breakfast, need high fiber...)"
+              value={additionalNotes}
+              onChange={(e) => setAdditionalNotes(e.target.value)}
+              className="min-h-[80px] bg-muted/50 border-border/50 focus:border-primary"
+            />
+          </div>
+
+          {/* Generate Button */}
           <Button 
             variant="hero" 
-            className="gap-2"
+            size="lg"
+            className="gap-2 w-full sm:w-auto"
             onClick={generateMealPlan}
             disabled={isGenerating}
           >
             {isGenerating ? (
               <>
-                <Loader2 className="w-4 h-4 animate-spin" />
-                Generating Plan...
+                <Loader2 className="w-5 h-5 animate-spin" />
+                Generating Your Plan...
               </>
             ) : (
               <>
-                <Sparkles className="w-4 h-4" />
+                <Sparkles className="w-5 h-5" />
                 Generate AI Meal Plan
               </>
             )}
