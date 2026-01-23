@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
-import livanaLogo from "@/assets/livana-logo.png";
+import livanaLogo from "@/assets/livana-logo-new.png";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +25,7 @@ const Navbar = () => {
               alt="LIVANA" 
               className="h-10 lg:h-12 w-auto transition-transform duration-300 group-hover:scale-105" 
             />
-            <span className="text-xl lg:text-2xl font-heading font-bold text-gradient">LIVANA</span>
+            <span className="text-xl lg:text-2xl font-display font-extrabold tracking-tight text-gradient">LIVANA</span>
           </Link>
 
           {/* Desktop Navigation */}
