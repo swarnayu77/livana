@@ -26,18 +26,18 @@ const AICoachPreview = () => {
   const [inputValue, setInputValue] = useState("");
 
   return (
-    <section id="ai-coach" className="py-24 relative overflow-hidden">
+    <section id="ai-coach" className="py-24 lg:py-32 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
         <img
           src={fitnessBg}
           alt=""
-          className="w-full h-full object-cover opacity-20"
+          className="w-full h-full object-cover opacity-15"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/90 to-background" />
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       </div>
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-6 lg:px-12 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Chat Preview */}
           <div className="order-2 lg:order-1">
@@ -107,10 +107,10 @@ const AICoachPreview = () => {
 
           {/* Content */}
           <div className="order-1 lg:order-2">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-5 tracking-tight">
               Your Personal <span className="text-gradient">AI Coach</span>
             </h2>
-            <p className="text-muted-foreground text-lg mb-8">
+            <p className="text-muted-foreground text-lg mb-10 leading-relaxed">
               Chat with LIVANA anytime for nutrition advice, meal suggestions, 
               and motivation. Like having a nutritionist in your pocket.
             </p>

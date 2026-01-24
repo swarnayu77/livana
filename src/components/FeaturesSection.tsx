@@ -72,19 +72,19 @@ const stats = [
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-24 relative overflow-hidden">
+    <section id="features" className="py-24 lg:py-32 relative overflow-hidden">
       {/* Background Elements */}
       <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-      <div className="absolute top-1/2 -left-40 w-80 h-80 bg-primary/10 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-accent/10 rounded-full blur-3xl" />
+      <div className="absolute top-1/2 -left-40 w-80 h-80 bg-primary/8 rounded-full blur-3xl animate-float-subtle" />
+      <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-accent/6 rounded-full blur-3xl animate-float-subtle delay-300" />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-6 lg:px-12 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-8">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4">
+        <div className="text-center max-w-2xl mx-auto mb-10">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-5 tracking-tight">
             Powered by <span className="text-gradient">Intelligence</span>
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-lg leading-relaxed">
             LIVANA combines advanced AI with nutrition science to help you achieve 
             your health goals sustainably.
           </p>

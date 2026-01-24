@@ -1,15 +1,15 @@
 import { Heart } from "lucide-react";
-import livanaLogo from "@/assets/livana-logo.png";
+import livanaLogo from "@/assets/livana-logo-new.png";
 
 const Footer = () => {
   return (
-    <footer className="py-12 border-t border-border relative">
+    <footer className="py-12 border-t border-border relative bg-gradient-dark">
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row items-center justify-between gap-6">
           {/* Logo */}
           <div className="flex items-center gap-3">
-            <img src={livanaLogo} alt="LIVANA" className="h-8 w-auto" />
-            <span className="text-xl font-heading font-bold text-gradient">LIVANA</span>
+            <img src={livanaLogo} alt="LIVANA" className="h-10 w-10" />
+            <span className="text-xl font-display font-bold text-gradient">LIVANA</span>
           </div>
 
           {/* Links */}
