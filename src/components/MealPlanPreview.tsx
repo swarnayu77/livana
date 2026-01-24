@@ -37,20 +37,20 @@ const MealPlanPreview = () => {
   const totalCalories = meals.reduce((sum, meal) => sum + meal.calories, 0);
 
   return (
-    <section id="meal-plans" className="py-24 relative overflow-hidden">
+    <section id="meal-plans" className="py-24 lg:py-32 relative overflow-hidden">
       {/* Background Elements */}
-      <div className="absolute top-1/4 right-0 w-1/2 h-1/2 bg-primary/5 rounded-full blur-3xl" />
+      <div className="absolute top-1/4 right-0 w-1/2 h-1/2 bg-primary/4 rounded-full blur-3xl animate-float-subtle" />
 
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-6 lg:px-12 relative z-10">
         <div className="grid lg:grid-cols-2 gap-12 items-center">
           {/* Content */}
           <div>
-            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full glass mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full glass-hero mb-6">
               <Sparkles className="w-4 h-4 text-primary" />
-              <span className="text-sm text-muted-foreground">AI-Generated Daily Plan</span>
+              <span className="text-sm font-medium text-foreground/80">AI-Generated Daily Plan</span>
             </div>
 
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+            <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-5 tracking-tight">
               Personalized <span className="text-gradient">Meal Plans</span>
             </h2>
             <p className="text-muted-foreground text-lg mb-8">

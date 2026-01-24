@@ -76,17 +76,17 @@ const GoalsSection = () => {
   const selectedGoalData = goals.find(g => g.id === selectedGoal);
 
   return (
-    <section id="goals" className="py-24 relative overflow-hidden">
+    <section id="goals" className="py-24 lg:py-32 relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/30 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
       
-      <div className="container mx-auto px-4 relative z-10">
+      <div className="container mx-auto px-6 lg:px-12 relative z-10">
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-heading font-bold mb-4">
+          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-5 tracking-tight">
             Choose Your <span className="text-gradient">Goal</span>
           </h2>
-          <p className="text-muted-foreground text-lg">
+          <p className="text-muted-foreground text-lg leading-relaxed">
             LIVANA adapts all recommendations to your specific health and fitness goals.
           </p>
         </div>
