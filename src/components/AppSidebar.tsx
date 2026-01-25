@@ -46,23 +46,24 @@ const AppSidebar = () => {
   return (
     <aside
       className={cn(
-        "fixed left-0 top-0 z-40 h-screen bg-gradient-sidebar border-r border-sidebar-border transition-all duration-300 ease-out",
+        "fixed left-0 top-0 z-40 h-screen border-r border-border/50 transition-all duration-300 ease-out",
+        "bg-sidebar",
         isCollapsed ? "w-16" : "w-64"
       )}
     >
       {/* Logo Section */}
-      <div className="flex items-center h-20 px-4 border-b border-sidebar-border">
+      <div className="flex items-center h-16 px-4 border-b border-border/50">
         <Link to="/" className="flex items-center gap-3 group">
           <img 
             src={livanaLogo} 
             alt="LIVANA" 
             className={cn(
-              "transition-all duration-300 group-hover:scale-105",
-              isCollapsed ? "h-8 w-8" : "h-10 w-10"
+              "transition-all duration-300 group-hover:scale-110 object-contain",
+              isCollapsed ? "h-8 w-8" : "h-9 w-9"
             )} 
           />
           {!isCollapsed && (
-            <span className="text-xl font-display font-bold tracking-tight text-gradient animate-fade-in">
+            <span className="text-lg font-display font-bold tracking-tight text-gradient">
               LIVANA
             </span>
           )}
@@ -70,36 +71,26 @@ const AppSidebar = () => {
       </div>
 
       {/* Navigation */}
-      <nav className="flex-1 px-3 py-6 space-y-1.5 overflow-y-auto">
+      <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const active = isActive(item.href);
           
+          const linkClasses = cn(
+            "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+            "hover:bg-muted/50",
+            active 
+              ? "bg-primary/10 text-primary border-l-2 border-primary" 
+              : "text-muted-foreground hover:text-foreground"
+          );
+          
           return item.href.startsWith("/#") ? (
-            <a
-              key={item.label}
-              href={item.href}
-              className={cn(
-                "sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium",
-                active 
-                  ? "active bg-sidebar-accent text-primary" 
-                  : "text-sidebar-foreground hover:text-foreground"
-              )}
-            >
+            <a key={item.label} href={item.href} className={linkClasses}>
               <Icon className={cn("h-5 w-5 flex-shrink-0", active && "text-primary")} />
               {!isCollapsed && <span>{item.label}</span>}
             </a>
           ) : (
-            <Link
-              key={item.label}
-              to={item.href}
-              className={cn(
-                "sidebar-link flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium",
-                active 
-                  ? "active bg-sidebar-accent text-primary" 
-                  : "text-sidebar-foreground hover:text-foreground"
-              )}
-            >
+            <Link key={item.label} to={item.href} className={linkClasses}>
               <Icon className={cn("h-5 w-5 flex-shrink-0", active && "text-primary")} />
               {!isCollapsed && <span>{item.label}</span>}
             </Link>
@@ -109,13 +100,13 @@ const AppSidebar = () => {
 
       {/* Footer - Auth CTAs */}
       <div className={cn(
-        "p-4 border-t border-sidebar-border space-y-2",
+        "p-3 border-t border-border/50 space-y-2",
         isCollapsed && "px-2"
       )}>
         {!isCollapsed ? (
           <>
             <Link to="/auth" className="block">
-              <Button variant="ghost" size="sm" className="w-full justify-start text-sidebar-foreground hover:text-foreground">
+              <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-foreground">
                 Sign In
               </Button>
             </Link>
@@ -138,7 +129,7 @@ const AppSidebar = () => {
       {/* Collapse Toggle */}
       <button
         onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-3 top-24 w-6 h-6 bg-sidebar-background border border-sidebar-border rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-sidebar-accent transition-colors shadow-lg"
+        className="absolute -right-3 top-20 w-6 h-6 bg-background border border-border rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shadow-md"
         aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
         {isCollapsed ? (

@@ -11,7 +11,6 @@ import Footer from "@/components/Footer";
 const Index = () => {
   const [sidebarWidth, setSidebarWidth] = useState(256);
 
-  // Listen for sidebar collapse state (could be enhanced with context)
   useEffect(() => {
     const checkSidebar = () => {
       const sidebar = document.querySelector('aside');
@@ -27,14 +26,18 @@ const Index = () => {
       observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
     }
     
-    return () => observer.disconnect();
+    window.addEventListener('resize', checkSidebar);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', checkSidebar);
+    };
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-dark">
+    <div className="min-h-screen bg-background">
       <AppSidebar />
       <main 
-        className="transition-all duration-300"
+        className="transition-all duration-300 min-h-screen"
         style={{ marginLeft: sidebarWidth }}
       >
         <HeroSection />
