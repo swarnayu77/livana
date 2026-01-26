@@ -76,86 +76,79 @@ const GoalsSection = () => {
   const selectedGoalData = goals.find(g => g.id === selectedGoal);
 
   return (
-    <section id="goals" className="py-24 lg:py-32 relative overflow-hidden">
+    <section id="goals" className="py-20 lg:py-28 relative overflow-hidden">
       {/* Background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/10 to-background" />
       
-      <div className="container mx-auto px-6 lg:px-12 relative z-10">
+      <div className="container mx-auto px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-2xl mx-auto mb-16">
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-5 tracking-tight">
+        <div className="text-center max-w-xl mx-auto mb-12">
+          <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold mb-4 tracking-tight">
             Choose Your <span className="text-gradient">Goal</span>
           </h2>
-          <p className="text-muted-foreground text-lg leading-relaxed">
+          <p className="text-muted-foreground text-base leading-relaxed">
             LIVANA adapts all recommendations to your specific health and fitness goals.
           </p>
         </div>
 
         {/* Goals Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-5xl mx-auto mb-12">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-4xl mx-auto mb-10">
           {goals.map((goal) => (
             <button
               key={goal.id}
               onClick={() => setSelectedGoal(goal.id)}
               className={cn(
-                "group relative p-4 md:p-6 rounded-2xl text-left transition-all duration-500",
-                "border border-border hover:border-primary/50",
+                "group relative p-4 rounded-xl text-left transition-all duration-300",
+                "border border-border hover:border-primary/40",
                 selectedGoal === goal.id
-                  ? "glass-strong border-primary glow-primary"
-                  : "glass hover:-translate-y-1"
+                  ? "glass-strong border-primary/50 shadow-lg shadow-primary/10"
+                  : "glass hover:-translate-y-0.5"
               )}
             >
               {/* Selected Indicator */}
               {selectedGoal === goal.id && (
-                <div className="absolute top-3 right-3 w-3 h-3 rounded-full bg-primary animate-pulse" />
+                <div className="absolute top-2.5 right-2.5 w-2 h-2 rounded-full bg-primary animate-pulse" />
               )}
 
               <div
                 className={cn(
-                  "w-10 h-10 md:w-12 md:h-12 rounded-xl flex items-center justify-center mb-3 md:mb-4 transition-colors",
+                  "w-9 h-9 rounded-lg flex items-center justify-center mb-2.5 transition-colors",
                   selectedGoal === goal.id
                     ? "bg-primary text-primary-foreground"
-                    : "bg-primary/10 text-primary group-hover:bg-primary/20"
+                    : "bg-primary/10 text-primary group-hover:bg-primary/15"
                 )}
               >
-                <goal.icon className="w-5 h-5 md:w-6 md:h-6" />
+                <goal.icon className="w-4 h-4" />
               </div>
 
-              <h3 className="text-sm md:text-lg font-heading font-semibold mb-1 md:mb-2">{goal.title}</h3>
-              <p className="text-xs md:text-sm text-muted-foreground leading-relaxed line-clamp-2 md:line-clamp-none">
+              <h3 className="text-sm font-heading font-semibold mb-1">{goal.title}</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed line-clamp-2">
                 {goal.description}
               </p>
-              
-              {/* Stat badge */}
-              <div className="mt-3 hidden md:block">
-                <span className="text-xs px-2 py-1 rounded-full bg-primary/10 text-primary border border-primary/20">
-                  {goal.stat}
-                </span>
-              </div>
             </button>
           ))}
         </div>
 
         {/* Selected Goal Details */}
         {selectedGoalData && (
-          <div className="max-w-3xl mx-auto glass-strong rounded-2xl p-6 md:p-8 border border-primary/30">
-            <div className="flex flex-col md:flex-row md:items-center gap-6">
+          <div className="max-w-2xl mx-auto glass-strong rounded-xl p-5 md:p-6 border border-primary/20">
+            <div className="flex flex-col md:flex-row md:items-center gap-5">
               <div className="flex-1">
-                <div className="flex items-center gap-3 mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-primary text-primary-foreground flex items-center justify-center">
-                    <selectedGoalData.icon className="w-6 h-6" />
+                <div className="flex items-center gap-3 mb-3">
+                  <div className="w-10 h-10 rounded-lg bg-primary text-primary-foreground flex items-center justify-center">
+                    <selectedGoalData.icon className="w-5 h-5" />
                   </div>
                   <div>
-                    <h3 className="text-xl font-heading font-bold">{selectedGoalData.title}</h3>
+                    <h3 className="text-lg font-heading font-bold">{selectedGoalData.title}</h3>
                     <span className="text-sm text-primary">{selectedGoalData.stat}</span>
                   </div>
                 </div>
-                <p className="text-muted-foreground mb-4">{selectedGoalData.description}</p>
-                <div className="flex flex-wrap gap-2">
+                <p className="text-sm text-muted-foreground mb-3">{selectedGoalData.description}</p>
+                <div className="flex flex-wrap gap-1.5">
                   {selectedGoalData.features.map((feature) => (
                     <span 
                       key={feature}
-                      className="text-xs px-3 py-1.5 rounded-full bg-primary/10 text-primary border border-primary/20"
+                      className="text-xs px-2.5 py-1 rounded-full bg-primary/10 text-primary border border-primary/15"
                     >
                       {feature}
                     </span>
@@ -164,7 +157,7 @@ const GoalsSection = () => {
               </div>
               <div className="flex-shrink-0">
                 <Link to="/goals">
-                  <Button variant="hero" size="lg" className="group w-full md:w-auto">
+                  <Button variant="hero" size="default" className="group w-full md:w-auto">
                     Get Started
                     <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" />
                   </Button>
