@@ -26,61 +26,61 @@ const AICoachPreview = () => {
   const [inputValue, setInputValue] = useState("");
 
   return (
-    <section id="ai-coach" className="py-24 lg:py-32 relative overflow-hidden">
+    <section id="ai-coach" className="py-20 lg:py-28 relative overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0">
         <img
           src={fitnessBg}
           alt=""
-          className="w-full h-full object-cover opacity-15"
+          className="w-full h-full object-cover opacity-10"
         />
         <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
       </div>
 
-      <div className="container mx-auto px-6 lg:px-12 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      <div className="container mx-auto px-6 lg:px-8 relative z-10">
+        <div className="grid lg:grid-cols-2 gap-10 items-center">
           {/* Chat Preview */}
           <div className="order-2 lg:order-1">
-            <div className="glass-strong rounded-2xl overflow-hidden max-w-lg mx-auto lg:mx-0">
+            <div className="glass-strong rounded-xl overflow-hidden max-w-md mx-auto lg:mx-0">
               {/* Chat Header */}
-              <div className="p-4 border-b border-border flex items-center gap-3">
-                <div className="w-10 h-10 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Bot className="w-5 h-5 text-primary" />
+              <div className="p-3 border-b border-border flex items-center gap-2.5">
+                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
+                  <Bot className="w-4 h-4 text-primary" />
                 </div>
                 <div>
-                  <h4 className="font-semibold">LIVANA Coach</h4>
-                  <p className="text-xs text-muted-foreground">Your AI Nutrition Assistant</p>
+                  <h4 className="text-sm font-semibold">LIVANA Coach</h4>
+                  <p className="text-xs text-muted-foreground">AI Nutrition Assistant</p>
                 </div>
                 <div className="ml-auto flex items-center gap-1">
-                  <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
                   <span className="text-xs text-muted-foreground">Online</span>
                 </div>
               </div>
 
               {/* Messages */}
-              <div className="p-4 space-y-4 h-80 overflow-y-auto">
+              <div className="p-3 space-y-3 h-64 overflow-y-auto">
                 {sampleMessages.map((message, index) => (
                   <div
                     key={index}
-                    className={`flex gap-3 ${message.role === "user" ? "justify-end" : ""}`}
+                    className={`flex gap-2 ${message.role === "user" ? "justify-end" : ""}`}
                   >
                     {message.role === "assistant" && (
-                      <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                        <Bot className="w-4 h-4 text-primary" />
+                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
+                        <Bot className="w-3 h-3 text-primary" />
                       </div>
                     )}
                     <div
-                      className={`rounded-2xl p-3 max-w-[80%] ${
+                      className={`rounded-xl p-2.5 max-w-[80%] ${
                         message.role === "user"
-                          ? "bg-primary text-primary-foreground rounded-br-md"
-                          : "bg-muted rounded-bl-md"
+                          ? "bg-primary text-primary-foreground rounded-br-sm"
+                          : "bg-muted rounded-bl-sm"
                       }`}
                     >
-                      <p className="text-sm leading-relaxed">{message.content}</p>
+                      <p className="text-xs leading-relaxed">{message.content}</p>
                     </div>
                     {message.role === "user" && (
-                      <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center shrink-0">
-                        <User className="w-4 h-4 text-muted-foreground" />
+                      <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center shrink-0">
+                        <User className="w-3 h-3 text-muted-foreground" />
                       </div>
                     )}
                   </div>
@@ -88,17 +88,17 @@ const AICoachPreview = () => {
               </div>
 
               {/* Input */}
-              <div className="p-4 border-t border-border">
+              <div className="p-3 border-t border-border">
                 <div className="flex gap-2">
                   <input
                     type="text"
                     placeholder="Ask about nutrition, meals, or fitness..."
                     value={inputValue}
                     onChange={(e) => setInputValue(e.target.value)}
-                    className="flex-1 bg-muted rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary/50 placeholder:text-muted-foreground"
+                    className="flex-1 bg-muted rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-muted-foreground"
                   />
-                  <Button variant="hero" size="icon" className="rounded-xl h-12 w-12">
-                    <Send className="w-5 h-5" />
+                  <Button variant="hero" size="icon" className="rounded-lg h-9 w-9">
+                    <Send className="w-4 h-4" />
                   </Button>
                 </div>
               </div>
@@ -107,46 +107,46 @@ const AICoachPreview = () => {
 
           {/* Content */}
           <div className="order-1 lg:order-2">
-            <h2 className="text-3xl md:text-4xl lg:text-5xl font-display font-bold mb-5 tracking-tight">
+            <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold mb-4 tracking-tight">
               Your Personal <span className="text-gradient">AI Coach</span>
             </h2>
-            <p className="text-muted-foreground text-lg mb-10 leading-relaxed">
+            <p className="text-muted-foreground text-base mb-8 leading-relaxed">
               Chat with LIVANA anytime for nutrition advice, meal suggestions, 
               and motivation. Like having a nutritionist in your pocket.
             </p>
 
             <div className="space-y-4">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-primary font-bold">1</span>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <span className="text-primary font-bold text-sm">1</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">Ask Anything</h4>
-                  <p className="text-sm text-muted-foreground">
+                  <h4 className="text-sm font-semibold mb-0.5">Ask Anything</h4>
+                  <p className="text-xs text-muted-foreground">
                     Questions about portions, timing, ingredients, or alternatives.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-primary font-bold">2</span>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <span className="text-primary font-bold text-sm">2</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">Get Smart Answers</h4>
-                  <p className="text-sm text-muted-foreground">
+                  <h4 className="text-sm font-semibold mb-0.5">Get Smart Answers</h4>
+                  <p className="text-xs text-muted-foreground">
                     Personalized advice based on your goals and preferences.
                   </p>
                 </div>
               </div>
 
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-primary font-bold">3</span>
+              <div className="flex items-start gap-3">
+                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
+                  <span className="text-primary font-bold text-sm">3</span>
                 </div>
                 <div>
-                  <h4 className="font-semibold mb-1">Build Better Habits</h4>
-                  <p className="text-sm text-muted-foreground">
+                  <h4 className="text-sm font-semibold mb-0.5">Build Better Habits</h4>
+                  <p className="text-xs text-muted-foreground">
                     Encouraging guidance for long-term, sustainable health.
                   </p>
                 </div>
