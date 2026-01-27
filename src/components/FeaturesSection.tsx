@@ -1,141 +1,113 @@
+import { Bot, Utensils, Target, ChefHat, TrendingUp, FlaskConical } from "lucide-react";
 import { Link } from "react-router-dom";
-import { 
-  Brain, 
-  ChefHat, 
-  LineChart, 
-  MessageCircle, 
-  Salad, 
-  Sparkles,
-  Zap,
-  Shield,
-  Clock,
-  Target
-} from "lucide-react";
+import { cn } from "@/lib/utils";
 
 const features = [
   {
-    icon: Salad,
-    title: "Personalized Meal Plans",
-    description: "Daily plans tailored to your goals, dietary preferences, and restrictions with balanced macronutrients.",
+    icon: Utensils,
+    title: "Smart Meal Plans",
+    description: "AI-generated meal plans tailored to your dietary preferences, allergies, and nutritional goals.",
     href: "/meal-plans",
-    highlights: ["7-Day Plans", "Grocery Lists", "Macro Tracking"],
-    gradient: "from-primary/20 to-accent/10"
+    highlight: "Popular"
   },
   {
-    icon: Brain,
-    title: "Smart Nutrient Analysis",
-    description: "Analyze any meal for calories, macros, vitamins, and get personalized improvement suggestions.",
-    href: "/nutrient-analysis",
-    highlights: ["Photo Analysis", "Instant Results", "AI Insights"],
-    gradient: "from-accent/20 to-primary/10"
+    icon: Bot,
+    title: "AI Coach",
+    description: "24/7 personalized nutrition guidance from your AI health companion. Ask anything, anytime.",
+    href: "/coach",
+    highlight: "New"
+  },
+  {
+    icon: Target,
+    title: "Goal Tracking",
+    description: "Set and track your health goals with intelligent progress monitoring and adaptive recommendations.",
+    href: "/goals",
   },
   {
     icon: ChefHat,
-    title: "Recipe Suggestions",
-    description: "Get easy, healthy recipes based on ingredients you have, with nutritional highlights.",
+    title: "Recipe Library",
+    description: "Explore 500+ healthy recipes with detailed nutrition info and step-by-step instructions.",
     href: "/recipes",
-    highlights: ["500+ Recipes", "Dietary Filters", "Step-by-Step"],
-    gradient: "from-primary/20 to-accent/10"
   },
   {
-    icon: LineChart,
-    title: "Progress Tracking",
-    description: "Monitor your nutrition journey with gentle, encouraging feedback and adaptive recommendations.",
+    icon: TrendingUp,
+    title: "Progress Analytics",
+    description: "Visualize your health journey with beautiful charts and actionable insights.",
     href: "/progress",
-    highlights: ["Visual Charts", "Weekly Reports", "Goal Tracking"],
-    gradient: "from-accent/20 to-primary/10"
   },
   {
-    icon: MessageCircle,
-    title: "Mr. Livana AI Coach",
-    description: "Chat with your personal nutrition assistant for guidance on food choices and healthy habits.",
-    href: "/coach",
-    highlights: ["24/7 Available", "Personalized Tips", "Real-time Chat"],
-    gradient: "from-primary/20 to-accent/10"
+    icon: FlaskConical,
+    title: "Nutrient Analysis",
+    description: "Deep dive into your daily nutrition with comprehensive macro and micronutrient breakdowns.",
+    href: "/nutrient-analysis",
   },
-  {
-    icon: Sparkles,
-    title: "Goal-Adaptive AI",
-    description: "Intelligence that adapts to weight loss, muscle gain, diabetes management, or general fitness.",
-    href: "/goals",
-    highlights: ["Smart Learning", "Auto-Adjust", "Custom Plans"],
-    gradient: "from-accent/20 to-primary/10"
-  },
-];
-
-const stats = [
-  { icon: Zap, value: "10K+", label: "Active Users" },
-  { icon: Shield, value: "99.9%", label: "Accuracy Rate" },
-  { icon: Clock, value: "<2s", label: "Analysis Time" },
-  { icon: Target, value: "85%", label: "Goal Achievement" },
 ];
 
 const FeaturesSection = () => {
   return (
-    <section id="features" className="py-20 lg:py-28 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
-      <div className="absolute top-1/2 -left-32 w-64 h-64 bg-primary/5 rounded-full blur-3xl" />
-      <div className="absolute bottom-1/4 -right-32 w-72 h-72 bg-accent/4 rounded-full blur-3xl" />
-
+    <section id="features" className="py-24 lg:py-32 relative">
+      {/* Subtle background gradient */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/20 to-background pointer-events-none" />
+      
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
         {/* Section Header */}
-        <div className="text-center max-w-xl mx-auto mb-12">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold mb-4 tracking-tight">
-            Powered by <span className="text-gradient">Intelligence</span>
+        <div className="text-center mb-16 max-w-2xl mx-auto">
+          <p className="text-primary font-medium text-sm uppercase tracking-widest mb-4">Features</p>
+          <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-5 tracking-tight">
+            Everything You Need
           </h2>
-          <p className="text-muted-foreground text-base leading-relaxed">
-            LIVANA combines advanced AI with nutrition science to help you achieve 
-            your health goals sustainably.
+          <p className="text-muted-foreground text-lg leading-relaxed">
+            Comprehensive tools designed to transform your nutrition and health journey.
           </p>
         </div>
 
-        {/* Stats Row */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-2xl mx-auto mb-14">
-          {stats.map((stat) => (
-            <div key={stat.label} className="glass rounded-lg p-3 text-center group hover:border-primary/30 transition-all duration-300">
-              <stat.icon className="w-4 h-4 text-primary mx-auto mb-1.5 group-hover:scale-110 transition-transform" />
-              <div className="text-xl font-heading font-bold text-primary">{stat.value}</div>
-              <div className="text-xs text-muted-foreground">{stat.label}</div>
-            </div>
-          ))}
-        </div>
-
         {/* Features Grid */}
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
-          {features.map((feature, index) => (
-            <Link
-              key={feature.title}
-              to={feature.href}
-              className="group glass rounded-xl p-5 hover:border-primary/30 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg hover:shadow-primary/5 cursor-pointer relative overflow-hidden"
-              style={{ animationDelay: `${index * 50}ms` }}
-            >
-              {/* Gradient overlay on hover */}
-              <div className={`absolute inset-0 bg-gradient-to-br ${feature.gradient} opacity-0 group-hover:opacity-100 transition-opacity duration-300`} />
-              
-              <div className="relative z-10">
-                <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/15 group-hover:scale-105 transition-all duration-300">
-                  <feature.icon className="w-5 h-5 text-primary" />
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-5xl mx-auto">
+          {features.map((feature, index) => {
+            const Icon = feature.icon;
+            return (
+              <Link
+                key={feature.title}
+                to={feature.href}
+                className={cn(
+                  "group relative p-6 rounded-2xl",
+                  "bg-card/50 backdrop-blur-sm",
+                  "border border-border/40",
+                  "hover:bg-card/80 hover:border-primary/30",
+                  "hover:shadow-xl hover:shadow-primary/5",
+                  "transition-all duration-300 ease-out",
+                  "hover:-translate-y-1"
+                )}
+                style={{ animationDelay: `${index * 50}ms` }}
+              >
+                {/* Highlight Badge */}
+                {feature.highlight && (
+                  <span className="absolute -top-2.5 right-4 px-2.5 py-0.5 bg-primary/15 text-primary text-xs font-medium rounded-full border border-primary/20">
+                    {feature.highlight}
+                  </span>
+                )}
+
+                {/* Icon */}
+                <div className="mb-4">
+                  <div className={cn(
+                    "w-12 h-12 rounded-xl flex items-center justify-center",
+                    "bg-primary/10 group-hover:bg-primary/15",
+                    "transition-colors duration-300"
+                  )}>
+                    <Icon className="w-5 h-5 text-primary stroke-[1.5]" />
+                  </div>
                 </div>
-                <h3 className="text-lg font-heading font-semibold mb-2 group-hover:text-primary transition-colors">{feature.title}</h3>
-                <p className="text-sm text-muted-foreground leading-relaxed mb-3">
+
+                {/* Content */}
+                <h3 className="text-lg font-display font-semibold text-foreground mb-2 tracking-tight group-hover:text-primary transition-colors">
+                  {feature.title}
+                </h3>
+                <p className="text-muted-foreground text-sm leading-relaxed">
                   {feature.description}
                 </p>
-                
-                {/* Feature highlights */}
-                <div className="flex flex-wrap gap-1.5">
-                  {feature.highlights.map((highlight) => (
-                    <span 
-                      key={highlight}
-                      className="text-xs px-2 py-0.5 rounded-full bg-primary/10 text-primary border border-primary/15"
-                    >
-                      {highlight}
-                    </span>
-                  ))}
-                </div>
-              </div>
-            </Link>
-          ))}
+              </Link>
+            );
+          })}
         </div>
       </div>
     </section>

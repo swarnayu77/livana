@@ -9,7 +9,7 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  const [sidebarWidth, setSidebarWidth] = useState(224);
+  const [sidebarWidth, setSidebarWidth] = useState(220);
 
   useEffect(() => {
     const checkSidebar = () => {
@@ -37,10 +37,12 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <AppSidebar />
       <main 
-        className="transition-all duration-300 min-h-screen"
+        className="transition-all duration-300 ease-out min-h-screen"
         style={{ marginLeft: sidebarWidth }}
       >
-        <HeroSection />
+        <div className="max-w-6xl mx-auto">
+          <HeroSection />
+        </div>
         <FeaturesSection />
         <GoalsSection />
         <MealPlanPreview />
