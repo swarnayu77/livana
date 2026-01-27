@@ -1,35 +1,40 @@
 import { Heart } from "lucide-react";
+import { Link } from "react-router-dom";
 import livanaLogo from "@/assets/livana-logo-new.png";
 
 const Footer = () => {
   return (
-    <footer className="py-12 border-t border-border relative bg-gradient-dark">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+    <footer className="py-16 border-t border-border/30 relative bg-background">
+      <div className="container mx-auto px-6 lg:px-8">
+        <div className="flex flex-col md:flex-row items-center justify-between gap-8">
           {/* Logo */}
-          <div className="flex items-center gap-3">
-            <img src={livanaLogo} alt="LIVANA" className="h-10 w-10" />
-            <span className="text-xl font-display font-bold text-gradient">LIVANA</span>
-          </div>
+          <Link to="/" className="flex items-center gap-3 group">
+            <img 
+              src={livanaLogo} 
+              alt="LIVANA" 
+              className="h-9 w-9 group-hover:scale-105 transition-transform" 
+            />
+            <span className="text-lg font-display font-bold text-gradient tracking-tight">LIVANA</span>
+          </Link>
 
           {/* Links */}
-          <div className="flex flex-wrap items-center justify-center gap-6 text-sm text-muted-foreground">
-            <a href="#" className="hover:text-foreground transition-colors">Features</a>
-            <a href="#" className="hover:text-foreground transition-colors">Pricing</a>
-            <a href="#" className="hover:text-foreground transition-colors">About</a>
-            <a href="#" className="hover:text-foreground transition-colors">Contact</a>
+          <div className="flex flex-wrap items-center justify-center gap-8 text-sm text-muted-foreground">
+            <a href="/#features" className="hover:text-foreground transition-colors">Features</a>
+            <Link to="/meal-plans" className="hover:text-foreground transition-colors">Meal Plans</Link>
+            <Link to="/coach" className="hover:text-foreground transition-colors">AI Coach</Link>
+            <Link to="/recipes" className="hover:text-foreground transition-colors">Recipes</Link>
             <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
           </div>
 
-          {/* Copyright */}
-          <div className="flex items-center gap-1 text-sm text-muted-foreground">
+          {/* Made with love */}
+          <div className="flex items-center gap-1.5 text-sm text-muted-foreground">
             <span>Made with</span>
             <Heart className="w-4 h-4 text-primary fill-primary" />
             <span>for healthier living</span>
           </div>
         </div>
 
-        <div className="mt-8 pt-8 border-t border-border text-center text-xs text-muted-foreground">
+        <div className="mt-10 pt-8 border-t border-border/20 text-center text-xs text-muted-foreground">
           © 2026 LIVANA. All rights reserved. Your AI nutrition companion.
         </div>
       </div>

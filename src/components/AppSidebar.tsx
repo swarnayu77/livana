@@ -10,11 +10,18 @@ import {
   FlaskConical,
   ChevronLeft,
   ChevronRight,
-  Sparkles
+  Sparkles,
+  LogIn
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import livanaLogo from "@/assets/livana-logo-new.png";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 interface NavItem {
   label: string;
@@ -32,6 +39,61 @@ const navItems: NavItem[] = [
   { label: "Nutrients", href: "/nutrient-analysis", icon: FlaskConical },
 ];
 
+interface NavItemComponentProps {
+  item: NavItem;
+  isActive: boolean;
+  isCollapsed: boolean;
+}
+
+const NavItemComponent = ({ item, isActive, isCollapsed }: NavItemComponentProps) => {
+  const Icon = item.icon;
+  
+  const linkContent = (
+    <div
+      className={cn(
+        "flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium",
+        "transition-all duration-200 ease-out",
+        "hover:bg-primary/8",
+        isActive 
+          ? "bg-primary/12 text-primary shadow-[0_0_20px_hsl(var(--primary)/0.15)]" 
+          : "text-muted-foreground hover:text-foreground",
+        isCollapsed && "justify-center px-2.5"
+      )}
+    >
+      <Icon 
+        className={cn(
+          "h-[18px] w-[18px] flex-shrink-0 stroke-[1.5]",
+          isActive ? "text-primary" : "text-muted-foreground"
+        )} 
+      />
+      {!isCollapsed && (
+        <span className="tracking-tight">{item.label}</span>
+      )}
+    </div>
+  );
+  
+  const link = item.href.startsWith("/#") ? (
+    <a href={item.href}>{linkContent}</a>
+  ) : (
+    <Link to={item.href}>{linkContent}</Link>
+  );
+
+  if (isCollapsed) {
+    return (
+      <Tooltip delayDuration={0}>
+        <TooltipTrigger asChild>
+          {link}
+        </TooltipTrigger>
+        <TooltipContent side="right" className="font-medium">
+          {item.label}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return link;
+};
+
 const AppSidebar = () => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const location = useLocation();
@@ -44,101 +106,138 @@ const AppSidebar = () => {
   };
 
   return (
-    <aside
-      className={cn(
-        "fixed left-0 top-0 z-40 h-screen border-r border-border/40 transition-all duration-300 ease-out",
-        "bg-sidebar",
-        isCollapsed ? "w-14" : "w-56"
-      )}
-    >
-      {/* Logo Section */}
-      <div className="flex items-center h-14 px-3 border-b border-border/40">
-        <Link to="/" className="flex items-center gap-2.5 group">
-          <img 
-            src={livanaLogo} 
-            alt="LIVANA" 
-            className={cn(
-              "transition-all duration-300 group-hover:scale-110 object-contain",
-              isCollapsed ? "h-7 w-7" : "h-8 w-8"
-            )} 
-          />
-          {!isCollapsed && (
-            <span className="text-base font-display font-bold tracking-tight text-gradient">
-              LIVANA
-            </span>
-          )}
-        </Link>
-      </div>
-
-      {/* Navigation */}
-      <nav className="flex-1 px-2 py-3 space-y-0.5 overflow-y-auto">
-        {navItems.map((item) => {
-          const Icon = item.icon;
-          const active = isActive(item.href);
-          
-          const linkClasses = cn(
-            "flex items-center gap-2.5 px-2.5 py-2 rounded-lg text-sm font-medium transition-all duration-200",
-            "hover:bg-muted/40",
-            active 
-              ? "bg-primary/10 text-primary border-l-2 border-primary ml-0.5" 
-              : "text-muted-foreground hover:text-foreground"
-          );
-          
-          return item.href.startsWith("/#") ? (
-            <a key={item.label} href={item.href} className={linkClasses}>
-              <Icon className={cn("h-4 w-4 flex-shrink-0", active && "text-primary")} />
-              {!isCollapsed && <span>{item.label}</span>}
-            </a>
-          ) : (
-            <Link key={item.label} to={item.href} className={linkClasses}>
-              <Icon className={cn("h-4 w-4 flex-shrink-0", active && "text-primary")} />
-              {!isCollapsed && <span>{item.label}</span>}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* Footer - Auth CTAs */}
-      <div className={cn(
-        "p-2 border-t border-border/40 space-y-1.5",
-        isCollapsed && "px-1.5"
-      )}>
-        {!isCollapsed ? (
-          <>
-            <Link to="/auth" className="block">
-              <Button variant="ghost" size="sm" className="w-full justify-start text-muted-foreground hover:text-foreground text-sm h-8">
-                Sign In
-              </Button>
-            </Link>
-            <Link to="/auth?mode=signup" className="block">
-              <Button variant="hero" size="sm" className="w-full h-8 text-sm">
-                <Sparkles className="h-3.5 w-3.5 mr-1.5" />
-                Get Started
-              </Button>
-            </Link>
-          </>
-        ) : (
-          <Link to="/auth?mode=signup">
-            <Button variant="hero" size="icon" className="w-8 h-8 mx-auto block">
-              <Sparkles className="h-3.5 w-3.5" />
-            </Button>
-          </Link>
+    <TooltipProvider>
+      <aside
+        className={cn(
+          "fixed left-0 top-0 z-40 h-screen",
+          "bg-sidebar/80 backdrop-blur-2xl",
+          "border-r border-border/30",
+          "transition-all duration-300 ease-out",
+          "flex flex-col",
+          isCollapsed ? "w-[68px]" : "w-[220px]"
         )}
-      </div>
-
-      {/* Collapse Toggle */}
-      <button
-        onClick={() => setIsCollapsed(!isCollapsed)}
-        className="absolute -right-2.5 top-16 w-5 h-5 bg-background border border-border rounded-full flex items-center justify-center text-muted-foreground hover:text-foreground hover:bg-muted transition-colors shadow-sm"
-        aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
       >
-        {isCollapsed ? (
-          <ChevronRight className="h-3 w-3" />
-        ) : (
-          <ChevronLeft className="h-3 w-3" />
-        )}
-      </button>
-    </aside>
+        {/* Logo Section */}
+        <div className={cn(
+          "flex items-center h-16 border-b border-border/20",
+          isCollapsed ? "px-4 justify-center" : "px-5"
+        )}>
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="relative">
+              <img 
+                src={livanaLogo} 
+                alt="LIVANA" 
+                className={cn(
+                  "object-contain transition-transform duration-300 group-hover:scale-110",
+                  isCollapsed ? "h-8 w-8" : "h-9 w-9"
+                )} 
+              />
+            </div>
+            {!isCollapsed && (
+              <span className="text-lg font-display font-bold tracking-tight text-gradient">
+                LIVANA
+              </span>
+            )}
+          </Link>
+        </div>
+
+        {/* Navigation */}
+        <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
+          {navItems.map((item) => (
+            <NavItemComponent
+              key={item.label}
+              item={item}
+              isActive={isActive(item.href)}
+              isCollapsed={isCollapsed}
+            />
+          ))}
+        </nav>
+
+        {/* Footer - Auth CTAs */}
+        <div className={cn(
+          "p-3 border-t border-border/20 space-y-2",
+          isCollapsed && "px-2"
+        )}>
+          {!isCollapsed ? (
+            <>
+              <Link to="/auth" className="block">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="w-full justify-start text-muted-foreground hover:text-foreground text-sm h-10 rounded-xl"
+                >
+                  <LogIn className="h-4 w-4 mr-2 stroke-[1.5]" />
+                  Sign In
+                </Button>
+              </Link>
+              <Link to="/auth?mode=signup" className="block">
+                <Button 
+                  variant="hero" 
+                  size="sm" 
+                  className="w-full h-10 text-sm rounded-xl"
+                >
+                  <Sparkles className="h-4 w-4 mr-2" />
+                  Get Started
+                </Button>
+              </Link>
+            </>
+          ) : (
+            <div className="space-y-2">
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <Link to="/auth">
+                    <Button 
+                      variant="ghost" 
+                      size="icon" 
+                      className="w-10 h-10 mx-auto block rounded-xl"
+                    >
+                      <LogIn className="h-4 w-4 stroke-[1.5]" />
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">Sign In</TooltipContent>
+              </Tooltip>
+              <Tooltip delayDuration={0}>
+                <TooltipTrigger asChild>
+                  <Link to="/auth?mode=signup">
+                    <Button 
+                      variant="hero" 
+                      size="icon" 
+                      className="w-10 h-10 mx-auto block rounded-xl"
+                    >
+                      <Sparkles className="h-4 w-4" />
+                    </Button>
+                  </Link>
+                </TooltipTrigger>
+                <TooltipContent side="right">Get Started</TooltipContent>
+              </Tooltip>
+            </div>
+          )}
+        </div>
+
+        {/* Collapse Toggle */}
+        <button
+          onClick={() => setIsCollapsed(!isCollapsed)}
+          className={cn(
+            "absolute -right-3 top-20",
+            "w-6 h-6 rounded-full",
+            "bg-card border border-border/50",
+            "flex items-center justify-center",
+            "text-muted-foreground hover:text-foreground",
+            "hover:bg-muted hover:border-primary/30",
+            "transition-all duration-200 ease-out",
+            "shadow-lg shadow-background/50"
+          )}
+          aria-label={isCollapsed ? "Expand sidebar" : "Collapse sidebar"}
+        >
+          {isCollapsed ? (
+            <ChevronRight className="h-3.5 w-3.5" />
+          ) : (
+            <ChevronLeft className="h-3.5 w-3.5" />
+          )}
+        </button>
+      </aside>
+    </TooltipProvider>
   );
 };
 

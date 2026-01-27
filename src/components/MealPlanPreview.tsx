@@ -1,113 +1,125 @@
-import { Button } from "@/components/ui/button";
-import { Clock, Flame, Sparkles } from "lucide-react";
-import mealBowl from "@/assets/meal-bowl.jpg";
+import { Utensils, Clock, Flame, Leaf } from "lucide-react";
+import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
 
 const meals = [
   {
-    type: "Breakfast",
-    name: "Protein Power Bowl",
-    calories: 420,
+    name: "Mediterranean Breakfast Bowl",
     time: "15 min",
-    macros: { protein: 28, carbs: 45, fat: 14 },
+    calories: 420,
+    tags: ["High Protein", "Low Carb"],
   },
   {
-    type: "Lunch",
-    name: "Mediterranean Quinoa Salad",
-    calories: 520,
+    name: "Grilled Chicken Power Salad",
     time: "20 min",
-    macros: { protein: 22, carbs: 58, fat: 18 },
+    calories: 380,
+    tags: ["Lean", "Fresh"],
   },
   {
-    type: "Dinner",
-    name: "Grilled Salmon & Vegetables",
-    calories: 580,
-    time: "25 min",
-    macros: { protein: 42, carbs: 32, fat: 24 },
-  },
-  {
-    type: "Snack",
-    name: "Greek Yogurt Parfait",
-    calories: 220,
-    time: "5 min",
-    macros: { protein: 15, carbs: 28, fat: 6 },
+    name: "Salmon with Roasted Vegetables",
+    time: "35 min",
+    calories: 520,
+    tags: ["Omega-3", "Heart Healthy"],
   },
 ];
 
 const MealPlanPreview = () => {
-  const totalCalories = meals.reduce((sum, meal) => sum + meal.calories, 0);
-
   return (
-    <section id="meal-plans" className="py-20 lg:py-28 relative overflow-hidden">
-      {/* Background Elements */}
-      <div className="absolute top-1/4 right-0 w-1/3 h-1/2 bg-primary/3 rounded-full blur-3xl" />
-
+    <section className="py-24 lg:py-32 relative">
+      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/10 to-background pointer-events-none" />
+      
       <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
-          {/* Content */}
-          <div>
-            <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-hero mb-5">
-              <Sparkles className="w-3.5 h-3.5 text-primary" />
-              <span className="text-xs font-medium text-foreground/80">AI-Generated Daily Plan</span>
+        <div className="max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Content */}
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-5">
+                <Utensils className="w-4 h-4 text-primary" />
+                <span className="text-primary text-sm font-medium">AI Meal Plans</span>
+              </div>
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-5 tracking-tight">
+                Smart Meals,<br />
+                <span className="text-gradient">Zero Guesswork</span>
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed mb-10">
+                Our AI analyzes your preferences, dietary needs, and goals to create perfectly balanced meal plans. Every recipe is optimized for nutrition and taste.
+              </p>
+              
+              <div className="flex items-center gap-8">
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gradient">500+</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Recipes</p>
+                </div>
+                <div className="w-px h-12 bg-border/50" />
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gradient">30s</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">To Generate</p>
+                </div>
+                <div className="w-px h-12 bg-border/50" />
+                <div className="text-center">
+                  <p className="text-3xl font-bold text-gradient">100%</p>
+                  <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Personalized</p>
+                </div>
+              </div>
             </div>
 
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold mb-4 tracking-tight">
-              Personalized <span className="text-gradient">Meal Plans</span>
-            </h2>
-            <p className="text-muted-foreground text-base mb-6">
-              Get daily meal plans tailored to your goals, with balanced macros, 
-              calorie estimates, and easy-to-follow recipes.
-            </p>
-
-            {/* Meals List */}
-            <div className="space-y-2.5 mb-6">
+            {/* Meal Cards Preview */}
+            <div className="space-y-4">
               {meals.map((meal, index) => (
                 <div
-                  key={meal.type}
-                  className="glass rounded-lg p-3 flex items-center justify-between hover:border-primary/20 transition-all"
-                  style={{ animationDelay: `${index * 50}ms` }}
+                  key={meal.name}
+                  className={cn(
+                    "p-5 rounded-xl",
+                    "bg-card/60 backdrop-blur-sm",
+                    "border border-border/40",
+                    "hover:bg-card/80 hover:border-primary/30",
+                    "hover:shadow-lg hover:shadow-primary/5",
+                    "transition-all duration-300 ease-out",
+                    "cursor-pointer group"
+                  )}
+                  style={{ animationDelay: `${index * 100}ms` }}
                 >
-                  <div>
-                    <span className="text-xs text-primary font-medium uppercase tracking-wide">
-                      {meal.type}
-                    </span>
-                    <h4 className="text-sm font-semibold">{meal.name}</h4>
-                    <div className="flex items-center gap-2.5 mt-0.5 text-xs text-muted-foreground">
-                      <span className="flex items-center gap-1">
-                        <Flame className="w-3 h-3" /> {meal.calories} cal
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <Clock className="w-3 h-3" /> {meal.time}
-                      </span>
+                  <div className="flex items-start justify-between gap-4">
+                    <div className="flex-1">
+                      <h4 className="font-semibold text-base text-foreground group-hover:text-primary transition-colors tracking-tight">
+                        {meal.name}
+                      </h4>
+                      <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                        <span className="flex items-center gap-1.5">
+                          <Clock className="w-4 h-4" />
+                          {meal.time}
+                        </span>
+                        <span className="flex items-center gap-1.5">
+                          <Flame className="w-4 h-4" />
+                          {meal.calories} cal
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                  <div className="text-right text-xs text-muted-foreground space-y-0.5">
-                    <div>P: {meal.macros.protein}g</div>
-                    <div>C: {meal.macros.carbs}g</div>
-                    <div>F: {meal.macros.fat}g</div>
+                    <div className="flex flex-wrap gap-2 justify-end">
+                      {meal.tags.map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2.5 py-1 text-xs rounded-lg bg-primary/10 text-primary/80 border border-primary/20"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 </div>
               ))}
+
+              {/* CTA */}
+              <div className="pt-3">
+                <Link 
+                  to="/meal-plans" 
+                  className="inline-flex items-center gap-2 text-primary hover:text-primary/80 text-sm font-medium transition-colors"
+                >
+                  <Leaf className="w-4 h-4" />
+                  View all meal plans →
+                </Link>
+              </div>
             </div>
-
-            {/* Total */}
-            <div className="glass-strong rounded-lg p-3 flex items-center justify-between mb-6">
-              <span className="text-sm font-semibold">Daily Total</span>
-              <span className="text-gradient font-bold text-lg">{totalCalories} calories</span>
-            </div>
-
-            <Button variant="hero" size="default">
-              Get Your Personalized Plan
-            </Button>
-          </div>
-
-          {/* Image */}
-          <div className="relative hidden lg:block">
-            <div className="absolute inset-0 bg-gradient-to-r from-primary/15 to-accent/15 rounded-2xl blur-xl" />
-            <img
-              src={mealBowl}
-              alt="Healthy meal bowl"
-              className="relative rounded-2xl shadow-xl shadow-primary/5 w-full max-w-md mx-auto object-cover"
-            />
           </div>
         </div>
       </div>

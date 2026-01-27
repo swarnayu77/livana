@@ -1,156 +1,118 @@
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Send, Bot, User } from "lucide-react";
-import fitnessBg from "@/assets/fitness-bg.jpg";
+import { Bot, User, Sparkles } from "lucide-react";
+import { cn } from "@/lib/utils";
 
-const sampleMessages = [
+const messages = [
   {
     role: "user",
     content: "What should I eat before my morning workout?",
   },
   {
     role: "assistant",
-    content: "Great question! For a morning workout, aim for a light meal 30-60 minutes before. Try a banana with a tablespoon of almond butter, or Greek yogurt with berries. These provide quick energy without feeling heavy. Stay hydrated too!",
-  },
-  {
-    role: "user",
-    content: "I'm trying to build muscle. How much protein do I need?",
-  },
-  {
-    role: "assistant",
-    content: "For muscle building, aim for 1.6-2.2g of protein per kg of body weight daily. Spread it across 4-5 meals for optimal absorption. Good sources: chicken, fish, eggs, legumes, and dairy. I can create a high-protein meal plan for you!",
+    content: "For optimal energy, have a light snack 30-60 minutes before: a banana with almond butter, or Greek yogurt with berries. This provides quick carbs for energy and protein to prevent muscle breakdown.",
   },
 ];
 
 const AICoachPreview = () => {
-  const [inputValue, setInputValue] = useState("");
-
   return (
-    <section id="ai-coach" className="py-20 lg:py-28 relative overflow-hidden">
-      {/* Background */}
-      <div className="absolute inset-0">
-        <img
-          src={fitnessBg}
-          alt=""
-          className="w-full h-full object-cover opacity-10"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-background/95 to-background" />
-      </div>
-
-      <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        <div className="grid lg:grid-cols-2 gap-10 items-center">
-          {/* Chat Preview */}
-          <div className="order-2 lg:order-1">
-            <div className="glass-strong rounded-xl overflow-hidden max-w-md mx-auto lg:mx-0">
+    <section className="py-24 lg:py-32 relative">
+      <div className="container mx-auto px-6 lg:px-8">
+        <div className="max-w-5xl mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            {/* Chat Preview */}
+            <div className={cn(
+              "p-6 rounded-2xl order-2 lg:order-1",
+              "bg-card/50 backdrop-blur-sm",
+              "border border-border/40"
+            )}>
               {/* Chat Header */}
-              <div className="p-3 border-b border-border flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-full bg-primary/20 flex items-center justify-center">
-                  <Bot className="w-4 h-4 text-primary" />
+              <div className="flex items-center gap-3 pb-5 border-b border-border/40 mb-5">
+                <div className="w-11 h-11 rounded-xl bg-primary/15 flex items-center justify-center">
+                  <Bot className="w-5 h-5 text-primary" />
                 </div>
                 <div>
-                  <h4 className="text-sm font-semibold">LIVANA Coach</h4>
-                  <p className="text-xs text-muted-foreground">AI Nutrition Assistant</p>
-                </div>
-                <div className="ml-auto flex items-center gap-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                  <span className="text-xs text-muted-foreground">Online</span>
+                  <h4 className="font-semibold text-foreground tracking-tight">LIVANA Coach</h4>
+                  <div className="flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                    <span className="text-sm text-muted-foreground">Online</span>
+                  </div>
                 </div>
               </div>
 
               {/* Messages */}
-              <div className="p-3 space-y-3 h-64 overflow-y-auto">
-                {sampleMessages.map((message, index) => (
+              <div className="space-y-4">
+                {messages.map((message, index) => (
                   <div
                     key={index}
-                    className={`flex gap-2 ${message.role === "user" ? "justify-end" : ""}`}
+                    className={cn(
+                      "flex gap-3",
+                      message.role === "user" ? "flex-row-reverse" : ""
+                    )}
                   >
-                    {message.role === "assistant" && (
-                      <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center shrink-0">
-                        <Bot className="w-3 h-3 text-primary" />
-                      </div>
-                    )}
-                    <div
-                      className={`rounded-xl p-2.5 max-w-[80%] ${
-                        message.role === "user"
-                          ? "bg-primary text-primary-foreground rounded-br-sm"
-                          : "bg-muted rounded-bl-sm"
-                      }`}
-                    >
-                      <p className="text-xs leading-relaxed">{message.content}</p>
+                    <div className={cn(
+                      "w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0",
+                      message.role === "user" ? "bg-primary/15" : "bg-muted"
+                    )}>
+                      {message.role === "user" ? (
+                        <User className="w-4 h-4 text-primary" />
+                      ) : (
+                        <Bot className="w-4 h-4 text-muted-foreground" />
+                      )}
                     </div>
-                    {message.role === "user" && (
-                      <div className="w-6 h-6 rounded-full bg-muted flex items-center justify-center shrink-0">
-                        <User className="w-3 h-3 text-muted-foreground" />
-                      </div>
-                    )}
+                    <div className={cn(
+                      "flex-1 p-4 rounded-xl text-sm leading-relaxed",
+                      message.role === "user"
+                        ? "bg-primary/10 text-foreground border border-primary/20"
+                        : "bg-muted/50 text-foreground border border-border/40"
+                    )}>
+                      {message.content}
+                    </div>
                   </div>
                 ))}
               </div>
 
               {/* Input */}
-              <div className="p-3 border-t border-border">
-                <div className="flex gap-2">
+              <div className="mt-5 pt-5 border-t border-border/40">
+                <div className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 border border-border/40">
                   <input
                     type="text"
-                    placeholder="Ask about nutrition, meals, or fitness..."
-                    value={inputValue}
-                    onChange={(e) => setInputValue(e.target.value)}
-                    className="flex-1 bg-muted rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-1 focus:ring-primary/50 placeholder:text-muted-foreground"
+                    placeholder="Ask your AI coach anything..."
+                    className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none"
+                    readOnly
                   />
-                  <Button variant="hero" size="icon" className="rounded-lg h-9 w-9">
-                    <Send className="w-4 h-4" />
-                  </Button>
+                  <button className="w-9 h-9 rounded-xl bg-primary/15 flex items-center justify-center hover:bg-primary/25 transition-colors">
+                    <Sparkles className="w-4 h-4 text-primary" />
+                  </button>
                 </div>
               </div>
             </div>
-          </div>
 
-          {/* Content */}
-          <div className="order-1 lg:order-2">
-            <h2 className="text-2xl md:text-3xl lg:text-4xl font-display font-bold mb-4 tracking-tight">
-              Your Personal <span className="text-gradient">AI Coach</span>
-            </h2>
-            <p className="text-muted-foreground text-base mb-8 leading-relaxed">
-              Chat with LIVANA anytime for nutrition advice, meal suggestions, 
-              and motivation. Like having a nutritionist in your pocket.
-            </p>
-
-            <div className="space-y-4">
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-primary font-bold text-sm">1</span>
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold mb-0.5">Ask Anything</h4>
-                  <p className="text-xs text-muted-foreground">
-                    Questions about portions, timing, ingredients, or alternatives.
-                  </p>
-                </div>
+            {/* Content */}
+            <div className="order-1 lg:order-2">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-5">
+                <Bot className="w-4 h-4 text-primary" />
+                <span className="text-primary text-sm font-medium">AI Coach</span>
               </div>
+              <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-5 tracking-tight">
+                Your Personal<br />
+                <span className="text-gradient">Nutrition Expert</span>
+              </h2>
+              <p className="text-muted-foreground text-lg leading-relaxed mb-10">
+                Get instant answers to all your nutrition questions. Our AI coach understands your goals and provides personalized, science-backed advice 24/7.
+              </p>
 
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-primary font-bold text-sm">2</span>
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold mb-0.5">Get Smart Answers</h4>
-                  <p className="text-xs text-muted-foreground">
-                    Personalized advice based on your goals and preferences.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3">
-                <div className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0">
-                  <span className="text-primary font-bold text-sm">3</span>
-                </div>
-                <div>
-                  <h4 className="text-sm font-semibold mb-0.5">Build Better Habits</h4>
-                  <p className="text-xs text-muted-foreground">
-                    Encouraging guidance for long-term, sustainable health.
-                  </p>
-                </div>
-              </div>
+              <ul className="space-y-4">
+                {[
+                  "Instant answers to nutrition questions",
+                  "Personalized recommendations based on your goals",
+                  "Science-backed advice from latest research",
+                  "Available 24/7, no appointments needed"
+                ].map((item, i) => (
+                  <li key={i} className="flex items-center gap-3 text-muted-foreground">
+                    <span className="w-2 h-2 rounded-full bg-primary" />
+                    {item}
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </div>
