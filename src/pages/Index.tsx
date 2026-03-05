@@ -14,7 +14,12 @@ const Index = () => {
   useEffect(() => {
     const check = () => {
       const sidebar = document.querySelector('aside');
-      if (sidebar) setSidebarWidth(sidebar.offsetWidth);
+      if (sidebar) {
+        const styles = window.getComputedStyle(sidebar);
+        setSidebarWidth(styles.display === 'none' ? 0 : sidebar.offsetWidth);
+      } else {
+        setSidebarWidth(0);
+      }
     };
     check();
     const observer = new MutationObserver(check);

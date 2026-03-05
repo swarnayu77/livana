@@ -37,6 +37,7 @@ const AppSidebar = () => {
           "fixed left-0 top-0 z-40 h-screen flex flex-col",
           "bg-background/80 backdrop-blur-xl border-r border-border/30",
           "transition-all duration-300 ease-out",
+          "hidden md:flex",
           isCollapsed ? "w-16" : "w-52"
         )}
       >
