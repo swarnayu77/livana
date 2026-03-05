@@ -3,124 +3,61 @@ import { Link } from "react-router-dom";
 import { cn } from "@/lib/utils";
 
 const meals = [
-  {
-    name: "Mediterranean Breakfast Bowl",
-    time: "15 min",
-    calories: 420,
-    tags: ["High Protein", "Low Carb"],
-  },
-  {
-    name: "Grilled Chicken Power Salad",
-    time: "20 min",
-    calories: 380,
-    tags: ["Lean", "Fresh"],
-  },
-  {
-    name: "Salmon with Roasted Vegetables",
-    time: "35 min",
-    calories: 520,
-    tags: ["Omega-3", "Heart Healthy"],
-  },
+  { name: "Mediterranean Breakfast Bowl", time: "15 min", calories: 420, tags: ["High Protein", "Low Carb"] },
+  { name: "Grilled Chicken Power Salad", time: "20 min", calories: 380, tags: ["Lean", "Fresh"] },
+  { name: "Salmon with Roasted Vegetables", time: "35 min", calories: 520, tags: ["Omega-3", "Heart Healthy"] },
 ];
 
 const MealPlanPreview = () => {
   return (
-    <section className="py-24 lg:py-32 relative">
-      <div className="absolute inset-0 bg-gradient-to-b from-background via-muted/10 to-background pointer-events-none" />
-      
-      <div className="container mx-auto px-6 lg:px-8 relative z-10">
-        <div className="max-w-5xl mx-auto">
-          <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-            {/* Content */}
-            <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 mb-5">
-                <Utensils className="w-4 h-4 text-primary" />
-                <span className="text-primary text-sm font-medium">AI Meal Plans</span>
+    <section className="py-16 lg:py-24">
+      <div className="grid lg:grid-cols-2 gap-10 items-center">
+        <div>
+          <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/8 border border-primary/15 mb-4">
+            <Utensils className="w-3.5 h-3.5 text-primary" />
+            <span className="text-primary text-xs font-medium">AI Meal Plans</span>
+          </div>
+          <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-3 tracking-tight">
+            Smart Meals,<br /><span className="text-gradient">Zero Guesswork</span>
+          </h2>
+          <p className="text-muted-foreground text-sm leading-relaxed mb-8 max-w-md">
+            Our AI analyzes your preferences, dietary needs, and goals to create perfectly balanced meal plans.
+          </p>
+          <div className="flex items-center gap-6">
+            {[{ v: "500+", l: "Recipes" }, { v: "30s", l: "To Generate" }, { v: "100%", l: "Personalized" }].map((s, i) => (
+              <div key={s.l} className="text-center">
+                <p className="text-xl font-bold text-gradient">{s.v}</p>
+                <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">{s.l}</p>
               </div>
-              <h2 className="text-4xl md:text-5xl font-display font-bold text-foreground mb-5 tracking-tight">
-                Smart Meals,<br />
-                <span className="text-gradient">Zero Guesswork</span>
-              </h2>
-              <p className="text-muted-foreground text-lg leading-relaxed mb-10">
-                Our AI analyzes your preferences, dietary needs, and goals to create perfectly balanced meal plans. Every recipe is optimized for nutrition and taste.
-              </p>
-              
-              <div className="flex items-center gap-8">
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-gradient">500+</p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Recipes</p>
-                </div>
-                <div className="w-px h-12 bg-border/50" />
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-gradient">30s</p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">To Generate</p>
-                </div>
-                <div className="w-px h-12 bg-border/50" />
-                <div className="text-center">
-                  <p className="text-3xl font-bold text-gradient">100%</p>
-                  <p className="text-xs text-muted-foreground uppercase tracking-widest mt-1">Personalized</p>
-                </div>
-              </div>
-            </div>
+            ))}
+          </div>
+        </div>
 
-            {/* Meal Cards Preview */}
-            <div className="space-y-4">
-              {meals.map((meal, index) => (
-                <div
-                  key={meal.name}
-                  className={cn(
-                    "p-5 rounded-xl",
-                    "bg-card/60 backdrop-blur-sm",
-                    "border border-border/40",
-                    "hover:bg-card/80 hover:border-primary/30",
-                    "hover:shadow-lg hover:shadow-primary/5",
-                    "transition-all duration-300 ease-out",
-                    "cursor-pointer group"
-                  )}
-                  style={{ animationDelay: `${index * 100}ms` }}
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="flex-1">
-                      <h4 className="font-semibold text-base text-foreground group-hover:text-primary transition-colors tracking-tight">
-                        {meal.name}
-                      </h4>
-                      <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
-                        <span className="flex items-center gap-1.5">
-                          <Clock className="w-4 h-4" />
-                          {meal.time}
-                        </span>
-                        <span className="flex items-center gap-1.5">
-                          <Flame className="w-4 h-4" />
-                          {meal.calories} cal
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex flex-wrap gap-2 justify-end">
-                      {meal.tags.map((tag) => (
-                        <span
-                          key={tag}
-                          className="px-2.5 py-1 text-xs rounded-lg bg-primary/10 text-primary/80 border border-primary/20"
-                        >
-                          {tag}
-                        </span>
-                      ))}
-                    </div>
+        <div className="space-y-3">
+          {meals.map((meal) => (
+            <div key={meal.name} className={cn(
+              "p-4 rounded-lg bg-card/40 border border-border/30",
+              "hover:bg-card/60 hover:border-primary/20 transition-all duration-150 cursor-pointer group"
+            )}>
+              <div className="flex items-start justify-between gap-3">
+                <div className="flex-1">
+                  <h4 className="font-medium text-sm text-foreground group-hover:text-primary transition-colors">{meal.name}</h4>
+                  <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
+                    <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{meal.time}</span>
+                    <span className="flex items-center gap-1"><Flame className="w-3.5 h-3.5" />{meal.calories} cal</span>
                   </div>
                 </div>
-              ))}
-
-              {/* CTA */}
-              <div className="pt-3">
-                <Link 
-                  to="/meal-plans" 
-                  className="inline-flex items-center gap-2 text-primary hover:text-primary/80 text-sm font-medium transition-colors"
-                >
-                  <Leaf className="w-4 h-4" />
-                  View all meal plans →
-                </Link>
+                <div className="flex gap-1.5">
+                  {meal.tags.map((tag) => (
+                    <span key={tag} className="px-2 py-0.5 text-[10px] rounded bg-primary/8 text-primary/70 border border-primary/15">{tag}</span>
+                  ))}
+                </div>
               </div>
             </div>
-          </div>
+          ))}
+          <Link to="/meal-plans" className="inline-flex items-center gap-1.5 text-primary hover:text-primary/80 text-xs font-medium transition-colors pt-1">
+            <Leaf className="w-3.5 h-3.5" />View all meal plans →
+          </Link>
         </div>
       </div>
     </section>

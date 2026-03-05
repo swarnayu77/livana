@@ -9,45 +9,36 @@ import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
 const Index = () => {
-  const [sidebarWidth, setSidebarWidth] = useState(220);
+  const [sidebarWidth, setSidebarWidth] = useState(208);
 
   useEffect(() => {
-    const checkSidebar = () => {
+    const check = () => {
       const sidebar = document.querySelector('aside');
-      if (sidebar) {
-        setSidebarWidth(sidebar.offsetWidth);
-      }
+      if (sidebar) setSidebarWidth(sidebar.offsetWidth);
     };
-    
-    checkSidebar();
-    const observer = new MutationObserver(checkSidebar);
+    check();
+    const observer = new MutationObserver(check);
     const sidebar = document.querySelector('aside');
-    if (sidebar) {
-      observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
-    }
-    
-    window.addEventListener('resize', checkSidebar);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', checkSidebar);
-    };
+    if (sidebar) observer.observe(sidebar, { attributes: true, attributeFilter: ['class'] });
+    window.addEventListener('resize', check);
+    return () => { observer.disconnect(); window.removeEventListener('resize', check); };
   }, []);
 
   return (
     <div className="min-h-screen bg-background">
       <AppSidebar />
-      <main 
-        className="transition-all duration-300 ease-out min-h-screen"
+      <main
+        className="transition-all duration-300 ease-out"
         style={{ marginLeft: sidebarWidth }}
       >
-        <div className="max-w-6xl mx-auto">
+        <div className="max-w-5xl mx-auto px-6 lg:px-8">
           <HeroSection />
+          <FeaturesSection />
+          <GoalsSection />
+          <MealPlanPreview />
+          <AICoachPreview />
+          <CTASection />
         </div>
-        <FeaturesSection />
-        <GoalsSection />
-        <MealPlanPreview />
-        <AICoachPreview />
-        <CTASection />
         <Footer />
       </main>
     </div>
