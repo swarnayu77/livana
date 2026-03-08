@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import ProgressRing from "@/components/ProgressRing";
+import { useCounterAnimation } from "@/hooks/use-counter-animation";
 
 const HeroSection = () => {
   return (
@@ -53,20 +54,7 @@ const HeroSection = () => {
           </div>
 
           {/* Stats */}
-          <div className="mt-14 pt-8 border-t border-border animate-fade-up delay-400 opacity-0">
-            <div className="grid grid-cols-3 gap-6 max-w-sm mx-auto lg:mx-0">
-              {[
-                { value: "10K+", label: "Active Users" },
-                { value: "500+", label: "Recipes" },
-                { value: "95%", label: "Success Rate" },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center lg:text-left">
-                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                  <p className="text-[11px] text-muted-foreground uppercase tracking-widest mt-1">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          <HeroStats />
         </div>
 
         {/* Right — Health Rings Dashboard */}
@@ -118,6 +106,31 @@ const HeroSection = () => {
         </div>
       </div>
     </section>
+  );
+};
+
+const HeroStats = () => {
+  const users = useCounterAnimation(10000, 2000, "+");
+  const recipes = useCounterAnimation(500, 1600, "+");
+  const rate = useCounterAnimation(95, 1400, "%");
+
+  const stats = [
+    { ...users, label: "Active Users" },
+    { ...recipes, label: "Recipes" },
+    { ...rate, label: "Success Rate" },
+  ];
+
+  return (
+    <div className="mt-14 pt-8 border-t border-border animate-fade-up delay-400 opacity-0">
+      <div className="grid grid-cols-3 gap-6 max-w-sm mx-auto lg:mx-0">
+        {stats.map((stat) => (
+          <div key={stat.label} ref={stat.ref} className="text-center lg:text-left">
+            <p className="text-2xl font-bold text-foreground">{stat.display}</p>
+            <p className="text-[11px] text-muted-foreground uppercase tracking-widest mt-1">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
