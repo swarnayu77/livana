@@ -54,20 +54,7 @@ const HeroSection = () => {
           </div>
 
           {/* Stats */}
-          <div className="mt-14 pt-8 border-t border-border animate-fade-up delay-400 opacity-0">
-            <div className="grid grid-cols-3 gap-6 max-w-sm mx-auto lg:mx-0">
-              {[
-                { value: "10K+", label: "Active Users" },
-                { value: "500+", label: "Recipes" },
-                { value: "95%", label: "Success Rate" },
-              ].map((stat) => (
-                <div key={stat.label} className="text-center lg:text-left">
-                  <p className="text-2xl font-bold text-foreground">{stat.value}</p>
-                  <p className="text-[11px] text-muted-foreground uppercase tracking-widest mt-1">{stat.label}</p>
-                </div>
-              ))}
-            </div>
-          </div>
+          <HeroStats />
         </div>
 
         {/* Right — Health Rings Dashboard */}
