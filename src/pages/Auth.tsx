@@ -175,7 +175,7 @@ const Auth = () => {
           password: formData.password,
         });
         if (error) throw error;
-        navigate('/');
+        navigate('/tracker');
       }
     } catch (error) {
       toast({
