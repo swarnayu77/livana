@@ -4,6 +4,7 @@ import FeaturesSection from "@/components/FeaturesSection";
 import GoalsSection from "@/components/GoalsSection";
 import MealPlanPreview from "@/components/MealPlanPreview";
 import AICoachPreview from "@/components/AICoachPreview";
+import TestimonialsSection from "@/components/TestimonialsSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
 
