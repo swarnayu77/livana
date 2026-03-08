@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import ProgressRing from "@/components/ProgressRing";
+import { useCounterAnimation } from "@/hooks/use-counter-animation";
 
 const HeroSection = () => {
   return (
