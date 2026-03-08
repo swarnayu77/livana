@@ -31,6 +31,7 @@ const App = () => (
           <Route path="/coach" element={<AICoach />} />
           <Route path="/goals" element={<Goals />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/scanner" element={<FoodScanner />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
