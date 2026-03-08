@@ -11,79 +11,77 @@ const goals = [
 ];
 
 const GoalsSection = () => {
-  const [selectedGoal, setSelectedGoal] = useState(goals[0]);
+  const [selected, setSelected] = useState(goals[0]);
 
   return (
-    <section className="py-16 lg:py-24">
-      <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/8 border border-primary/15 mb-4">
+    <section className="py-20 lg:py-28">
+      <div className="text-center mb-14">
+        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/8 border border-primary/15 mb-4">
           <Target className="w-3.5 h-3.5 text-primary" />
-          <span className="text-primary text-xs font-medium">Personalized Goals</span>
+          <span className="text-primary text-xs font-semibold">Personalized Goals</span>
         </div>
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground mb-3 tracking-tight">
+        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
           Your Health, Your Way
         </h2>
-        <p className="text-muted-foreground text-base max-w-lg mx-auto">
+        <p className="text-muted-foreground text-base max-w-lg mx-auto leading-relaxed">
           Choose your primary health goal and let our AI tailor everything to your needs.
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-2 gap-6">
-        {/* Selector */}
-        <div className="space-y-1.5">
+      <div className="grid lg:grid-cols-5 gap-6">
+        {/* Selector - 2 cols */}
+        <div className="lg:col-span-2 space-y-2">
           {goals.map((goal) => {
             const Icon = goal.icon;
-            const isSelected = selectedGoal.id === goal.id;
+            const active = selected.id === goal.id;
             return (
               <button
                 key={goal.id}
-                onClick={() => setSelectedGoal(goal)}
+                onClick={() => setSelected(goal)}
                 className={cn(
-                  "w-full flex items-center gap-3 p-3 rounded-lg text-left transition-all duration-150",
-                  "border",
-                  isSelected
-                    ? "bg-primary/8 border-primary/30"
-                    : "bg-card/20 border-border/30 hover:bg-card/50 hover:border-border/50"
+                  "w-full flex items-center gap-3 p-4 rounded-xl text-left transition-all duration-150",
+                  active
+                    ? "bg-primary/8 border border-primary/25 shadow-sm"
+                    : "bg-card/20 border border-transparent hover:bg-card/40"
                 )}
               >
                 <div className={cn(
-                  "w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-colors",
-                  isSelected ? "bg-primary/15" : "bg-muted/50"
+                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-colors",
+                  active ? "bg-primary/15" : "bg-muted/50"
                 )}>
-                  <Icon className={cn("w-4 h-4 stroke-[1.5]", isSelected ? "text-primary" : "text-muted-foreground")} />
+                  <Icon className={cn("w-5 h-5 stroke-[1.5]", active ? "text-primary" : "text-muted-foreground")} />
                 </div>
                 <div className="flex-1 min-w-0">
-                  <h4 className={cn("font-medium text-sm", isSelected ? "text-primary" : "text-foreground")}>{goal.title}</h4>
-                  <p className="text-muted-foreground text-xs truncate">{goal.description}</p>
+                  <h4 className={cn("font-semibold text-sm", active ? "text-primary" : "text-foreground")}>{goal.title}</h4>
+                  <p className="text-muted-foreground text-xs mt-0.5 truncate">{goal.description}</p>
                 </div>
-                {isSelected && <div className="w-1.5 h-1.5 rounded-full bg-primary" />}
               </button>
             );
           })}
         </div>
 
-        {/* Detail */}
-        <div className="p-6 rounded-xl bg-card/40 border border-border/30">
-          <div className="flex items-center gap-3 mb-4">
-            <div className="w-11 h-11 rounded-lg bg-primary/12 flex items-center justify-center">
-              <selectedGoal.icon className="w-5 h-5 text-primary stroke-[1.5]" />
+        {/* Detail - 3 cols */}
+        <div className="lg:col-span-3 p-8 rounded-2xl bg-card/30 border border-border/25 flex flex-col justify-center">
+          <div className="flex items-center gap-4 mb-6">
+            <div className="w-14 h-14 rounded-2xl bg-primary/10 flex items-center justify-center">
+              <selected.icon className="w-7 h-7 text-primary stroke-[1.5]" />
             </div>
             <div>
-              <h3 className="text-lg font-display font-bold text-foreground tracking-tight">{selectedGoal.title}</h3>
-              <p className="text-xs text-muted-foreground">{selectedGoal.description}</p>
+              <h3 className="text-xl font-display font-bold text-foreground">{selected.title}</h3>
+              <p className="text-sm text-muted-foreground mt-0.5">{selected.description}</p>
             </div>
           </div>
-          <p className="text-muted-foreground text-sm leading-relaxed mb-6">{selectedGoal.details}</p>
-          <div className="flex items-center gap-3">
-            <div className="flex -space-x-1.5">
+          <p className="text-muted-foreground text-sm leading-relaxed mb-8">{selected.details}</p>
+          <div className="flex items-center gap-4">
+            <div className="flex -space-x-2">
               {[1, 2, 3, 4].map((i) => (
-                <div key={i} className="w-7 h-7 rounded-full bg-gradient-to-br from-primary/25 to-accent/25 border-2 border-card flex items-center justify-center text-[10px] font-semibold text-foreground">
+                <div key={i} className="w-8 h-8 rounded-full bg-gradient-to-br from-primary/20 to-accent/20 border-2 border-background flex items-center justify-center text-[10px] font-bold text-foreground">
                   {String.fromCharCode(64 + i)}
                 </div>
               ))}
             </div>
-            <span className="text-xs text-muted-foreground">
-              <span className="text-primary font-semibold">2,000+</span> users with this goal
+            <span className="text-sm text-muted-foreground">
+              <span className="text-primary font-semibold">2,000+</span> people pursuing this goal
             </span>
           </div>
         </div>
