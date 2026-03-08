@@ -12,6 +12,7 @@ import ProgressDashboard from "./pages/Progress";
 import AICoach from "./pages/AICoach";
 import Goals from "./pages/Goals";
 import Auth from "./pages/Auth";
+import FoodScanner from "./pages/FoodScanner";
 
 const queryClient = new QueryClient();
 
