@@ -7,12 +7,12 @@ const benefits = ["Personalized AI meal plans", "24/7 nutrition coaching", "500+
 const CTASection = () => {
   return (
     <section className="py-20 lg:py-28">
-      <div className="relative p-10 md:p-16 rounded-3xl text-center bg-card/20 border border-border/20 overflow-hidden">
-        {/* Glow */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-primary/8 blur-[100px] pointer-events-none" />
+      <div className="relative p-10 md:p-16 rounded-3xl text-center glass-card overflow-hidden">
+        {/* Ambient glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/6 blur-[120px] pointer-events-none" />
 
         <div className="relative">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/8 border border-primary/15 mb-6">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/12 mb-6">
             <Sparkles className="w-3.5 h-3.5 text-primary" />
             <span className="text-primary text-xs font-semibold">Start Free Today</span>
           </div>
@@ -36,13 +36,13 @@ const CTASection = () => {
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link to="/auth?mode=signup">
-              <Button variant="hero" size="lg" className="group rounded-xl text-sm px-8">
+              <Button size="lg" className="group rounded-full text-sm px-8 btn-glow-hover">
                 Get Started Free
                 <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </Link>
             <a href="/#features">
-              <Button variant="heroOutline" size="lg" className="rounded-xl text-sm px-8">
+              <Button variant="outline" size="lg" className="rounded-full text-sm px-8">
                 Learn More
               </Button>
             </a>

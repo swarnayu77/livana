@@ -14,7 +14,7 @@ const features = [
 const FeaturesSection = () => {
   return (
     <section id="features" className="py-20 lg:py-28">
-      <div className="text-center mb-14">
+      <div className="text-center mb-16">
         <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-3">Features</p>
         <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
           Everything You Need
@@ -25,28 +25,29 @@ const FeaturesSection = () => {
       </div>
 
       <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
-        {features.map((feature) => {
+        {features.map((feature, i) => {
           const Icon = feature.icon;
           return (
             <Link
               key={feature.title}
               to={feature.href}
               className={cn(
-                "group relative p-6 rounded-2xl",
-                "bg-card/30 border border-border/25",
-                "hover:bg-card/60 hover:border-primary/20 hover:shadow-xl hover:shadow-primary/5",
-                "transition-all duration-200 ease-out"
+                "group relative p-6 rounded-2xl glass-card",
+                "hover:shadow-lg hover:shadow-primary/8 hover:-translate-y-1",
+                "transition-all duration-300 ease-out",
+                "animate-fade-up opacity-0"
               )}
+              style={{ animationDelay: `${i * 80}ms` }}
             >
               {feature.badge && (
-                <span className="absolute top-4 right-4 px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] font-semibold rounded-full border border-primary/20">
+                <span className="absolute top-4 right-4 px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] font-semibold rounded-full">
                   {feature.badge}
                 </span>
               )}
-              <div className="w-11 h-11 rounded-xl bg-primary/8 flex items-center justify-center mb-4 group-hover:bg-primary/15 transition-colors">
-                <Icon className="w-5 h-5 text-primary stroke-[1.5]" />
+              <div className="w-12 h-12 rounded-2xl bg-primary/8 flex items-center justify-center mb-5 group-hover:bg-primary/12 group-hover:scale-110 transition-all duration-300">
+                <Icon className="w-5.5 h-5.5 text-primary stroke-[1.5]" />
               </div>
-              <h3 className="text-base font-semibold text-foreground mb-2 group-hover:text-primary transition-colors">
+              <h3 className="text-base font-semibold text-foreground mb-2 group-hover:text-primary transition-colors duration-200">
                 {feature.title}
               </h3>
               <p className="text-muted-foreground text-sm leading-relaxed">
