@@ -109,4 +109,29 @@ const HeroSection = () => {
   );
 };
 
+const HeroStats = () => {
+  const users = useCounterAnimation(10000, 2000, "+");
+  const recipes = useCounterAnimation(500, 1600, "+");
+  const rate = useCounterAnimation(95, 1400, "%");
+
+  const stats = [
+    { ...users, label: "Active Users" },
+    { ...recipes, label: "Recipes" },
+    { ...rate, label: "Success Rate" },
+  ];
+
+  return (
+    <div className="mt-14 pt-8 border-t border-border animate-fade-up delay-400 opacity-0">
+      <div className="grid grid-cols-3 gap-6 max-w-sm mx-auto lg:mx-0">
+        {stats.map((stat) => (
+          <div key={stat.label} ref={stat.ref} className="text-center lg:text-left">
+            <p className="text-2xl font-bold text-foreground">{stat.display}</p>
+            <p className="text-[11px] text-muted-foreground uppercase tracking-widest mt-1">{stat.label}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
 export default HeroSection;
