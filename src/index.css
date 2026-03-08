@@ -6,91 +6,59 @@
 
 @layer base {
   :root {
-    /* Clean white foundation */
-    --background: 0 0% 100%;
-    --foreground: 150 10% 10%;
+    /* Deep dark foundation */
+    --background: 160 30% 3%;
+    --foreground: 150 15% 92%;
 
-    --card: 150 20% 97%;
-    --card-foreground: 150 10% 10%;
+    --card: 160 25% 6%;
+    --card-foreground: 150 15% 92%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 150 10% 10%;
+    --popover: 160 25% 5%;
+    --popover-foreground: 150 15% 92%;
 
-    /* Health green primary */
-    --primary: 152 60% 42%;
-    --primary-foreground: 0 0% 100%;
+    /* Vibrant health green primary */
+    --primary: 152 70% 45%;
+    --primary-foreground: 160 30% 3%;
 
-    /* Light sage secondary */
-    --secondary: 150 25% 93%;
-    --secondary-foreground: 150 10% 20%;
+    /* Dark green secondary */
+    --secondary: 155 25% 10%;
+    --secondary-foreground: 150 15% 85%;
 
-    --muted: 150 15% 95%;
-    --muted-foreground: 150 8% 46%;
+    --muted: 160 20% 8%;
+    --muted-foreground: 150 10% 50%;
 
-    /* Vibrant teal accent */
-    --accent: 162 55% 38%;
-    --accent-foreground: 0 0% 100%;
+    /* Neon teal accent */
+    --accent: 162 65% 42%;
+    --accent-foreground: 160 30% 3%;
 
     --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
 
-    --border: 150 15% 90%;
-    --input: 150 15% 90%;
-    --ring: 152 60% 42%;
+    --border: 160 15% 12%;
+    --input: 160 15% 12%;
+    --ring: 152 70% 45%;
 
     --radius: 0.875rem;
 
     /* Custom tokens */
-    --glow-primary: 152 60% 42%;
-    --glow-secondary: 162 55% 38%;
-    --gradient-start: 152 60% 42%;
-    --gradient-end: 162 55% 38%;
-    --health-green: 152 65% 45%;
-    --health-mint: 160 40% 92%;
-    --glass-bg: 150 20% 98%;
-    --glass-border: 150 20% 88%;
+    --glow-primary: 152 70% 45%;
+    --glow-secondary: 162 65% 42%;
+    --gradient-start: 152 70% 45%;
+    --gradient-end: 162 65% 42%;
+    --health-green: 152 75% 48%;
+    --health-mint: 160 50% 15%;
+    --glass-bg: 160 25% 5%;
+    --glass-border: 160 15% 14%;
 
     /* Sidebar */
-    --sidebar-background: 150 20% 97%;
-    --sidebar-foreground: 150 10% 30%;
-    --sidebar-primary: 152 60% 42%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: 150 25% 93%;
-    --sidebar-accent-foreground: 150 10% 20%;
-    --sidebar-border: 150 15% 90%;
-    --sidebar-ring: 152 60% 42%;
-  }
-
-  .dark {
-    --background: 160 20% 5%;
-    --foreground: 150 10% 92%;
-    --card: 160 18% 8%;
-    --card-foreground: 150 10% 92%;
-    --popover: 160 18% 8%;
-    --popover-foreground: 150 10% 92%;
-    --primary: 152 60% 48%;
-    --primary-foreground: 160 20% 5%;
-    --secondary: 150 20% 15%;
-    --secondary-foreground: 150 10% 92%;
-    --muted: 160 12% 12%;
-    --muted-foreground: 150 8% 55%;
-    --accent: 162 55% 44%;
-    --accent-foreground: 160 20% 5%;
-    --destructive: 0 62% 50%;
-    --destructive-foreground: 0 0% 100%;
-    --border: 160 12% 18%;
-    --input: 160 12% 18%;
-    --ring: 152 60% 48%;
-    --glass-bg: 160 18% 8%;
-    --glass-border: 160 12% 16%;
-    --sidebar-background: 160 20% 6%;
-    --sidebar-foreground: 150 10% 85%;
-    --sidebar-primary: 152 60% 48%;
-    --sidebar-primary-foreground: 160 20% 5%;
-    --sidebar-accent: 160 15% 12%;
-    --sidebar-accent-foreground: 150 10% 92%;
-    --sidebar-border: 160 12% 16%;
-    --sidebar-ring: 152 60% 48%;
+    --sidebar-background: 160 25% 4%;
+    --sidebar-foreground: 150 15% 80%;
+    --sidebar-primary: 152 70% 45%;
+    --sidebar-primary-foreground: 160 30% 3%;
+    --sidebar-accent: 160 20% 10%;
+    --sidebar-accent-foreground: 150 15% 85%;
+    --sidebar-border: 160 15% 12%;
+    --sidebar-ring: 152 70% 45%;
   }
 }
 
@@ -157,18 +125,18 @@
 
   /* Soft glow effects */
   .glow-primary {
-    box-shadow: 0 8px 40px hsl(var(--glow-primary) / 0.15),
-                0 2px 12px hsl(var(--glow-primary) / 0.08);
+    box-shadow: 0 8px 40px hsl(var(--glow-primary) / 0.25),
+                0 2px 12px hsl(var(--glow-primary) / 0.15);
   }
 
   .glow-accent {
-    box-shadow: 0 8px 40px hsl(var(--glow-secondary) / 0.15),
-                0 2px 12px hsl(var(--glow-secondary) / 0.08);
+    box-shadow: 0 8px 40px hsl(var(--glow-secondary) / 0.25),
+                0 2px 12px hsl(var(--glow-secondary) / 0.15);
   }
 
   .glow-soft {
-    box-shadow: 0 4px 20px hsl(var(--primary) / 0.08),
-                0 1px 4px hsl(var(--primary) / 0.04);
+    box-shadow: 0 4px 20px hsl(var(--primary) / 0.15),
+                0 1px 4px hsl(var(--primary) / 0.08);
   }
 
   /* Radial glow */
