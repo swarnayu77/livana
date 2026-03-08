@@ -19,6 +19,7 @@ const Index = () => {
           <GoalsSection />
           <MealPlanPreview />
           <AICoachPreview />
+          <TestimonialsSection />
           <CTASection />
         </div>
         <Footer />
