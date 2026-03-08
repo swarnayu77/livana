@@ -8,10 +8,10 @@ import livanaLogo from "@/assets/livana-logo-new.png";
 
 const navLinks = [
   { label: "Features", href: "/#features" },
-  { label: "Meal Plans", href: "/meal-plans" },
-  { label: "Food Scanner", href: "/scanner" },
+  { label: "Tracker", href: "/tracker" },
   { label: "AI Coach", href: "/coach" },
   { label: "Consultation", href: "/consultation" },
+  { label: "Food Scanner", href: "/scanner" },
 ];
 
 const Navbar = () => {
