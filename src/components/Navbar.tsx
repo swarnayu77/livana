@@ -1,8 +1,9 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
-import { Menu, X, ArrowRight } from "lucide-react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Menu, X, ArrowRight, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import ThemeToggle from "@/components/ThemeToggle";
+import { useAuth } from "@/contexts/AuthContext";
 import { cn } from "@/lib/utils";
 import livanaLogo from "@/assets/livana-logo-new.png";
 
@@ -17,10 +18,17 @@ const navLinks = [
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+  const { user, signOut } = useAuth();
 
   const isActive = (href: string) => {
     if (href.startsWith("/#")) return location.pathname === "/" && location.hash === href.slice(1);
     return location.pathname === href;
+  };
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
   };
 
   return (
@@ -55,14 +63,30 @@ const Navbar = () => {
 
           <div className="hidden md:flex items-center gap-2">
             <ThemeToggle />
-            <Link to="/auth">
-              <Button variant="ghost" size="sm" className="text-sm rounded-full">Sign In</Button>
-            </Link>
-            <Link to="/auth?mode=signup">
-              <Button size="sm" className="text-sm rounded-full px-5">
-                Get Started <ArrowRight className="w-3.5 h-3.5 ml-1" />
-              </Button>
-            </Link>
+            {user ? (
+              <>
+                <Link to="/tracker">
+                  <Button variant="ghost" size="sm" className="text-sm rounded-full gap-1.5">
+                    <User className="w-3.5 h-3.5" />
+                    {user.email?.split("@")[0] || "Dashboard"}
+                  </Button>
+                </Link>
+                <Button variant="ghost" size="sm" className="text-sm rounded-full" onClick={handleSignOut}>
+                  <LogOut className="w-3.5 h-3.5" />
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link to="/auth">
+                  <Button variant="ghost" size="sm" className="text-sm rounded-full">Sign In</Button>
+                </Link>
+                <Link to="/auth?mode=signup">
+                  <Button size="sm" className="text-sm rounded-full px-5">
+                    Get Started <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                  </Button>
+                </Link>
+              </>
+            )}
           </div>
 
           <button onClick={() => setMobileOpen(!mobileOpen)} className="md:hidden p-2 rounded-full hover:bg-secondary transition-colors">
@@ -95,12 +119,27 @@ const Navbar = () => {
                 <span className="text-sm text-muted-foreground">Theme</span>
                 <ThemeToggle />
               </div>
-              <Link to="/auth" onClick={() => setMobileOpen(false)}>
-                <Button variant="outline" className="w-full rounded-xl">Sign In</Button>
-              </Link>
-              <Link to="/auth?mode=signup" onClick={() => setMobileOpen(false)}>
-                <Button className="w-full rounded-xl">Get Started</Button>
-              </Link>
+              {user ? (
+                <>
+                  <Link to="/tracker" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" className="w-full rounded-xl gap-2">
+                      <User className="w-4 h-4" /> My Dashboard
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" className="w-full rounded-xl gap-2" onClick={() => { handleSignOut(); setMobileOpen(false); }}>
+                    <LogOut className="w-4 h-4" /> Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/auth" onClick={() => setMobileOpen(false)}>
+                    <Button variant="outline" className="w-full rounded-xl">Sign In</Button>
+                  </Link>
+                  <Link to="/auth?mode=signup" onClick={() => setMobileOpen(false)}>
+                    <Button className="w-full rounded-xl">Get Started</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
