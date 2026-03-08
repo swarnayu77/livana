@@ -6,6 +6,16 @@ import ProgressRing from "@/components/ProgressRing";
 const HeroSection = () => {
   return (
     <section className="relative py-24 md:py-32 lg:py-40 overflow-hidden">
+      {/* Dot pattern background */}
+      <div
+        className="absolute inset-0 pointer-events-none opacity-[0.35]"
+        style={{
+          backgroundImage: "radial-gradient(hsl(var(--primary) / 0.3) 1px, transparent 1px)",
+          backgroundSize: "24px 24px",
+        }}
+      />
+      {/* Radial fade mask over dots */}
+      <div className="absolute inset-0 pointer-events-none bg-[radial-gradient(ellipse_at_center,transparent_30%,hsl(var(--background))_75%)]" />
       {/* Soft ambient glow */}
       <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 right-0 w-[400px] h-[400px] rounded-full bg-accent/5 blur-[100px] pointer-events-none" />
