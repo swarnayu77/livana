@@ -91,6 +91,10 @@ const Navbar = () => {
               );
             })}
             <div className="pt-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between px-4 py-2">
+                <span className="text-sm text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
               <Link to="/auth" onClick={() => setMobileOpen(false)}>
                 <Button variant="outline" className="w-full rounded-xl">Sign In</Button>
               </Link>
