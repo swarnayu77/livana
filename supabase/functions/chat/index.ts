@@ -133,6 +133,7 @@ Rules:
         model: type === "scan" ? "google/gemini-2.5-flash" : "google/gemini-3-flash-preview",
         messages: apiMessages,
         stream: type === "coach",
+        ...(type === "food_search" ? { response_format: { type: "json_object" } } : {}),
       }),
     });
 
