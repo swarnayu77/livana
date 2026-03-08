@@ -12,9 +12,8 @@ const AICoachPreview = () => {
   return (
     <section className="py-20 lg:py-28">
       <div className="grid lg:grid-cols-2 gap-12 items-center">
-        {/* Content */}
         <div>
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/8 border border-primary/15 mb-5">
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/12 mb-5">
             <Bot className="w-3.5 h-3.5 text-primary" />
             <span className="text-primary text-xs font-semibold">AI Coach</span>
           </div>
@@ -33,23 +32,22 @@ const AICoachPreview = () => {
             ))}
           </ul>
           <Link to="/coach">
-            <Button variant="heroOutline" size="default" className="rounded-xl text-sm group">
+            <Button variant="outline" size="default" className="rounded-full text-sm group">
               Try AI Coach
               <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Button>
           </Link>
         </div>
 
-        {/* Chat preview */}
-        <div className="p-6 rounded-2xl bg-card/30 border border-border/25">
-          <div className="flex items-center gap-3 pb-4 border-b border-border/20 mb-5">
-            <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center">
+        <div className="glass-card rounded-3xl p-6">
+          <div className="flex items-center gap-3 pb-4 border-b border-border mb-5">
+            <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
               <Bot className="w-5 h-5 text-primary" />
             </div>
             <div>
               <h4 className="font-semibold text-sm text-foreground">LIVANA Coach</h4>
               <div className="flex items-center gap-1.5">
-                <span className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+                <span className="w-2 h-2 rounded-full bg-primary animate-pulse-soft" />
                 <span className="text-xs text-muted-foreground">Online</span>
               </div>
             </div>
@@ -60,13 +58,15 @@ const AICoachPreview = () => {
               <div key={i} className={cn("flex gap-3", msg.role === "user" && "flex-row-reverse")}>
                 <div className={cn(
                   "w-8 h-8 rounded-xl flex items-center justify-center flex-shrink-0",
-                  msg.role === "user" ? "bg-primary/10" : "bg-muted/40"
+                  msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-secondary"
                 )}>
-                  {msg.role === "user" ? <User className="w-4 h-4 text-primary" /> : <Bot className="w-4 h-4 text-muted-foreground" />}
+                  {msg.role === "user" ? <User className="w-4 h-4" /> : <Bot className="w-4 h-4 text-muted-foreground" />}
                 </div>
                 <div className={cn(
-                  "flex-1 p-4 rounded-xl text-sm leading-relaxed",
-                  msg.role === "user" ? "bg-primary/8 border border-primary/15 text-foreground" : "bg-muted/20 border border-border/20 text-foreground"
+                  "flex-1 p-4 rounded-2xl text-sm leading-relaxed",
+                  msg.role === "user"
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-secondary text-foreground"
                 )}>
                   {msg.content}
                 </div>
@@ -74,11 +74,11 @@ const AICoachPreview = () => {
             ))}
           </div>
 
-          <div className="mt-5 pt-4 border-t border-border/20">
-            <div className="flex items-center gap-2 p-3 rounded-xl bg-muted/15 border border-border/20">
+          <div className="mt-5 pt-4 border-t border-border">
+            <div className="flex items-center gap-2 p-3 rounded-2xl bg-secondary/60 border border-border">
               <input type="text" placeholder="Ask your AI coach..." className="flex-1 bg-transparent text-sm text-foreground placeholder:text-muted-foreground outline-none" readOnly />
-              <button className="w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center hover:bg-primary/20 transition-colors">
-                <Sparkles className="w-4 h-4 text-primary" />
+              <button className="w-8 h-8 rounded-xl bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors">
+                <Sparkles className="w-4 h-4 text-primary-foreground" />
               </button>
             </div>
           </div>
