@@ -9,6 +9,7 @@ import { Separator } from "@/components/ui/separator";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { lovable } from "@/integrations/lovable/index";
 import { z } from "zod";
 import { 
   ArrowLeft, 
@@ -60,11 +61,8 @@ const Auth = () => {
   const handleGoogleSignIn = async () => {
     setIsLoading(true);
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/`
-        }
+      const { error } = await lovable.auth.signInWithOAuth("google", {
+        redirect_uri: window.location.origin,
       });
       if (error) throw error;
     } catch (error) {
@@ -154,7 +152,7 @@ const Auth = () => {
       }
 
       if (isSignUp) {
-        const { error } = await supabase.auth.signUp({
+        const { data, error } = await supabase.auth.signUp({
           email: formData.email,
           password: formData.password,
           options: {
@@ -165,10 +163,17 @@ const Auth = () => {
           }
         });
         if (error) throw error;
-        toast({
-          title: "Account created!",
-          description: "Check your email to verify your account.",
-        });
+        
+        // If session exists (auto-confirm enabled), navigate directly
+        if (data.session) {
+          toast({ title: "Account created!", description: "Welcome to Livana!" });
+          navigate('/tracker');
+        } else {
+          toast({
+            title: "Account created!",
+            description: "Check your email to verify your account.",
+          });
+        }
       } else {
         const { error } = await supabase.auth.signInWithPassword({
           email: formData.email,
