@@ -12,6 +12,7 @@ import ProgressDashboard from "./pages/Progress";
 import AICoach from "./pages/AICoach";
 import Goals from "./pages/Goals";
 import Auth from "./pages/Auth";
+import FoodScanner from "./pages/FoodScanner";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/coach" element={<AICoach />} />
           <Route path="/goals" element={<Goals />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/scanner" element={<FoodScanner />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
