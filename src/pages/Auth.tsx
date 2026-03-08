@@ -126,7 +126,7 @@ const Auth = () => {
           title: "Success!",
           description: "You're now signed in.",
         });
-        navigate('/');
+        navigate('/tracker');
       }
     } catch (error) {
       toast({
