@@ -2,7 +2,7 @@ import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, type } = await req.json();
+    const { messages, type, imageBase64 } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -67,6 +67,45 @@ Be realistic with calorie and macro estimates based on typical portion sizes.
 Provide helpful insights about the nutritional value.
 Give actionable suggestions to improve the meal's nutrition.
 ONLY return the JSON object, no other text.`;
+    } else if (type === "scan") {
+      systemPrompt = `You are an expert food nutrition analyzer with computer vision capabilities. Analyze the food image provided and return a JSON object with this EXACT structure:
+{
+  "name": "name of the food/meal identified",
+  "calories": estimated_total_calories_number,
+  "macros": {
+    "protein": grams_number,
+    "carbs": grams_number,
+    "fat": grams_number,
+    "fiber": grams_number
+  },
+  "items": ["item 1", "item 2"],
+  "healthScore": health_score_1_to_100,
+  "insights": ["insight 1", "insight 2", "insight 3"],
+  "suggestions": ["suggestion 1", "suggestion 2"]
+}
+
+Rules:
+- Identify all visible food items in the image
+- Estimate realistic portion sizes and calories
+- healthScore: 1-100 based on nutritional balance, whole foods, processing level
+- Provide 3 actionable insights about the meal
+- Provide 2 suggestions to make it healthier
+- ONLY return the JSON object, no other text or markdown`;
+    }
+
+    // Build messages for the API
+    let apiMessages: any[] = [{ role: "system", content: systemPrompt }];
+
+    if (type === "scan" && imageBase64) {
+      apiMessages.push({
+        role: "user",
+        content: [
+          { type: "text", text: "Analyze this food image and provide detailed nutrition information." },
+          { type: "image_url", image_url: { url: imageBase64 } },
+        ],
+      });
+    } else {
+      apiMessages = [{ role: "system", content: systemPrompt }, ...messages];
     }
 
     const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
@@ -76,11 +115,8 @@ ONLY return the JSON object, no other text.`;
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        model: "google/gemini-3-flash-preview",
-        messages: [
-          { role: "system", content: systemPrompt },
-          ...messages,
-        ],
+        model: type === "scan" ? "google/gemini-2.5-flash" : "google/gemini-3-flash-preview",
+        messages: apiMessages,
         stream: type === "coach",
       }),
     });
@@ -113,7 +149,7 @@ ONLY return the JSON object, no other text.`;
       });
     }
 
-    // For non-streaming (analysis)
+    // For non-streaming (analysis + scan)
     const data = await response.json();
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
