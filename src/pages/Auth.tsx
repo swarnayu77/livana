@@ -126,7 +126,7 @@ const Auth = () => {
           title: "Success!",
           description: "You're now signed in.",
         });
-        navigate('/');
+        navigate('/tracker');
       }
     } catch (error) {
       toast({
@@ -175,7 +175,7 @@ const Auth = () => {
           password: formData.password,
         });
         if (error) throw error;
-        navigate('/');
+        navigate('/tracker');
       }
     } catch (error) {
       toast({

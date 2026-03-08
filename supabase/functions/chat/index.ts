@@ -91,9 +91,24 @@ Rules:
 - Provide 3 actionable insights about the meal
 - Provide 2 suggestions to make it healthier
 - ONLY return the JSON object, no other text or markdown`;
-    }
+    } else if (type === "food_search") {
+      systemPrompt = `You are a nutrition database. Given a food description, estimate its nutritional content per serving and return a JSON object with this EXACT structure:
+{
+  "food_name": "formatted food name",
+  "quantity": "estimated serving size (e.g. 1 cup, 100g, 1 medium)",
+  "calories": number,
+  "protein_g": number,
+  "carbs_g": number,
+  "fat_g": number,
+  "fiber_g": number
+}
 
-    // Build messages for the API
+Rules:
+- Use realistic values based on USDA data when possible
+- If multiple foods are mentioned, combine them into one entry
+- Use standard serving sizes
+- ONLY return the JSON object, no other text or markdown`;
+    }
     let apiMessages: any[] = [{ role: "system", content: systemPrompt }];
 
     if (type === "scan" && imageBase64) {
@@ -118,6 +133,7 @@ Rules:
         model: type === "scan" ? "google/gemini-2.5-flash" : "google/gemini-3-flash-preview",
         messages: apiMessages,
         stream: type === "coach",
+        ...(type === "food_search" ? { response_format: { type: "json_object" } } : {}),
       }),
     });
 
