@@ -11,7 +11,7 @@ const navLinks = [
   { label: "Meal Plans", href: "/meal-plans" },
   { label: "Food Scanner", href: "/scanner" },
   { label: "AI Coach", href: "/coach" },
-  { label: "Recipes", href: "/recipes" },
+  { label: "Consultation", href: "/consultation" },
 ];
 
 const Navbar = () => {

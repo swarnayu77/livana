@@ -13,6 +13,9 @@ import AICoach from "./pages/AICoach";
 import Goals from "./pages/Goals";
 import Auth from "./pages/Auth";
 import FoodScanner from "./pages/FoodScanner";
+import Consultation from "./pages/Consultation";
+import NutritionistProfile from "./pages/NutritionistProfile";
+import ConsultationDashboard from "./pages/ConsultationDashboard";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +35,9 @@ const App = () => (
           <Route path="/goals" element={<Goals />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/scanner" element={<FoodScanner />} />
+          <Route path="/consultation" element={<Consultation />} />
+          <Route path="/consultation/:id" element={<NutritionistProfile />} />
+          <Route path="/consultation/dashboard" element={<ConsultationDashboard />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
