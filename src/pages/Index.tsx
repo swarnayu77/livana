@@ -7,22 +7,25 @@ import AICoachPreview from "@/components/AICoachPreview";
 import TestimonialsSection from "@/components/TestimonialsSection";
 import CTASection from "@/components/CTASection";
 import Footer from "@/components/Footer";
+import PageTransition from "@/components/PageTransition";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
       <main className="pt-16">
-        <div className="max-w-6xl mx-auto px-6">
-          <HeroSection />
-          <FeaturesSection />
-          <GoalsSection />
-          <MealPlanPreview />
-          <AICoachPreview />
-          <TestimonialsSection />
-          <CTASection />
-        </div>
-        <Footer />
+        <PageTransition>
+          <div className="max-w-6xl mx-auto px-6">
+            <HeroSection />
+            <FeaturesSection />
+            <GoalsSection />
+            <MealPlanPreview />
+            <AICoachPreview />
+            <TestimonialsSection />
+            <CTASection />
+          </div>
+          <Footer />
+        </PageTransition>
       </main>
     </div>
   );

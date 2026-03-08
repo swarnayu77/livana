@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Target, TrendingDown, Dumbbell, Heart, Leaf, Brain } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ProgressRing from "@/components/ProgressRing";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const goals = [
   { id: "weight-loss", icon: TrendingDown, title: "Weight Loss", description: "Sustainable fat loss with balanced nutrition", details: "Our AI creates calorie-deficit meal plans while ensuring you get all essential nutrients. Expect to lose 0.5-1kg per week safely.", progress: 72, color: "hsl(var(--primary))" },
@@ -13,10 +14,17 @@ const goals = [
 
 const GoalsSection = () => {
   const [selected, setSelected] = useState(goals[0]);
+  const { ref, isVisible } = useScrollAnimation();
 
   return (
     <section className="py-20 lg:py-28">
-      <div className="text-center mb-14">
+      <div
+        ref={ref}
+        className={cn(
+          "text-center mb-14 transition-all duration-700",
+          isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        )}
+      >
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/12 mb-4">
           <Target className="w-3.5 h-3.5 text-primary" />
           <span className="text-primary text-xs font-semibold">Personalized Goals</span>
@@ -29,7 +37,10 @@ const GoalsSection = () => {
         </p>
       </div>
 
-      <div className="grid lg:grid-cols-5 gap-6">
+      <div className={cn(
+        "grid lg:grid-cols-5 gap-6 transition-all duration-700 delay-200",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+      )}>
         <div className="lg:col-span-2 space-y-2">
           {goals.map((goal) => {
             const Icon = goal.icon;
@@ -39,15 +50,15 @@ const GoalsSection = () => {
                 key={goal.id}
                 onClick={() => setSelected(goal)}
                 className={cn(
-                  "w-full flex items-center gap-3 p-4 rounded-2xl text-left transition-all duration-200",
+                  "w-full flex items-center gap-3 p-4 rounded-2xl text-left transition-all duration-300",
                   active
-                    ? "bg-primary/8 border border-primary/15 shadow-sm"
-                    : "bg-secondary/40 border border-transparent hover:bg-secondary/80"
+                    ? "bg-primary/8 border border-primary/15 shadow-sm scale-[1.02]"
+                    : "bg-secondary/40 border border-transparent hover:bg-secondary/80 hover:scale-[1.01]"
                 )}
               >
                 <div className={cn(
-                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-200",
-                  active ? "bg-primary text-primary-foreground scale-110" : "bg-secondary text-muted-foreground"
+                  "w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 transition-all duration-300",
+                  active ? "bg-primary text-primary-foreground scale-110 rotate-3" : "bg-secondary text-muted-foreground"
                 )}>
                   <Icon className="w-5 h-5 stroke-[1.5]" />
                 </div>
@@ -60,16 +71,18 @@ const GoalsSection = () => {
           })}
         </div>
 
-        <div className="lg:col-span-3 glass-card rounded-3xl p-8 flex flex-col justify-center">
-          <div className="flex items-start gap-6 mb-6">
-            <ProgressRing
-              value={selected.progress}
-              size={80}
-              strokeWidth={7}
-              color={selected.color}
-              label={`${selected.progress}%`}
-            />
-            <div className="flex-1">
+        <div className="lg:col-span-3 glass-card rounded-3xl p-8 flex flex-col justify-center transition-all duration-500">
+          <div className="flex items-start gap-6 mb-6" key={selected.id}>
+            <div className="animate-scale-in">
+              <ProgressRing
+                value={selected.progress}
+                size={80}
+                strokeWidth={7}
+                color={selected.color}
+                label={`${selected.progress}%`}
+              />
+            </div>
+            <div className="flex-1 animate-fade-up" style={{ animationDuration: '0.4s' }}>
               <h3 className="text-xl font-display font-bold text-foreground">{selected.title}</h3>
               <p className="text-sm text-muted-foreground mt-1">{selected.description}</p>
             </div>
