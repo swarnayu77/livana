@@ -1,7 +1,9 @@
 import { ReactNode } from "react";
-import { Link } from "react-router-dom";
-import { ArrowLeft } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { ArrowLeft, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useAuth } from "@/contexts/AuthContext";
+import ThemeToggle from "@/components/ThemeToggle";
 import livanaLogo from "@/assets/livana-logo.png";
 
 interface PageLayoutProps {
@@ -11,6 +13,14 @@ interface PageLayoutProps {
 }
 
 const PageLayout = ({ children, title, subtitle }: PageLayoutProps) => {
+  const { user, signOut } = useAuth();
+  const navigate = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut();
+    navigate("/");
+  };
+
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
@@ -36,28 +46,45 @@ const PageLayout = ({ children, title, subtitle }: PageLayoutProps) => {
 
             {/* Navigation */}
             <nav className="hidden md:flex items-center gap-6">
-              <Link to="/meal-plans" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Meal Plans
-              </Link>
-              <Link to="/recipes" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Recipes
+              <Link to="/tracker" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Tracker
               </Link>
               <Link to="/coach" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
                 AI Coach
               </Link>
-              <Link to="/progress" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Progress
+              <Link to="/consultation" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Consultation
+              </Link>
+              <Link to="/scanner" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
+                Scanner
               </Link>
             </nav>
 
             {/* Auth */}
-            <div className="flex items-center gap-3">
-              <Link to="/auth">
-                <Button variant="ghost" size="sm">Sign In</Button>
-              </Link>
-              <Link to="/auth?mode=signup">
-                <Button variant="hero" size="sm">Get Started</Button>
-              </Link>
+            <div className="flex items-center gap-2">
+              <ThemeToggle />
+              {user ? (
+                <>
+                  <Link to="/tracker">
+                    <Button variant="ghost" size="sm" className="text-sm rounded-full gap-1.5">
+                      <User className="w-3.5 h-3.5" />
+                      <span className="hidden sm:inline">{user.email?.split("@")[0]}</span>
+                    </Button>
+                  </Link>
+                  <Button variant="ghost" size="sm" className="rounded-full" onClick={handleSignOut}>
+                    <LogOut className="w-3.5 h-3.5" />
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/auth">
+                    <Button variant="ghost" size="sm">Sign In</Button>
+                  </Link>
+                  <Link to="/auth?mode=signup">
+                    <Button variant="hero" size="sm">Get Started</Button>
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         </div>
