@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { Menu, X, ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import ThemeToggle from "@/components/ThemeToggle";
 import { cn } from "@/lib/utils";
 import livanaLogo from "@/assets/livana-logo-new.png";
 
@@ -52,7 +53,8 @@ const Navbar = () => {
             })}
           </nav>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
+            <ThemeToggle />
             <Link to="/auth">
               <Button variant="ghost" size="sm" className="text-sm rounded-full">Sign In</Button>
             </Link>
@@ -89,6 +91,10 @@ const Navbar = () => {
               );
             })}
             <div className="pt-4 flex flex-col gap-2">
+              <div className="flex items-center justify-between px-4 py-2">
+                <span className="text-sm text-muted-foreground">Theme</span>
+                <ThemeToggle />
+              </div>
               <Link to="/auth" onClick={() => setMobileOpen(false)}>
                 <Button variant="outline" className="w-full rounded-xl">Sign In</Button>
               </Link>
