@@ -8,6 +8,7 @@ import livanaLogo from "@/assets/livana-logo-new.png";
 const navLinks = [
   { label: "Features", href: "/#features" },
   { label: "Meal Plans", href: "/meal-plans" },
+  { label: "Food Scanner", href: "/scanner" },
   { label: "AI Coach", href: "/coach" },
   { label: "Recipes", href: "/recipes" },
   { label: "Goals", href: "/goals" },
