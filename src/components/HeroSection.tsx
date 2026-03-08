@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles } from "lucide-react";
+import { ArrowRight, Sparkles, Play } from "lucide-react";
 import { Link } from "react-router-dom";
-import livanaLogo from "@/assets/livana-logo-new.png";
 
 const stats = [
   { value: "10K+", label: "Active Users" },
@@ -11,62 +10,56 @@ const stats = [
 
 const HeroSection = () => {
   return (
-    <section className="relative flex items-center justify-center min-h-[calc(100vh-2rem)] py-24">
-      {/* BG effects */}
-      <div className="absolute inset-0 bg-background" />
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] radial-glow opacity-20 pointer-events-none" />
+    <section className="relative py-24 md:py-32 lg:py-40">
+      {/* Glow */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/5 blur-[120px] pointer-events-none" />
 
-      <div className="relative z-10 w-full max-w-2xl mx-auto px-6 text-center">
+      <div className="relative text-center max-w-3xl mx-auto">
         {/* Badge */}
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full glass-hero mb-8">
+        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/15 mb-8">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
-          <span className="text-xs font-medium text-foreground/70 tracking-wide">AI-Powered Nutrition Intelligence</span>
-        </div>
-
-        {/* Logo */}
-        <div className="flex justify-center mb-4">
-          <img src={livanaLogo} alt="LIVANA Logo" className="w-16 h-16 object-contain" />
+          <span className="text-xs font-medium text-muted-foreground">AI-Powered Nutrition Intelligence</span>
         </div>
 
         {/* Heading */}
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-display font-extrabold tracking-tighter leading-none mb-3">
-          <span className="text-gradient">LIVANA</span>
+        <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-display font-extrabold tracking-tight leading-[1.1] mb-6">
+          Fuel Your Best Self
+          <br />
+          <span className="text-gradient">With LIVANA</span>
         </h1>
 
-        {/* Subheading */}
-        <p className="text-xl md:text-2xl font-display font-semibold text-foreground mb-4 tracking-tight">
-          Fuel Your Best Self
-        </p>
-
         {/* Description */}
-        <p className="text-sm md:text-base text-muted-foreground max-w-md mx-auto mb-8 leading-relaxed">
-          Transform your health with AI-powered meal plans, smart nutrient analysis, 
-          and personalized guidance — all designed for your unique goals.
+        <p className="text-base md:text-lg text-muted-foreground max-w-xl mx-auto mb-10 leading-relaxed">
+          Transform your health with AI-powered meal plans, smart nutrient analysis,
+          and personalized coaching — all designed for your unique goals.
         </p>
 
         {/* CTAs */}
-        <div className="flex items-center justify-center gap-3">
-          <Link to="/auth">
-            <Button variant="hero" size="default" className="group h-10 px-6 text-sm rounded-lg">
-              Start Your Journey
-              <ArrowRight className="ml-1.5 w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+          <Link to="/auth?mode=signup">
+            <Button variant="hero" size="lg" className="group rounded-xl text-sm px-8">
+              Start Free Today
+              <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
             </Button>
           </Link>
-          <Link to="/#features">
-            <Button variant="heroOutline" size="default" className="h-10 px-6 text-sm rounded-lg">
+          <a href="/#features">
+            <Button variant="heroOutline" size="lg" className="rounded-xl text-sm px-8">
+              <Play className="w-4 h-4 mr-2" />
               See How It Works
             </Button>
-          </Link>
+          </a>
         </div>
 
         {/* Stats */}
-        <div className="flex items-center justify-center gap-8 mt-12">
-          {stats.map((stat, i) => (
-            <div key={stat.label} className="flex flex-col items-center">
-              <p className="text-2xl md:text-3xl font-display font-bold text-gradient">{stat.value}</p>
-              <p className="text-[10px] text-muted-foreground font-medium uppercase tracking-widest mt-1">{stat.label}</p>
-            </div>
-          ))}
+        <div className="mt-16 pt-10 border-t border-border/20">
+          <div className="grid grid-cols-3 gap-8 max-w-md mx-auto">
+            {stats.map((stat) => (
+              <div key={stat.label} className="text-center">
+                <p className="text-2xl md:text-3xl font-display font-bold text-gradient">{stat.value}</p>
+                <p className="text-[11px] text-muted-foreground uppercase tracking-widest mt-1.5">{stat.label}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </section>
