@@ -1,13 +1,23 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Check, Sparkles } from "lucide-react";
 import { Link } from "react-router-dom";
+import { cn } from "@/lib/utils";
+import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const benefits = ["Personalized AI meal plans", "24/7 nutrition coaching", "500+ healthy recipes", "Progress tracking & insights"];
 
 const CTASection = () => {
+  const { ref, isVisible } = useScrollAnimation();
+
   return (
     <section className="py-20 lg:py-28">
-      <div className="relative p-10 md:p-16 rounded-3xl text-center glass-card overflow-hidden">
+      <div
+        ref={ref}
+        className={cn(
+          "relative p-10 md:p-16 rounded-3xl text-center glass-card overflow-hidden transition-all duration-700",
+          isVisible ? "opacity-100 translate-y-0 scale-100" : "opacity-0 translate-y-8 scale-95"
+        )}
+      >
         {/* Ambient glow */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/6 blur-[120px] pointer-events-none" />
 
@@ -27,8 +37,16 @@ const CTASection = () => {
           </p>
 
           <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 mb-10">
-            {benefits.map((b) => (
-              <span key={b} className="flex items-center gap-2 text-sm text-muted-foreground">
+            {benefits.map((b, i) => (
+              <span
+                key={b}
+                className="flex items-center gap-2 text-sm text-muted-foreground"
+                style={{
+                  opacity: isVisible ? 1 : 0,
+                  transform: isVisible ? "translateY(0)" : "translateY(8px)",
+                  transition: `all 0.5s ease ${400 + i * 80}ms`,
+                }}
+              >
                 <Check className="w-4 h-4 text-primary flex-shrink-0" />{b}
               </span>
             ))}
@@ -42,7 +60,7 @@ const CTASection = () => {
               </Button>
             </Link>
             <a href="/#features">
-              <Button variant="outline" size="lg" className="rounded-full text-sm px-8">
+              <Button variant="outline" size="lg" className="rounded-full text-sm px-8 hover:scale-105 active:scale-95 transition-transform">
                 Learn More
               </Button>
             </a>

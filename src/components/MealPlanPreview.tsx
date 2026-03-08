@@ -2,6 +2,7 @@ import { Utensils, Clock, Flame, ArrowRight } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { useScrollAnimation, useStaggerAnimation } from "@/hooks/use-scroll-animation";
 
 const meals = [
   { name: "Mediterranean Breakfast Bowl", time: "15 min", calories: 420, tags: ["High Protein", "Low Carb"] },
@@ -10,10 +11,19 @@ const meals = [
 ];
 
 const MealPlanPreview = () => {
+  const { ref: textRef, isVisible: textVisible } = useScrollAnimation();
+  const { ref: cardsRef, isVisible: cardsVisible, getItemStyle } = useStaggerAnimation(meals.length, 120);
+
   return (
     <section className="py-20 lg:py-28">
       <div className="grid lg:grid-cols-2 gap-12 items-center">
-        <div>
+        <div
+          ref={textRef}
+          className={cn(
+            "transition-all duration-700",
+            textVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-8"
+          )}
+        >
           <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/12 mb-5">
             <Utensils className="w-3.5 h-3.5 text-primary" />
             <span className="text-primary text-xs font-semibold">AI Meal Plans</span>
@@ -43,17 +53,16 @@ const MealPlanPreview = () => {
           </Link>
         </div>
 
-        <div className="space-y-3">
+        <div ref={cardsRef} className="space-y-3">
           {meals.map((meal, i) => (
             <div
               key={meal.name}
               className={cn(
                 "p-5 rounded-2xl glass-card",
-                "hover:shadow-lg hover:shadow-primary/6 hover:-translate-y-0.5",
+                "hover:shadow-lg hover:shadow-primary/6 hover:-translate-y-1 hover:scale-[1.01]",
                 "transition-all duration-300 cursor-pointer group",
-                "animate-fade-up opacity-0"
               )}
-              style={{ animationDelay: `${i * 100}ms` }}
+              style={getItemStyle(i)}
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="flex-1">

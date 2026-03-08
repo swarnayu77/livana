@@ -1,5 +1,7 @@
 import { Star, Quote } from "lucide-react";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { cn } from "@/lib/utils";
+import { useScrollAnimation, useStaggerAnimation } from "@/hooks/use-scroll-animation";
 
 const testimonials = [
   { name: "Sarah Chen", role: "Fitness Enthusiast", avatar: "SC", rating: 5, text: "LIVANA completely transformed how I approach nutrition. The AI coach gives me personalized advice that actually fits my lifestyle. I've never felt healthier." },
@@ -11,9 +13,18 @@ const testimonials = [
 ];
 
 const TestimonialsSection = () => {
+  const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
+  const { ref: gridRef, isVisible: gridVisible, getItemStyle } = useStaggerAnimation(testimonials.length, 80);
+
   return (
     <section className="py-20 lg:py-28">
-      <div className="text-center mb-14">
+      <div
+        ref={headerRef}
+        className={cn(
+          "text-center mb-14 transition-all duration-700",
+          headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        )}
+      >
         <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/12 mb-5">
           <Star className="w-3.5 h-3.5 text-primary" />
           <span className="text-primary text-xs font-semibold">Testimonials</span>
@@ -26,17 +37,17 @@ const TestimonialsSection = () => {
         </p>
       </div>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         {testimonials.map((t, i) => (
           <div
             key={t.name}
-            className="group p-6 rounded-2xl glass-card hover:shadow-lg hover:shadow-primary/6 hover:-translate-y-1 transition-all duration-300 animate-fade-up opacity-0"
-            style={{ animationDelay: `${i * 80}ms` }}
+            className="group p-6 rounded-2xl glass-card hover:shadow-lg hover:shadow-primary/6 hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300"
+            style={getItemStyle(i)}
           >
-            <Quote className="w-7 h-7 text-primary/15 mb-4" />
+            <Quote className="w-7 h-7 text-primary/15 mb-4 group-hover:text-primary/30 transition-colors duration-300" />
             <p className="text-sm text-foreground/80 leading-relaxed mb-6">"{t.text}"</p>
             <div className="flex items-center gap-3 pt-4 border-t border-border">
-              <Avatar className="h-9 w-9">
+              <Avatar className="h-9 w-9 group-hover:scale-110 transition-transform duration-300">
                 <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">{t.avatar}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
