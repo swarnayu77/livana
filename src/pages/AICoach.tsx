@@ -5,13 +5,18 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
 import { 
   Send, 
   User,
   Lightbulb,
   Sparkles,
-  Leaf
+  Leaf,
+  Shield,
+  Users,
+  Zap,
+  Heart
 } from "lucide-react";
 import livanaLogo from "@/assets/livana-logo.png";
 
@@ -23,10 +28,10 @@ type Message = {
 };
 
 const quickPrompts = [
-  "What should I eat before a workout?",
-  "How can I increase my protein intake?",
-  "Is intermittent fasting right for me?",
-  "Suggest a healthy snack under 200 calories"
+  { text: "What should I eat before a workout?", icon: Zap },
+  { text: "How can I increase my protein intake?", icon: Heart },
+  { text: "Is intermittent fasting right for me?", icon: Lightbulb },
+  { text: "Suggest a healthy snack under 200 calories", icon: Sparkles },
 ];
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/chat`;
@@ -52,7 +57,6 @@ const AICoach = () => {
   }, [messages]);
 
   const formatMessage = (content: string) => {
-    // Simple markdown-like formatting
     return content
       .replace(/\*\*(.*?)\*\*/g, '<strong class="text-primary font-semibold">$1</strong>')
       .replace(/\*(.*?)\*/g, '<em>$1</em>')
@@ -173,64 +177,103 @@ const AICoach = () => {
     >
       <div className="max-w-4xl mx-auto">
         {/* AI Coach Header Card */}
-        <Card className="glass mb-6 p-4">
+        <Card className="glass mb-6 p-5 relative overflow-hidden">
+          {/* Subtle gradient accent */}
+          <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-primary/60 via-primary to-primary/60" />
+          
           <div className="flex items-center gap-4">
             <div className="relative">
-              <Avatar className="w-16 h-16 border-2 border-primary/50">
+              <Avatar className="w-16 h-16 border-2 border-primary/50 shadow-lg shadow-primary/20">
                 <AvatarImage src={livanaLogo} alt="Mr. Livana" />
                 <AvatarFallback className="bg-primary/20">
                   <Leaf className="w-8 h-8 text-primary" />
                 </AvatarFallback>
               </Avatar>
-              <span className="absolute bottom-0 right-0 w-4 h-4 bg-primary rounded-full border-2 border-background" />
+              <span className="absolute bottom-0 right-0 w-4 h-4 bg-primary rounded-full border-2 border-background animate-pulse" />
             </div>
             <div className="flex-1">
-              <div className="flex items-center gap-2">
-                <h3 className="text-xl font-bold">Mr. Livana</h3>
+              <div className="flex items-center gap-2 mb-1">
+                <h3 className="text-xl font-bold font-heading">Mr. Livana</h3>
                 <Sparkles className="w-5 h-5 text-primary" />
+                <Badge variant="secondary" className="text-[10px] font-semibold px-2 py-0.5 bg-primary/10 text-primary border-primary/20">
+                  AI Pro
+                </Badge>
               </div>
               <p className="text-muted-foreground text-sm">AI Nutrition Expert • Always here to help</p>
+            </div>
+            
+            {/* Active Users Indicator */}
+            <div className="hidden sm:flex items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/15">
+                <div className="relative flex items-center">
+                  <span className="w-2 h-2 rounded-full bg-primary" />
+                  <span className="absolute w-2 h-2 rounded-full bg-primary animate-ping" />
+                </div>
+                <div className="flex -space-x-1.5">
+                  <Users className="w-3.5 h-3.5 text-primary" />
+                </div>
+                <span className="text-xs font-semibold text-primary">10+ active</span>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/50 border border-border/50">
+                <Shield className="w-3.5 h-3.5 text-muted-foreground" />
+                <span className="text-xs text-muted-foreground">Private</span>
+              </div>
+            </div>
+          </div>
+          
+          {/* Mobile active users */}
+          <div className="flex sm:hidden items-center gap-2 mt-3 pt-3 border-t border-border/30">
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/8 border border-primary/15">
+              <div className="relative flex items-center">
+                <span className="w-2 h-2 rounded-full bg-primary" />
+                <span className="absolute w-2 h-2 rounded-full bg-primary animate-ping" />
+              </div>
+              <span className="text-xs font-semibold text-primary">10+ active users</span>
+            </div>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-muted/50 border border-border/50">
+              <Shield className="w-3.5 h-3.5 text-muted-foreground" />
+              <span className="text-xs text-muted-foreground">Private</span>
             </div>
           </div>
         </Card>
 
         {/* Chat Container */}
-        <Card className="glass overflow-hidden">
+        <Card className="glass overflow-hidden border-border/30">
           {/* Messages */}
-          <ScrollArea className="h-[450px] p-6" ref={scrollRef}>
+          <ScrollArea className="h-[500px] p-6" ref={scrollRef}>
             <div className="space-y-6">
               {messages.map((message) => (
                 <div
                   key={message.id}
-                  className={`flex gap-4 ${message.role === "user" ? "flex-row-reverse" : ""}`}
+                  className={`flex gap-3 ${message.role === "user" ? "flex-row-reverse" : ""} animate-in fade-in slide-in-from-bottom-2 duration-300`}
                 >
                   {message.role === "assistant" ? (
-                    <Avatar className="w-10 h-10 shrink-0 border border-primary/30">
+                    <Avatar className="w-9 h-9 shrink-0 border border-primary/30 shadow-sm shadow-primary/10">
                       <AvatarImage src={livanaLogo} alt="Mr. Livana" />
                       <AvatarFallback className="bg-primary/20">
-                        <Leaf className="w-5 h-5 text-primary" />
+                        <Leaf className="w-4 h-4 text-primary" />
                       </AvatarFallback>
                     </Avatar>
                   ) : (
-                    <div className="w-10 h-10 rounded-full bg-accent/20 flex items-center justify-center shrink-0">
-                      <User className="w-5 h-5 text-accent" />
+                    <div className="w-9 h-9 rounded-full bg-accent/20 flex items-center justify-center shrink-0 shadow-sm">
+                      <User className="w-4 h-4 text-accent" />
                     </div>
                   )}
-                  <div className={`max-w-[75%] ${message.role === "user" ? "text-right" : ""}`}>
+                  <div className={`max-w-[78%] ${message.role === "user" ? "text-right" : ""}`}>
                     {message.role === "assistant" && (
-                      <p className="text-xs text-primary font-medium mb-1">Mr. Livana</p>
+                      <p className="text-[11px] text-primary font-semibold mb-1 tracking-wide uppercase">Mr. Livana</p>
                     )}
-                    <div className={`rounded-2xl px-4 py-3 ${
+                    <div className={`rounded-2xl px-4 py-3 shadow-sm ${
                       message.role === "assistant"
-                        ? "bg-muted/50 rounded-tl-sm text-left"
-                        : "bg-primary text-primary-foreground rounded-tr-sm"
+                        ? "bg-muted/50 rounded-tl-sm text-left border border-border/20"
+                        : "bg-primary text-primary-foreground rounded-tr-sm shadow-primary/20"
                     }`}>
                       <p 
                         className="text-sm leading-relaxed"
                         dangerouslySetInnerHTML={{ __html: formatMessage(message.content) }}
                       />
                     </div>
-                    <p className="text-xs text-muted-foreground mt-1.5">
+                    <p className="text-[10px] text-muted-foreground mt-1.5 tabular-nums">
                       {message.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                     </p>
                   </div>
@@ -238,17 +281,17 @@ const AICoach = () => {
               ))}
               
               {isLoading && messages[messages.length - 1]?.role !== "assistant" && (
-                <div className="flex gap-4">
-                  <Avatar className="w-10 h-10 border border-primary/30">
+                <div className="flex gap-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
+                  <Avatar className="w-9 h-9 border border-primary/30">
                     <AvatarImage src={livanaLogo} alt="Mr. Livana" />
                     <AvatarFallback className="bg-primary/20">
-                      <Leaf className="w-5 h-5 text-primary" />
+                      <Leaf className="w-4 h-4 text-primary" />
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="text-xs text-primary font-medium mb-1">Mr. Livana</p>
-                    <div className="bg-muted/50 rounded-2xl rounded-tl-sm px-4 py-3">
-                      <div className="flex items-center gap-2">
+                    <p className="text-[11px] text-primary font-semibold mb-1 tracking-wide uppercase">Mr. Livana</p>
+                    <div className="bg-muted/50 rounded-2xl rounded-tl-sm px-4 py-3 border border-border/20">
+                      <div className="flex items-center gap-1.5">
                         <span className="w-2 h-2 rounded-full bg-primary animate-bounce" />
                         <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:150ms]" />
                         <span className="w-2 h-2 rounded-full bg-primary animate-bounce [animation-delay:300ms]" />
@@ -261,21 +304,23 @@ const AICoach = () => {
             </div>
           </ScrollArea>
 
-          {/* Input */}
-          <div className="border-t border-border/50 p-4 bg-muted/20">
+          {/* Input Area */}
+          <div className="border-t border-border/30 p-4 bg-muted/10 backdrop-blur-sm">
             <form onSubmit={handleSubmit} className="flex gap-3">
-              <Input
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                placeholder="Ask Mr. Livana about nutrition, meals, or healthy habits..."
-                className="flex-1 bg-background/50 border-border/50 focus:border-primary h-12"
-                disabled={isLoading}
-              />
+              <div className="flex-1 relative">
+                <Input
+                  value={input}
+                  onChange={(e) => setInput(e.target.value)}
+                  placeholder="Ask Mr. Livana about nutrition, meals, or healthy habits..."
+                  className="flex-1 bg-background/60 border-border/40 focus:border-primary h-12 pr-4 pl-4 rounded-xl"
+                  disabled={isLoading}
+                />
+              </div>
               <Button 
                 type="submit" 
                 variant="hero" 
                 size="icon"
-                className="h-12 w-12"
+                className="h-12 w-12 rounded-xl shadow-lg shadow-primary/20 hover:shadow-primary/30 transition-shadow"
                 disabled={!input.trim() || isLoading}
               >
                 <Send className="w-5 h-5" />
@@ -288,19 +333,20 @@ const AICoach = () => {
         <div className="mt-6">
           <div className="flex items-center gap-2 text-sm text-muted-foreground mb-3">
             <Lightbulb className="w-4 h-4 text-primary" />
-            <span>Try asking:</span>
+            <span className="font-medium">Suggested questions</span>
           </div>
-          <div className="flex flex-wrap gap-2">
-            {quickPrompts.map((prompt) => (
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {quickPrompts.map(({ text, icon: Icon }) => (
               <Button
-                key={prompt}
+                key={text}
                 variant="glass"
                 size="sm"
-                className="text-xs hover:border-primary/40 hover:bg-primary/10 transition-all"
-                onClick={() => sendMessage(prompt)}
+                className="text-xs justify-start gap-2 hover:border-primary/40 hover:bg-primary/5 transition-all h-auto py-2.5 px-3"
+                onClick={() => sendMessage(text)}
                 disabled={isLoading}
               >
-                {prompt}
+                <Icon className="w-3.5 h-3.5 text-primary shrink-0" />
+                <span className="text-left">{text}</span>
               </Button>
             ))}
           </div>

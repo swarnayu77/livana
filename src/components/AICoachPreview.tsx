@@ -68,12 +68,19 @@ const AICoachPreview = () => {
             <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center">
               <Bot className="w-5 h-5 text-primary" />
             </div>
-            <div>
-              <h4 className="font-semibold text-sm text-foreground">LIVANA Coach</h4>
+            <div className="flex-1">
+              <h4 className="font-semibold text-sm text-foreground">Mr. Livana</h4>
               <div className="flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-primary animate-pulse-soft" />
                 <span className="text-xs text-muted-foreground">Online</span>
               </div>
+            </div>
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/8 border border-primary/15">
+              <div className="relative">
+                <span className="w-1.5 h-1.5 rounded-full bg-primary block" />
+                <span className="absolute inset-0 w-1.5 h-1.5 rounded-full bg-primary animate-ping" />
+              </div>
+              <span className="text-[10px] font-semibold text-primary">10+ active</span>
             </div>
           </div>
 
