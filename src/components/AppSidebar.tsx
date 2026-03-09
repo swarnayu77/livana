@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { 
   LayoutGrid, Utensils, Bot, Target, ChefHat, TrendingUp, FlaskConical,
-  ChevronLeft, ChevronRight, Sparkles, LogIn
+  ChevronLeft, ChevronRight, Sparkles, LogIn, Brain
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
