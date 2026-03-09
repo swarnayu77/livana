@@ -19,6 +19,7 @@ import NutritionistProfile from "./pages/NutritionistProfile";
 import ConsultationDashboard from "./pages/ConsultationDashboard";
 import Onboarding from "./pages/Onboarding";
 import NutritionTracker from "./pages/NutritionTracker";
+import HealthTwin from "./pages/HealthTwin";
 
 const queryClient = new QueryClient();
 
@@ -44,6 +45,7 @@ const App = () => (
             <Route path="/consultation/dashboard" element={<ConsultationDashboard />} />
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/tracker" element={<NutritionTracker />} />
+            <Route path="/health-twin" element={<HealthTwin />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>

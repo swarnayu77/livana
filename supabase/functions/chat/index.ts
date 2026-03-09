@@ -11,7 +11,7 @@ serve(async (req) => {
   }
 
   try {
-    const { messages, type, imageBase64 } = await req.json();
+    const { messages, type, imageBase64, context } = await req.json();
     const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
     
     if (!LOVABLE_API_KEY) {
@@ -108,7 +108,58 @@ Rules:
 - If multiple foods are mentioned, combine them into one entry
 - Use standard serving sizes
 - ONLY return the JSON object, no other text or markdown`;
+    } else if (type === "health_twin_predict") {
+      const ctx = context || {};
+      systemPrompt = `You are a nutrition impact predictor for the AI Health Twin system. Given a meal description and the user's current daily stats, predict the impact of eating that meal.
+
+Current user stats today:
+- Calories consumed: ${ctx.caloriesConsumed ?? 0} / ${ctx.calorieTarget ?? 2000} kcal
+- Protein consumed: ${ctx.proteinConsumed ?? 0} / ${ctx.proteinTarget ?? 100}g
+- Metabolism (TDEE): ${ctx.metabolismRate ?? 2000} kcal/day
+- Health Score: ${ctx.healthScore ?? 50}/100
+
+Return a JSON object with this EXACT structure:
+{
+  "calorieImpact": estimated_calories_of_the_meal,
+  "proteinImpact": estimated_protein_grams,
+  "newBalance": new_calorie_balance_after_eating (consumed + meal - target, negative means deficit),
+  "energyEffect": "short description like 'Sustained energy boost' or 'May cause energy dip'",
+  "weightEffect": "short description of weight impact",
+  "tip": "One actionable tip about this meal choice"
+}
+
+Be realistic with estimates. ONLY return the JSON, no other text.`;
+    } else if (type === "health_twin_insights") {
+      const ctx = context || {};
+      systemPrompt = `You are the AI Health Twin insights engine. Analyze the user's current health data and generate 3-5 personalized insights.
+
+User's current data:
+- Health Score: ${ctx.healthScore ?? 50}/100
+- Calories: ${ctx.caloriesConsumed ?? 0} / ${ctx.calorieTarget ?? 2000} kcal
+- Protein: ${ctx.proteinConsumed ?? 0} / ${ctx.proteinTarget ?? 100}g
+- Carbs: ${ctx.carbsConsumed ?? 0} / ${ctx.carbsTarget ?? 250}g
+- Fat: ${ctx.fatConsumed ?? 0} / ${ctx.fatTarget ?? 65}g
+- Water: ${ctx.waterProgress ?? 0} / ${ctx.waterTarget ?? 8} glasses
+- Metabolism (TDEE): ${ctx.metabolismRate ?? 2000} kcal/day
+- Energy Level: ${ctx.energyLevel ?? 50}/100
+- Weekly Weight Change: ${ctx.weeklyWeightChange ?? 0} kg
+
+Return a JSON array with 3-5 insight objects:
+[
+  {
+    "text": "Clear, actionable insight about their health data",
+    "type": "positive" | "warning" | "info",
+    "icon": "flame" | "trending" | "droplets" | "heart" | "brain" | "shield" | "alert" | "zap"
+  }
+]
+
+Guidelines:
+- Be specific with numbers from their data
+- Use "positive" for good progress, "warning" for areas needing attention, "info" for neutral facts
+- Keep each insight to 1-2 sentences
+- ONLY return the JSON array, no other text.`;
     }
+
     let apiMessages: any[] = [{ role: "system", content: systemPrompt }];
 
     if (type === "scan" && imageBase64) {
@@ -133,7 +184,7 @@ Rules:
         model: type === "scan" ? "google/gemini-2.5-flash" : "google/gemini-3-flash-preview",
         messages: apiMessages,
         stream: type === "coach",
-        ...(type === "food_search" ? { response_format: { type: "json_object" } } : {}),
+        ...(["food_search", "health_twin_predict", "health_twin_insights"].includes(type) ? { response_format: { type: "json_object" } } : {}),
       }),
     });
 
@@ -165,7 +216,7 @@ Rules:
       });
     }
 
-    // For non-streaming (analysis + scan)
+    // For non-streaming
     const data = await response.json();
     return new Response(JSON.stringify(data), {
       headers: { ...corsHeaders, "Content-Type": "application/json" },
