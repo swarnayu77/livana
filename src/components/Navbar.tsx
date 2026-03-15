@@ -9,6 +9,7 @@ import livanaLogo from "@/assets/livana-logo-new.png";
 
 const navLinks = [
   { label: "Features", href: "/#features" },
+  { label: "Health Twin", href: "/health-twin" },
   { label: "Tracker", href: "/tracker" },
   { label: "AI Coach", href: "/coach" },
   { label: "Consultation", href: "/consultation" },
