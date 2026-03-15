@@ -164,6 +164,51 @@ export type Database = {
         }
         Relationships: []
       }
+      workout_logs: {
+        Row: {
+          calories_burned: number | null
+          created_at: string | null
+          duration_min: number | null
+          exercise_name: string
+          id: string
+          logged_at: string | null
+          notes: string | null
+          reps: number | null
+          sets: number | null
+          user_id: string
+          weight_kg: number | null
+          workout_type: string
+        }
+        Insert: {
+          calories_burned?: number | null
+          created_at?: string | null
+          duration_min?: number | null
+          exercise_name: string
+          id?: string
+          logged_at?: string | null
+          notes?: string | null
+          reps?: number | null
+          sets?: number | null
+          user_id: string
+          weight_kg?: number | null
+          workout_type: string
+        }
+        Update: {
+          calories_burned?: number | null
+          created_at?: string | null
+          duration_min?: number | null
+          exercise_name?: string
+          id?: string
+          logged_at?: string | null
+          notes?: string | null
+          reps?: number | null
+          sets?: number | null
+          user_id?: string
+          weight_kg?: number | null
+          workout_type?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
