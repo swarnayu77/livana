@@ -94,6 +94,7 @@ const NutritionTracker = () => {
   const [aiResult, setAIResult] = useState<any>(null);
   const [weightInput, setWeightInput] = useState("");
   const [loggingWeight, setLoggingWeight] = useState(false);
+  const [uploadingPhoto, setUploadingPhoto] = useState<string | null>(null);
 
   // Workout form state
   const [workoutForm, setWorkoutForm] = useState({
