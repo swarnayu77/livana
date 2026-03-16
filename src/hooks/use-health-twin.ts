@@ -21,6 +21,7 @@ export type HealthMetrics = {
   fiberConsumed: number;
   weightTrend: { date: string; weight: number }[];
   calorieTrend: { date: string; calories: number }[];
+  workoutTrend: { date: string; duration: number; burned: number }[];
   weeklyWeightChange: number;
   surplus: boolean;
   workoutsBurned: number;
