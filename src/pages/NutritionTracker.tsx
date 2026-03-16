@@ -15,7 +15,7 @@ import ProgressRing from "@/components/ProgressRing";
 import {
   Plus, Droplets, Scale, Utensils, Coffee, Sun, Moon, Apple,
   Search, Sparkles, Trash2, TrendingUp, Lightbulb, LogOut,
-  Dumbbell, Timer, Flame, Activity,
+  Dumbbell, Timer, Flame, Activity, Camera, Image,
 } from "lucide-react";
 import { format, startOfDay, endOfDay } from "date-fns";
 
