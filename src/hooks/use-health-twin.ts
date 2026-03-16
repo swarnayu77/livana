@@ -161,7 +161,7 @@ export function useHealthTwin() {
       healthScore, calorieBalance, calorieTarget, caloriesConsumed, metabolismRate,
       nutritionScore: Math.max(0, nutritionScore), energyLevel, waterProgress, waterTarget,
       proteinConsumed, proteinTarget, carbsConsumed, carbsTarget, fatConsumed, fatTarget,
-      fiberConsumed, weightTrend, calorieTrend, weeklyWeightChange, surplus,
+      fiberConsumed, weightTrend, calorieTrend, workoutTrend, weeklyWeightChange, surplus,
       workoutsBurned, workoutsToday: todayWorkoutsRaw.length, workoutDuration, netCalories,
       todayFoods, todayWorkouts,
     };
