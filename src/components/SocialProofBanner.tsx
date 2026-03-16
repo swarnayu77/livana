@@ -3,7 +3,7 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { Shield, Star, Award, Users } from "lucide-react";
 
 const proofs = [
-  { icon: Users, value: "10,000+", label: "Active Users" },
+  { icon: Users, value: "10+", label: "Active Users" },
   { icon: Star, value: "4.9/5", label: "User Rating" },
   { icon: Award, value: "50M+", label: "Meals Tracked" },
   { icon: Shield, value: "100%", label: "Data Secure" },
