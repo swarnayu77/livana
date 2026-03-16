@@ -656,15 +656,38 @@ const NutritionTracker = () => {
                   <div className="space-y-2">
                     {meals.map((meal) => (
                       <div key={meal.id} className="flex items-center justify-between py-2 px-3 rounded-xl bg-secondary/20">
+                        {meal.image_url && (
+                          <img src={meal.image_url} alt={meal.food_name} className="w-10 h-10 rounded-lg object-cover shrink-0 mr-2" />
+                        )}
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">{meal.food_name}</p>
                           <p className="text-[10px] text-muted-foreground">
                             {meal.quantity} • {Math.round(Number(meal.calories))} cal • P:{Math.round(Number(meal.protein_g))}g C:{Math.round(Number(meal.carbs_g))}g F:{Math.round(Number(meal.fat_g))}g
                           </p>
                         </div>
-                        <Button variant="ghost" size="icon" className="w-7 h-7 shrink-0" onClick={() => handleDeleteFood(meal.id)}>
-                          <Trash2 className="w-3 h-3 text-muted-foreground" />
-                        </Button>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <label className="cursor-pointer">
+                            <input
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files?.[0];
+                                if (file) handlePhotoUpload(meal.id, file);
+                              }}
+                            />
+                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${uploadingPhoto === meal.id ? "animate-pulse bg-primary/20" : "hover:bg-secondary"}`}>
+                              {meal.image_url ? (
+                                <Image className="w-3 h-3 text-primary" />
+                              ) : (
+                                <Camera className="w-3 h-3 text-muted-foreground" />
+                              )}
+                            </div>
+                          </label>
+                          <Button variant="ghost" size="icon" className="w-7 h-7 shrink-0" onClick={() => handleDeleteFood(meal.id)}>
+                            <Trash2 className="w-3 h-3 text-muted-foreground" />
+                          </Button>
+                        </div>
                       </div>
                     ))}
                   </div>
