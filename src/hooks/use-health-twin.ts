@@ -21,6 +21,7 @@ export type HealthMetrics = {
   fiberConsumed: number;
   weightTrend: { date: string; weight: number }[];
   calorieTrend: { date: string; calories: number }[];
+  workoutTrend: { date: string; duration: number; burned: number }[];
   weeklyWeightChange: number;
   surplus: boolean;
   workoutsBurned: number;
@@ -132,12 +133,17 @@ export function useHealthTwin() {
       : 0;
 
     const calorieTrend: { date: string; calories: number }[] = [];
+    const workoutTrend: { date: string; duration: number; burned: number }[] = [];
     for (let i = 6; i >= 0; i--) {
       const d = new Date(Date.now() - i * 86400000);
       const dateStr = d.toISOString().split("T")[0];
       const label = d.toLocaleDateString("en", { weekday: "short" });
       const dayCalories = foodLogs.filter((f: any) => f.logged_at?.startsWith(dateStr)).reduce((s: number, f: any) => s + (f.calories ?? 0), 0);
       calorieTrend.push({ date: label, calories: dayCalories });
+      const dayWorkouts = workoutLogs.filter((w: any) => w.logged_at?.startsWith(dateStr));
+      const dayDuration = dayWorkouts.reduce((s: number, w: any) => s + (w.duration_min ?? 0), 0);
+      const dayBurned = dayWorkouts.reduce((s: number, w: any) => s + (w.calories_burned ?? 0), 0);
+      workoutTrend.push({ date: label, duration: dayDuration, burned: dayBurned });
     }
 
     const todayFoods = todayFood.map((f: any) => ({
@@ -155,7 +161,7 @@ export function useHealthTwin() {
       healthScore, calorieBalance, calorieTarget, caloriesConsumed, metabolismRate,
       nutritionScore: Math.max(0, nutritionScore), energyLevel, waterProgress, waterTarget,
       proteinConsumed, proteinTarget, carbsConsumed, carbsTarget, fatConsumed, fatTarget,
-      fiberConsumed, weightTrend, calorieTrend, weeklyWeightChange, surplus,
+      fiberConsumed, weightTrend, calorieTrend, workoutTrend, weeklyWeightChange, surplus,
       workoutsBurned, workoutsToday: todayWorkoutsRaw.length, workoutDuration, netCalories,
       todayFoods, todayWorkouts,
     };

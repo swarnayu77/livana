@@ -23,6 +23,7 @@ export type Database = {
           fiber_g: number | null
           food_name: string
           id: string
+          image_url: string | null
           logged_at: string | null
           meal_type: string
           protein_g: number | null
@@ -37,6 +38,7 @@ export type Database = {
           fiber_g?: number | null
           food_name: string
           id?: string
+          image_url?: string | null
           logged_at?: string | null
           meal_type: string
           protein_g?: number | null
@@ -51,6 +53,7 @@ export type Database = {
           fiber_g?: number | null
           food_name?: string
           id?: string
+          image_url?: string | null
           logged_at?: string | null
           meal_type?: string
           protein_g?: number | null
