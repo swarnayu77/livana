@@ -276,6 +276,25 @@ const NutritionTracker = () => {
     fetchData();
   };
 
+  const handlePhotoUpload = async (foodLogId: string, file: File) => {
+    if (!user) return;
+    setUploadingPhoto(foodLogId);
+    try {
+      const fileExt = file.name.split(".").pop();
+      const filePath = `${user.id}/${foodLogId}.${fileExt}`;
+      const { error: uploadError } = await supabase.storage.from("food-photos").upload(filePath, file, { upsert: true });
+      if (uploadError) throw uploadError;
+      const { data: { publicUrl } } = supabase.storage.from("food-photos").getPublicUrl(filePath);
+      await supabase.from("food_logs").update({ image_url: publicUrl } as any).eq("id", foodLogId);
+      fetchData();
+      toast({ title: "Photo added!", description: "Food photo uploaded successfully" });
+    } catch {
+      toast({ title: "Error", description: "Failed to upload photo", variant: "destructive" });
+    } finally {
+      setUploadingPhoto(null);
+    }
+  };
+
   // Insights
   const insights = [];
   if (totals.protein < targets.protein * 0.5 && foodLogs.length > 0) {
