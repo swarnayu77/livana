@@ -40,6 +40,7 @@ type FoodLog = {
   fiber_g: number;
   quantity: string;
   logged_at: string;
+  image_url: string | null;
 };
 
 type WorkoutLog = {
