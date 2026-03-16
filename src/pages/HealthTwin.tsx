@@ -300,6 +300,45 @@ const HealthTwin = () => {
                 </div>
               )}
             </Card>
+
+            {/* Weekly Workout Summary Chart */}
+            <Card className="glass p-5">
+              <h3 className="font-heading font-bold text-sm mb-4 flex items-center gap-2">
+                <Activity className="w-4 h-4 text-primary" />
+                7-Day Workout Summary
+              </h3>
+              <div className="h-56">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={metrics.workoutTrend} barCategoryGap="20%">
+                    <defs>
+                      <linearGradient id="durationGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="hsl(var(--primary))" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="hsl(var(--primary))" stopOpacity={0.3} />
+                      </linearGradient>
+                      <linearGradient id="burnedGrad" x1="0" y1="0" x2="0" y2="1">
+                        <stop offset="5%" stopColor="hsl(0 80% 55%)" stopOpacity={0.8} />
+                        <stop offset="95%" stopColor="hsl(0 80% 55%)" stopOpacity={0.3} />
+                      </linearGradient>
+                    </defs>
+                    <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" opacity={0.3} />
+                    <XAxis dataKey="date" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} />
+                    <YAxis yAxisId="left" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} width={35} />
+                    <YAxis yAxisId="right" orientation="right" tick={{ fontSize: 11, fill: "hsl(var(--muted-foreground))" }} axisLine={false} tickLine={false} width={35} />
+                    <Tooltip contentStyle={{ backgroundColor: "hsl(var(--card))", border: "1px solid hsl(var(--border))", borderRadius: "12px", fontSize: 12 }} />
+                    <Bar yAxisId="left" dataKey="duration" name="Duration (min)" fill="url(#durationGrad)" radius={[6, 6, 0, 0]} />
+                    <Bar yAxisId="right" dataKey="burned" name="Calories Burned" fill="url(#burnedGrad)" radius={[6, 6, 0, 0]} />
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+              <div className="flex items-center justify-center gap-6 mt-3">
+                <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <div className="w-3 h-3 rounded-sm bg-primary/60" /> Duration (min)
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-muted-foreground">
+                  <div className="w-3 h-3 rounded-sm" style={{ background: "hsl(0 80% 55% / 0.6)" }} /> Calories Burned
+                </div>
+              </div>
+            </Card>
           </div>
 
           {/* Right Column */}
