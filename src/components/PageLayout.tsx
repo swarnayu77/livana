@@ -94,15 +94,20 @@ const PageLayout = ({ children, title, subtitle }: PageLayoutProps) => {
       <main className="pt-24 lg:pt-28 pb-16">
         <div className="container mx-auto px-4">
           {/* Page Header */}
-          <div className="mb-8 lg:mb-12">
-            <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-2">
-              {title}
-            </h1>
-            {subtitle && (
-              <p className="text-muted-foreground text-lg max-w-2xl">
-                {subtitle}
-              </p>
-            )}
+          <div className="mb-10 lg:mb-14 relative">
+            {/* Ambient glow behind title */}
+            <div className="absolute -top-10 -left-10 w-64 h-40 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
+            <div className="relative">
+              <div className="flex items-center gap-3 mb-3">
+                <div className="h-1 w-10 rounded-full bg-gradient-to-r from-primary to-accent" />
+                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
+                  {subtitle || "LIVANA"}
+                </span>
+              </div>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gradient leading-[1.1]">
+                {title}
+              </h1>
+            </div>
           </div>
 
           {/* Content */}
