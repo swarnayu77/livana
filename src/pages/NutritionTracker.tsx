@@ -607,6 +607,38 @@ const NutritionTracker = () => {
                   <p className="text-[10px] text-muted-foreground">AI will estimate nutrition automatically</p>
                 </div>
 
+                {/* Photo upload */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Add a photo (optional)</Label>
+                  <label className="cursor-pointer block">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setDialogPhoto(file);
+                          setDialogPhotoPreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                    {dialogPhotoPreview ? (
+                      <div className="relative w-full h-32 rounded-xl overflow-hidden border border-border/50">
+                        <img src={dialogPhotoPreview} alt="Food preview" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-background/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                          <p className="text-xs font-medium text-foreground">Change photo</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-24 rounded-xl border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-1.5 hover:border-primary/50 hover:bg-primary/5 transition-all">
+                        <Camera className="w-5 h-5 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground">Tap to add food photo</span>
+                      </div>
+                    )}
+                  </label>
+                </div>
+
                 {aiResult && (
                   <div className="rounded-xl bg-primary/5 border border-primary/10 p-4 animate-fade-up">
                     <p className="font-semibold text-sm text-foreground mb-1">{aiResult.food_name}</p>
