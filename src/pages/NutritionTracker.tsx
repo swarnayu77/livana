@@ -95,6 +95,8 @@ const NutritionTracker = () => {
   const [weightInput, setWeightInput] = useState("");
   const [loggingWeight, setLoggingWeight] = useState(false);
   const [uploadingPhoto, setUploadingPhoto] = useState<string | null>(null);
+  const [dialogPhoto, setDialogPhoto] = useState<File | null>(null);
+  const [dialogPhotoPreview, setDialogPhotoPreview] = useState<string | null>(null);
 
   // Workout form state
   const [workoutForm, setWorkoutForm] = useState({
@@ -200,7 +202,7 @@ const NutritionTracker = () => {
   const handleAddFood = async () => {
     if (!user || !aiResult) return;
     try {
-      const { error } = await supabase.from("food_logs").insert({
+      const { data, error } = await supabase.from("food_logs").insert({
         user_id: user.id,
         meal_type: addingMealType,
         food_name: aiResult.food_name,
@@ -210,12 +212,26 @@ const NutritionTracker = () => {
         fat_g: aiResult.fat_g,
         fiber_g: aiResult.fiber_g || 0,
         quantity: aiResult.quantity,
-      });
+      }).select().single();
       if (error) throw error;
+      
+      // Upload photo if selected
+      if (dialogPhoto && data) {
+        const fileExt = dialogPhoto.name.split(".").pop();
+        const filePath = `${user.id}/${data.id}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from("food-photos").upload(filePath, dialogPhoto, { upsert: true });
+        if (!uploadError) {
+          const { data: { publicUrl } } = supabase.storage.from("food-photos").getPublicUrl(filePath);
+          await supabase.from("food_logs").update({ image_url: publicUrl } as any).eq("id", data.id);
+        }
+      }
+      
       toast({ title: "Added!", description: `${aiResult.food_name} logged to ${mealLabels[addingMealType]}` });
       setShowAddFood(false);
       setFoodSearch("");
       setAIResult(null);
+      setDialogPhoto(null);
+      setDialogPhotoPreview(null);
       fetchData();
     } catch (error) {
       toast({ title: "Error", description: "Failed to log food", variant: "destructive" });
@@ -589,6 +605,38 @@ const NutritionTracker = () => {
                     </Button>
                   </div>
                   <p className="text-[10px] text-muted-foreground">AI will estimate nutrition automatically</p>
+                </div>
+
+                {/* Photo upload */}
+                <div className="space-y-1.5">
+                  <Label className="text-xs">Add a photo (optional)</Label>
+                  <label className="cursor-pointer block">
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={(e) => {
+                        const file = e.target.files?.[0];
+                        if (file) {
+                          setDialogPhoto(file);
+                          setDialogPhotoPreview(URL.createObjectURL(file));
+                        }
+                      }}
+                    />
+                    {dialogPhotoPreview ? (
+                      <div className="relative w-full h-32 rounded-xl overflow-hidden border border-border/50">
+                        <img src={dialogPhotoPreview} alt="Food preview" className="w-full h-full object-cover" />
+                        <div className="absolute inset-0 bg-background/40 flex items-center justify-center opacity-0 hover:opacity-100 transition-opacity">
+                          <p className="text-xs font-medium text-foreground">Change photo</p>
+                        </div>
+                      </div>
+                    ) : (
+                      <div className="w-full h-24 rounded-xl border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-1.5 hover:border-primary/50 hover:bg-primary/5 transition-all">
+                        <Camera className="w-5 h-5 text-muted-foreground" />
+                        <span className="text-xs text-muted-foreground">Tap to add food photo</span>
+                      </div>
+                    )}
+                  </label>
                 </div>
 
                 {aiResult && (
