@@ -202,7 +202,7 @@ const NutritionTracker = () => {
   const handleAddFood = async () => {
     if (!user || !aiResult) return;
     try {
-      const { error } = await supabase.from("food_logs").insert({
+      const { data, error } = await supabase.from("food_logs").insert({
         user_id: user.id,
         meal_type: addingMealType,
         food_name: aiResult.food_name,
@@ -212,12 +212,26 @@ const NutritionTracker = () => {
         fat_g: aiResult.fat_g,
         fiber_g: aiResult.fiber_g || 0,
         quantity: aiResult.quantity,
-      });
+      }).select().single();
       if (error) throw error;
+      
+      // Upload photo if selected
+      if (dialogPhoto && data) {
+        const fileExt = dialogPhoto.name.split(".").pop();
+        const filePath = `${user.id}/${data.id}.${fileExt}`;
+        const { error: uploadError } = await supabase.storage.from("food-photos").upload(filePath, dialogPhoto, { upsert: true });
+        if (!uploadError) {
+          const { data: { publicUrl } } = supabase.storage.from("food-photos").getPublicUrl(filePath);
+          await supabase.from("food_logs").update({ image_url: publicUrl } as any).eq("id", data.id);
+        }
+      }
+      
       toast({ title: "Added!", description: `${aiResult.food_name} logged to ${mealLabels[addingMealType]}` });
       setShowAddFood(false);
       setFoodSearch("");
       setAIResult(null);
+      setDialogPhoto(null);
+      setDialogPhotoPreview(null);
       fetchData();
     } catch (error) {
       toast({ title: "Error", description: "Failed to log food", variant: "destructive" });
