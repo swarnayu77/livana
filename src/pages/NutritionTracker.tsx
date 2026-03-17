@@ -655,39 +655,40 @@ const NutritionTracker = () => {
                 {meals.length > 0 ? (
                   <div className="space-y-2">
                     {meals.map((meal) => (
-                      <div key={meal.id} className="flex items-center justify-between py-2 px-3 rounded-xl bg-secondary/20">
-                        {meal.image_url && (
-                          <img src={meal.image_url} alt={meal.food_name} className="w-10 h-10 rounded-lg object-cover shrink-0 mr-2" />
-                        )}
+                      <div key={meal.id} className="flex items-start gap-3 py-3 px-3 rounded-xl bg-secondary/20">
+                        {/* Photo thumbnail or upload placeholder */}
+                        <label className="cursor-pointer shrink-0">
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={(e) => {
+                              const file = e.target.files?.[0];
+                              if (file) handlePhotoUpload(meal.id, file);
+                            }}
+                          />
+                          {meal.image_url ? (
+                            <img
+                              src={meal.image_url}
+                              alt={meal.food_name}
+                              className="w-14 h-14 rounded-xl object-cover border border-border/50 hover:opacity-80 transition-opacity"
+                            />
+                          ) : (
+                            <div className={`w-14 h-14 rounded-xl border-2 border-dashed border-border/50 flex flex-col items-center justify-center gap-1 hover:border-primary/50 hover:bg-primary/5 transition-all ${uploadingPhoto === meal.id ? "animate-pulse bg-primary/10 border-primary/30" : ""}`}>
+                              <Camera className="w-4 h-4 text-muted-foreground" />
+                              <span className="text-[8px] text-muted-foreground">Photo</span>
+                            </div>
+                          )}
+                        </label>
                         <div className="flex-1 min-w-0">
                           <p className="text-sm font-medium text-foreground truncate">{meal.food_name}</p>
-                          <p className="text-[10px] text-muted-foreground">
+                          <p className="text-[10px] text-muted-foreground mt-0.5">
                             {meal.quantity} • {Math.round(Number(meal.calories))} cal • P:{Math.round(Number(meal.protein_g))}g C:{Math.round(Number(meal.carbs_g))}g F:{Math.round(Number(meal.fat_g))}g
                           </p>
                         </div>
-                        <div className="flex items-center gap-1 shrink-0">
-                          <label className="cursor-pointer">
-                            <input
-                              type="file"
-                              accept="image/*"
-                              className="hidden"
-                              onChange={(e) => {
-                                const file = e.target.files?.[0];
-                                if (file) handlePhotoUpload(meal.id, file);
-                              }}
-                            />
-                            <div className={`w-7 h-7 rounded-lg flex items-center justify-center transition-colors ${uploadingPhoto === meal.id ? "animate-pulse bg-primary/20" : "hover:bg-secondary"}`}>
-                              {meal.image_url ? (
-                                <Image className="w-3 h-3 text-primary" />
-                              ) : (
-                                <Camera className="w-3 h-3 text-muted-foreground" />
-                              )}
-                            </div>
-                          </label>
-                          <Button variant="ghost" size="icon" className="w-7 h-7 shrink-0" onClick={() => handleDeleteFood(meal.id)}>
-                            <Trash2 className="w-3 h-3 text-muted-foreground" />
-                          </Button>
-                        </div>
+                        <Button variant="ghost" size="icon" className="w-7 h-7 shrink-0 mt-1" onClick={() => handleDeleteFood(meal.id)}>
+                          <Trash2 className="w-3.5 h-3.5 text-muted-foreground" />
+                        </Button>
                       </div>
                     ))}
                   </div>
