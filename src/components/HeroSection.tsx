@@ -110,7 +110,7 @@ const HeroSection = () => {
 };
 
 const HeroStats = () => {
-  const users = useCounterAnimation(10000, 2000, "+");
+  const users = useCounterAnimation(10, 2000, "+");
   const recipes = useCounterAnimation(500, 1600, "+");
   const rate = useCounterAnimation(95, 1400, "%");
 
