@@ -99,6 +99,13 @@ const NutritionTracker = () => {
   const [dialogPhoto, setDialogPhoto] = useState<File | null>(null);
   const [dialogPhotoPreview, setDialogPhotoPreview] = useState<string | null>(null);
 
+  // History state
+  const [historyDate, setHistoryDate] = useState<Date | null>(null);
+  const [historyFoodLogs, setHistoryFoodLogs] = useState<FoodLog[]>([]);
+  const [historyWorkoutLogs, setHistoryWorkoutLogs] = useState<WorkoutLog[]>([]);
+  const [historyWaterCount, setHistoryWaterCount] = useState(0);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
   // Workout form state
   const [workoutForm, setWorkoutForm] = useState({
     workout_type: "strength",
