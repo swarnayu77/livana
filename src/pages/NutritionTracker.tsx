@@ -319,7 +319,51 @@ const NutritionTracker = () => {
     }
   };
 
-  // Insights
+
+  // History fetch
+  const fetchHistory = useCallback(async (date: Date) => {
+    if (!user) return;
+    setHistoryLoading(true);
+    const dayStart = startOfDay(date).toISOString();
+    const dayEnd = endOfDay(date).toISOString();
+    const [foodRes, workoutRes, waterRes] = await Promise.all([
+      supabase.from("food_logs").select("*").eq("user_id", user.id).gte("logged_at", dayStart).lte("logged_at", dayEnd).order("logged_at", { ascending: true }),
+      supabase.from("workout_logs").select("*").eq("user_id", user.id).gte("logged_at", dayStart).lte("logged_at", dayEnd).order("logged_at", { ascending: false }),
+      supabase.from("water_logs").select("*").eq("user_id", user.id).gte("logged_at", dayStart).lte("logged_at", dayEnd),
+    ]);
+    setHistoryFoodLogs((foodRes.data ?? []) as unknown as FoodLog[]);
+    setHistoryWorkoutLogs((workoutRes.data ?? []) as unknown as WorkoutLog[]);
+    setHistoryWaterCount((waterRes.data ?? []).reduce((sum: number, w: any) => sum + (w.glasses || 1), 0));
+    setHistoryLoading(false);
+  }, [user]);
+
+  const handleSelectHistoryDate = (date: Date) => {
+    if (historyDate && isSameDay(historyDate, date)) {
+      setHistoryDate(null);
+      return;
+    }
+    setHistoryDate(date);
+    fetchHistory(date);
+  };
+
+  const historyTotals = historyFoodLogs.reduce(
+    (acc, log) => ({
+      calories: acc.calories + Number(log.calories || 0),
+      protein: acc.protein + Number(log.protein_g || 0),
+      carbs: acc.carbs + Number(log.carbs_g || 0),
+      fat: acc.fat + Number(log.fat_g || 0),
+    }),
+    { calories: 0, protein: 0, carbs: 0, fat: 0 }
+  );
+
+  const historyWorkoutTotals = historyWorkoutLogs.reduce(
+    (acc, w) => ({
+      duration: acc.duration + Number(w.duration_min || 0),
+      burned: acc.burned + Number(w.calories_burned || 0),
+    }),
+    { duration: 0, burned: 0 }
+  );
+
   const insights = [];
   if (totals.protein < targets.protein * 0.5 && foodLogs.length > 0) {
     insights.push("⚠️ You're consuming less protein than recommended. Add eggs, chicken, or legumes.");
