@@ -16,8 +16,9 @@ import {
   Plus, Droplets, Scale, Utensils, Coffee, Sun, Moon, Apple,
   Search, Sparkles, Trash2, TrendingUp, Lightbulb, LogOut,
   Dumbbell, Timer, Flame, Activity, Camera, Image,
+  CalendarDays,
 } from "lucide-react";
-import { format, startOfDay, endOfDay } from "date-fns";
+import { format, startOfDay, endOfDay, subDays, isSameDay } from "date-fns";
 
 type Profile = {
   full_name: string | null;
@@ -97,6 +98,13 @@ const NutritionTracker = () => {
   const [uploadingPhoto, setUploadingPhoto] = useState<string | null>(null);
   const [dialogPhoto, setDialogPhoto] = useState<File | null>(null);
   const [dialogPhotoPreview, setDialogPhotoPreview] = useState<string | null>(null);
+
+  // History state
+  const [historyDate, setHistoryDate] = useState<Date | null>(null);
+  const [historyFoodLogs, setHistoryFoodLogs] = useState<FoodLog[]>([]);
+  const [historyWorkoutLogs, setHistoryWorkoutLogs] = useState<WorkoutLog[]>([]);
+  const [historyWaterCount, setHistoryWaterCount] = useState(0);
+  const [historyLoading, setHistoryLoading] = useState(false);
 
   // Workout form state
   const [workoutForm, setWorkoutForm] = useState({
@@ -311,7 +319,51 @@ const NutritionTracker = () => {
     }
   };
 
-  // Insights
+
+  // History fetch
+  const fetchHistory = useCallback(async (date: Date) => {
+    if (!user) return;
+    setHistoryLoading(true);
+    const dayStart = startOfDay(date).toISOString();
+    const dayEnd = endOfDay(date).toISOString();
+    const [foodRes, workoutRes, waterRes] = await Promise.all([
+      supabase.from("food_logs").select("*").eq("user_id", user.id).gte("logged_at", dayStart).lte("logged_at", dayEnd).order("logged_at", { ascending: true }),
+      supabase.from("workout_logs").select("*").eq("user_id", user.id).gte("logged_at", dayStart).lte("logged_at", dayEnd).order("logged_at", { ascending: false }),
+      supabase.from("water_logs").select("*").eq("user_id", user.id).gte("logged_at", dayStart).lte("logged_at", dayEnd),
+    ]);
+    setHistoryFoodLogs((foodRes.data ?? []) as unknown as FoodLog[]);
+    setHistoryWorkoutLogs((workoutRes.data ?? []) as unknown as WorkoutLog[]);
+    setHistoryWaterCount((waterRes.data ?? []).reduce((sum: number, w: any) => sum + (w.glasses || 1), 0));
+    setHistoryLoading(false);
+  }, [user]);
+
+  const handleSelectHistoryDate = (date: Date) => {
+    if (historyDate && isSameDay(historyDate, date)) {
+      setHistoryDate(null);
+      return;
+    }
+    setHistoryDate(date);
+    fetchHistory(date);
+  };
+
+  const historyTotals = historyFoodLogs.reduce(
+    (acc, log) => ({
+      calories: acc.calories + Number(log.calories || 0),
+      protein: acc.protein + Number(log.protein_g || 0),
+      carbs: acc.carbs + Number(log.carbs_g || 0),
+      fat: acc.fat + Number(log.fat_g || 0),
+    }),
+    { calories: 0, protein: 0, carbs: 0, fat: 0 }
+  );
+
+  const historyWorkoutTotals = historyWorkoutLogs.reduce(
+    (acc, w) => ({
+      duration: acc.duration + Number(w.duration_min || 0),
+      burned: acc.burned + Number(w.calories_burned || 0),
+    }),
+    { duration: 0, burned: 0 }
+  );
+
   const insights = [];
   if (totals.protein < targets.protein * 0.5 && foodLogs.length > 0) {
     insights.push("⚠️ You're consuming less protein than recommended. Add eggs, chicken, or legumes.");
@@ -746,6 +798,175 @@ const NutritionTracker = () => {
               </Card>
             );
           })}
+        </div>
+
+        {/* 7-Day History Section */}
+        <div className="mt-10">
+          <div className="flex items-center gap-2 mb-5">
+            <CalendarDays className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold text-foreground">7-Day History</h2>
+          </div>
+
+          {/* Day selector pills */}
+          <div className="flex gap-2 mb-6 overflow-x-auto pb-2">
+            {Array.from({ length: 7 }).map((_, i) => {
+              const date = subDays(new Date(), i + 1);
+              const isSelected = historyDate && isSameDay(historyDate, date);
+              return (
+                <button
+                  key={i}
+                  onClick={() => handleSelectHistoryDate(date)}
+                  className={`flex flex-col items-center px-4 py-2.5 rounded-2xl border transition-all shrink-0 min-w-[72px] ${
+                    isSelected
+                      ? "bg-primary text-primary-foreground border-primary shadow-lg shadow-primary/20"
+                      : "bg-secondary/30 border-border/30 hover:bg-secondary/60 text-foreground"
+                  }`}
+                >
+                  <span className="text-[10px] font-medium uppercase tracking-wide opacity-70">
+                    {format(date, "EEE")}
+                  </span>
+                  <span className="text-lg font-bold leading-tight">{format(date, "d")}</span>
+                  <span className="text-[9px] opacity-60">{format(date, "MMM")}</span>
+                </button>
+              );
+            })}
+          </div>
+
+          {/* History content */}
+          {historyDate && (
+            <div className="animate-fade-up">
+              {historyLoading ? (
+                <Card className="glass-card rounded-2xl p-8 text-center">
+                  <span className="w-6 h-6 border-2 border-primary/30 border-t-primary rounded-full animate-spin inline-block" />
+                  <p className="text-xs text-muted-foreground mt-3">Loading history...</p>
+                </Card>
+              ) : (
+                <div className="space-y-4">
+                  {/* Summary card */}
+                  <Card className="glass-card rounded-2xl p-5">
+                    <h3 className="text-sm font-semibold text-foreground mb-4 flex items-center gap-2">
+                      📊 Summary for {format(historyDate, "EEEE, MMM d")}
+                    </h3>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="text-center p-3 rounded-xl bg-secondary/20">
+                        <p className="text-xl font-bold text-foreground">{Math.round(historyTotals.calories)}</p>
+                        <p className="text-[10px] text-muted-foreground">Calories</p>
+                      </div>
+                      <div className="text-center p-3 rounded-xl bg-secondary/20">
+                        <p className="text-xl font-bold text-foreground">{Math.round(historyTotals.protein)}g</p>
+                        <p className="text-[10px] text-muted-foreground">Protein</p>
+                      </div>
+                      <div className="text-center p-3 rounded-xl bg-secondary/20">
+                        <p className="text-xl font-bold text-foreground">{Math.round(historyTotals.carbs)}g</p>
+                        <p className="text-[10px] text-muted-foreground">Carbs</p>
+                      </div>
+                      <div className="text-center p-3 rounded-xl bg-secondary/20">
+                        <p className="text-xl font-bold text-foreground">{Math.round(historyTotals.fat)}g</p>
+                        <p className="text-[10px] text-muted-foreground">Fat</p>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-3 gap-3 mt-3">
+                      <div className="text-center p-2.5 rounded-xl bg-accent/10 border border-accent/20">
+                        <Droplets className="w-4 h-4 text-accent mx-auto mb-1" />
+                        <p className="text-sm font-bold text-foreground">{historyWaterCount}</p>
+                        <p className="text-[9px] text-muted-foreground">Glasses</p>
+                      </div>
+                      <div className="text-center p-2.5 rounded-xl bg-destructive/10 border border-destructive/20">
+                        <Flame className="w-4 h-4 text-destructive mx-auto mb-1" />
+                        <p className="text-sm font-bold text-foreground">{historyWorkoutTotals.burned}</p>
+                        <p className="text-[9px] text-muted-foreground">Cal Burned</p>
+                      </div>
+                      <div className="text-center p-2.5 rounded-xl bg-primary/10 border border-primary/20">
+                        <Dumbbell className="w-4 h-4 text-primary mx-auto mb-1" />
+                        <p className="text-sm font-bold text-foreground">{historyWorkoutTotals.duration}</p>
+                        <p className="text-[9px] text-muted-foreground">Min Active</p>
+                      </div>
+                    </div>
+                  </Card>
+
+                  {/* History meals by type */}
+                  {(["breakfast", "lunch", "dinner", "snack"] as const).map((mealType) => {
+                    const meals = historyFoodLogs.filter((f) => f.meal_type === mealType);
+                    if (meals.length === 0) return null;
+                    const Icon = mealIcons[mealType];
+                    const mealCals = meals.reduce((s, m) => s + Number(m.calories || 0), 0);
+                    return (
+                      <Card key={mealType} className="glass-card rounded-2xl p-4">
+                        <div className="flex items-center gap-2 mb-3">
+                          <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                            <Icon className="w-3.5 h-3.5 text-primary" />
+                          </div>
+                          <div>
+                            <h3 className="text-sm font-semibold text-foreground">{mealLabels[mealType]}</h3>
+                            <p className="text-[10px] text-muted-foreground">{Math.round(mealCals)} cal</p>
+                          </div>
+                        </div>
+                        <div className="space-y-1.5">
+                          {meals.map((meal) => (
+                            <div key={meal.id} className="flex items-center gap-3 py-2 px-3 rounded-xl bg-secondary/20">
+                              {meal.image_url && (
+                                <img src={meal.image_url} alt={meal.food_name} className="w-10 h-10 rounded-lg object-cover shrink-0" />
+                              )}
+                              <div className="flex-1 min-w-0">
+                                <p className="text-sm font-medium text-foreground truncate">{meal.food_name}</p>
+                                <p className="text-[10px] text-muted-foreground">
+                                  {meal.quantity} • {Math.round(Number(meal.calories))} cal • P:{Math.round(Number(meal.protein_g))}g C:{Math.round(Number(meal.carbs_g))}g F:{Math.round(Number(meal.fat_g))}g
+                                </p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      </Card>
+                    );
+                  })}
+
+                  {/* History workouts */}
+                  {historyWorkoutLogs.length > 0 && (
+                    <Card className="glass-card rounded-2xl p-4">
+                      <div className="flex items-center gap-2 mb-3">
+                        <div className="w-7 h-7 rounded-lg bg-primary/10 flex items-center justify-center">
+                          <Dumbbell className="w-3.5 h-3.5 text-primary" />
+                        </div>
+                        <h3 className="text-sm font-semibold text-foreground">Workouts</h3>
+                      </div>
+                      <div className="space-y-1.5">
+                        {historyWorkoutLogs.map((w) => (
+                          <div key={w.id} className="flex items-center gap-3 py-2 px-3 rounded-xl bg-secondary/20">
+                            <div className="min-w-0 flex-1">
+                              <p className="text-sm font-medium text-foreground truncate">{w.exercise_name}</p>
+                              <p className="text-[10px] text-muted-foreground">
+                                {w.workout_type}
+                                {w.duration_min > 0 && ` • ${w.duration_min} min`}
+                                {w.calories_burned > 0 && ` • ${w.calories_burned} cal burned`}
+                                {w.sets && w.reps && ` • ${w.sets}×${w.reps}`}
+                                {w.weight_kg && ` @ ${w.weight_kg}kg`}
+                              </p>
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    </Card>
+                  )}
+
+                  {/* Empty state */}
+                  {historyFoodLogs.length === 0 && historyWorkoutLogs.length === 0 && historyWaterCount === 0 && (
+                    <Card className="glass-card rounded-2xl p-8 text-center">
+                      <CalendarDays className="w-10 h-10 text-muted-foreground/30 mx-auto mb-3" />
+                      <p className="text-sm text-muted-foreground">No data logged on this day</p>
+                      <p className="text-[10px] text-muted-foreground/60 mt-1">Start tracking to see your history here</p>
+                    </Card>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
+          {!historyDate && (
+            <Card className="glass-card rounded-2xl p-8 text-center">
+              <CalendarDays className="w-10 h-10 text-muted-foreground/20 mx-auto mb-3" />
+              <p className="text-sm text-muted-foreground">Tap a day above to view your history</p>
+            </Card>
+          )}
         </div>
       </div>
     </PageLayout>
