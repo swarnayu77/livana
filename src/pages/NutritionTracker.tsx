@@ -16,8 +16,9 @@ import {
   Plus, Droplets, Scale, Utensils, Coffee, Sun, Moon, Apple,
   Search, Sparkles, Trash2, TrendingUp, Lightbulb, LogOut,
   Dumbbell, Timer, Flame, Activity, Camera, Image,
+  CalendarDays,
 } from "lucide-react";
-import { format, startOfDay, endOfDay } from "date-fns";
+import { format, startOfDay, endOfDay, subDays, isSameDay } from "date-fns";
 
 type Profile = {
   full_name: string | null;
