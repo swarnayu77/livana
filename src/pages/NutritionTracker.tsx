@@ -968,6 +968,8 @@ const NutritionTracker = () => {
             </Card>
           )}
         </div>
+      </div>
+    </PageLayout>
   );
 };
 
