@@ -16,9 +16,10 @@ import {
   Plus, Droplets, Scale, Utensils, Coffee, Sun, Moon, Apple,
   Search, Sparkles, Trash2, TrendingUp, Lightbulb, LogOut,
   Dumbbell, Timer, Flame, Activity, Camera, Image,
-  CalendarDays,
+  CalendarDays, BarChart3,
 } from "lucide-react";
 import { format, startOfDay, endOfDay, subDays, isSameDay } from "date-fns";
+import WeeklyTrendsChart from "@/components/tracker/WeeklyTrendsChart";
 
 type Profile = {
   full_name: string | null;
@@ -798,6 +799,15 @@ const NutritionTracker = () => {
               </Card>
             );
           })}
+        </div>
+
+        {/* Weekly Trends Charts */}
+        <div className="mt-10">
+          <div className="flex items-center gap-2 mb-5">
+            <BarChart3 className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold text-foreground">Weekly Trends</h2>
+          </div>
+          <WeeklyTrendsChart />
         </div>
 
         {/* 7-Day History Section */}
