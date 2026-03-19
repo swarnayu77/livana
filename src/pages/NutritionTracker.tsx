@@ -16,9 +16,10 @@ import {
   Plus, Droplets, Scale, Utensils, Coffee, Sun, Moon, Apple,
   Search, Sparkles, Trash2, TrendingUp, Lightbulb, LogOut,
   Dumbbell, Timer, Flame, Activity, Camera, Image,
-  CalendarDays,
+  CalendarDays, BarChart3,
 } from "lucide-react";
 import { format, startOfDay, endOfDay, subDays, isSameDay } from "date-fns";
+import WeeklyTrendsChart from "@/components/tracker/WeeklyTrendsChart";
 
 type Profile = {
   full_name: string | null;
