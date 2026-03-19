@@ -801,6 +801,15 @@ const NutritionTracker = () => {
           })}
         </div>
 
+        {/* Weekly Trends Charts */}
+        <div className="mt-10">
+          <div className="flex items-center gap-2 mb-5">
+            <BarChart3 className="w-5 h-5 text-primary" />
+            <h2 className="font-semibold text-foreground">Weekly Trends</h2>
+          </div>
+          <WeeklyTrendsChart />
+        </div>
+
         {/* 7-Day History Section */}
         <div className="mt-10">
           <div className="flex items-center gap-2 mb-5">
