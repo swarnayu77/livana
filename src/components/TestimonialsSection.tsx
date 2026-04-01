@@ -14,49 +14,46 @@ const testimonials = [
 
 const TestimonialsSection = () => {
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
-  const { ref: gridRef, isVisible: gridVisible, getItemStyle } = useStaggerAnimation(testimonials.length, 80);
+  const { ref: gridRef, isVisible: gridVisible, getItemStyle } = useStaggerAnimation(testimonials.length, 60);
 
   return (
     <section className="py-20 lg:py-28">
       <div
         ref={headerRef}
         className={cn(
-          "text-center mb-14 transition-all duration-700",
-          headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          "text-center mb-12 transition-all duration-600",
+          headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-primary/8 border border-primary/12 mb-5">
-          <Star className="w-3.5 h-3.5 text-primary" />
-          <span className="text-primary text-xs font-semibold">Testimonials</span>
-        </div>
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
+        <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.18em] mb-2.5">Testimonials</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-3">
           Loved by <span className="text-gradient">Thousands</span>
         </h2>
-        <p className="text-muted-foreground text-sm leading-relaxed max-w-md mx-auto">
-          See how LIVANA is helping people achieve their health and nutrition goals every day.
+        <p className="text-muted-foreground text-[13px] leading-relaxed max-w-md mx-auto">
+          See how LIVANA is helping people achieve their health and nutrition goals.
         </p>
       </div>
 
-      <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
         {testimonials.map((t, i) => (
           <div
             key={t.name}
-            className="group p-6 rounded-2xl glass-card hover:shadow-lg hover:shadow-primary/6 hover:-translate-y-1.5 hover:scale-[1.02] transition-all duration-300"
+            className="group p-5 rounded-xl bg-card border border-border hover:border-primary/15 hover:shadow-sm transition-all duration-200"
             style={getItemStyle(i)}
           >
-            <Quote className="w-7 h-7 text-primary/15 mb-4 group-hover:text-primary/30 transition-colors duration-300" />
-            <p className="text-sm text-foreground/80 leading-relaxed mb-6">"{t.text}"</p>
-            <div className="flex items-center gap-3 pt-4 border-t border-border">
-              <Avatar className="h-9 w-9 group-hover:scale-110 transition-transform duration-300">
-                <AvatarFallback className="bg-primary/10 text-primary text-xs font-semibold">{t.avatar}</AvatarFallback>
+            <Quote className="w-5 h-5 text-primary/12 mb-3" />
+            <p className="text-[13px] text-foreground/80 leading-relaxed mb-5">"{t.text}"</p>
+            <div className="flex items-center gap-2.5 pt-3.5 border-t border-border">
+              <Avatar className="h-8 w-8">
+                <AvatarFallback className="bg-primary/6 text-primary text-[10px] font-semibold">{t.avatar}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
-                <p className="text-sm font-semibold text-foreground">{t.name}</p>
-                <p className="text-xs text-muted-foreground">{t.role}</p>
+                <p className="text-[13px] font-semibold text-foreground">{t.name}</p>
+                <p className="text-[11px] text-muted-foreground">{t.role}</p>
               </div>
               <div className="flex gap-0.5">
                 {Array.from({ length: t.rating }).map((_, i) => (
-                  <Star key={i} className="w-3.5 h-3.5 fill-primary text-primary" />
+                  <Star key={i} className="w-3 h-3 fill-primary text-primary" />
                 ))}
               </div>
             </div>

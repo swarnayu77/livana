@@ -25,63 +25,58 @@ const PageLayout = ({ children, title, subtitle }: PageLayoutProps) => {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="fixed top-0 left-0 right-0 z-50 glass-strong">
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16 lg:h-20">
-            {/* Back & Logo */}
-            <div className="flex items-center gap-4">
+        <div className="max-w-[1120px] mx-auto px-5 sm:px-6">
+          <div className="flex items-center justify-between h-14">
+            <div className="flex items-center gap-3">
               <Link to="/">
-                <Button variant="ghost" size="icon" className="hover:bg-primary/10">
-                  <ArrowLeft className="w-5 h-5" />
+                <Button variant="ghost" size="icon" className="h-8 w-8 rounded-lg hover:bg-muted/50">
+                  <ArrowLeft className="w-4 h-4" />
                 </Button>
               </Link>
               <Link to="/" className="flex items-center gap-2 group">
                 <img 
                   src={livanaLogo} 
                   alt="LIVANA" 
-                  className="h-8 lg:h-10 w-auto transition-transform duration-300 group-hover:scale-105" 
+                  className="h-7 w-7 transition-transform duration-200 group-hover:scale-105" 
                 />
-                <span className="text-lg lg:text-xl font-bold text-gradient">LIVANA</span>
+                <span className="text-[15px] font-bold text-foreground tracking-tight">LIVANA</span>
               </Link>
             </div>
 
-            {/* Navigation */}
-            <nav className="hidden md:flex items-center gap-6">
-              <Link to="/tracker" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Tracker
-              </Link>
-              <Link to="/coach" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                AI Coach
-              </Link>
-              <Link to="/consultation" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Consultation
-              </Link>
-              <Link to="/scanner" className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                Scanner
-              </Link>
+            <nav className="hidden md:flex items-center gap-0.5">
+              {[
+                { label: "Tracker", href: "/tracker" },
+                { label: "AI Coach", href: "/coach" },
+                { label: "Consultation", href: "/consultation" },
+                { label: "Scanner", href: "/scanner" },
+              ].map(link => (
+                <Link key={link.label} to={link.href} className="px-3 py-1.5 rounded-lg text-[13px] font-medium text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors">
+                  {link.label}
+                </Link>
+              ))}
             </nav>
 
-            {/* Auth */}
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-1.5">
               <ThemeToggle />
               {user ? (
                 <>
                   <Link to="/tracker">
-                    <Button variant="ghost" size="sm" className="text-sm rounded-full gap-1.5">
+                    <Button variant="ghost" size="sm" className="text-[13px] h-8 rounded-lg gap-1.5 px-2.5">
                       <User className="w-3.5 h-3.5" />
                       <span className="hidden sm:inline">{user.email?.split("@")[0]}</span>
                     </Button>
                   </Link>
-                  <Button variant="ghost" size="sm" className="rounded-full" onClick={handleSignOut}>
+                  <Button variant="ghost" size="sm" className="h-8 rounded-lg px-2" onClick={handleSignOut}>
                     <LogOut className="w-3.5 h-3.5" />
                   </Button>
                 </>
               ) : (
                 <>
                   <Link to="/auth">
-                    <Button variant="ghost" size="sm">Sign In</Button>
+                    <Button variant="ghost" size="sm" className="text-[13px] h-8">Sign In</Button>
                   </Link>
                   <Link to="/auth?mode=signup">
-                    <Button variant="hero" size="sm">Get Started</Button>
+                    <Button size="sm" className="text-[13px] h-8 rounded-lg px-4">Get Started</Button>
                   </Link>
                 </>
               )}
@@ -90,36 +85,21 @@ const PageLayout = ({ children, title, subtitle }: PageLayoutProps) => {
         </div>
       </header>
 
-      {/* Page Content */}
-      <main className="pt-24 lg:pt-28 pb-16">
-        <div className="container mx-auto px-4">
+      {/* Content */}
+      <main className="pt-20 pb-16">
+        <div className="max-w-[1120px] mx-auto px-5 sm:px-6">
           {/* Page Header */}
-          <div className="mb-10 lg:mb-14 relative">
-            {/* Ambient glow behind title */}
-            <div className="absolute -top-10 -left-10 w-64 h-40 bg-primary/8 rounded-full blur-[80px] pointer-events-none" />
-            <div className="relative">
-              <div className="flex items-center gap-3 mb-3">
-                <div className="h-1 w-10 rounded-full bg-gradient-to-r from-primary to-accent" />
-                <span className="text-xs font-semibold uppercase tracking-[0.2em] text-primary">
-                  {subtitle || "LIVANA"}
-                </span>
-              </div>
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight text-gradient leading-[1.1]">
-                {title}
-              </h1>
-            </div>
+          <div className="mb-10">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-primary mb-2">
+              {subtitle || "LIVANA"}
+            </p>
+            <h1 className="text-3xl md:text-4xl font-bold tracking-tight text-foreground">
+              {title}
+            </h1>
           </div>
-
-          {/* Content */}
           {children}
         </div>
       </main>
-
-      {/* Decorative Background */}
-      <div className="fixed inset-0 pointer-events-none overflow-hidden -z-10">
-        <div className="absolute top-1/4 -left-40 w-80 h-80 bg-primary/5 rounded-full blur-3xl" />
-        <div className="absolute bottom-1/4 -right-40 w-96 h-96 bg-accent/5 rounded-full blur-3xl" />
-      </div>
     </div>
   );
 };

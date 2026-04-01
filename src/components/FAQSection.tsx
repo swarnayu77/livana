@@ -39,15 +39,15 @@ const FAQSection = () => {
       <div
         ref={headerRef}
         className={cn(
-          "text-center mb-12 transition-all duration-700",
-          headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          "text-center mb-10 transition-all duration-600",
+          headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
-        <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-3">FAQ</p>
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
+        <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.18em] mb-2.5">FAQ</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-3">
           Common Questions
         </h2>
-        <p className="text-muted-foreground text-base max-w-lg mx-auto leading-relaxed">
+        <p className="text-muted-foreground text-[14px] max-w-md mx-auto leading-relaxed">
           Everything you need to know about getting started with Livana.
         </p>
       </div>
@@ -55,21 +55,21 @@ const FAQSection = () => {
       <div
         ref={contentRef}
         className={cn(
-          "max-w-2xl mx-auto transition-all duration-700 delay-150",
-          contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          "max-w-2xl mx-auto transition-all duration-600 delay-100",
+          contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
-        <Accordion type="single" collapsible className="space-y-3">
+        <Accordion type="single" collapsible className="space-y-2">
           {faqs.map((faq, i) => (
             <AccordionItem
               key={i}
               value={`item-${i}`}
-              className="glass-card rounded-2xl px-6 border-none data-[state=open]:shadow-lg data-[state=open]:shadow-primary/5 transition-shadow duration-300"
+              className="bg-card border border-border rounded-xl px-5 data-[state=open]:border-primary/15 transition-colors duration-200"
             >
-              <AccordionTrigger className="text-sm font-semibold text-foreground hover:text-primary transition-colors py-5 hover:no-underline">
+              <AccordionTrigger className="text-[13px] font-semibold text-foreground hover:text-primary transition-colors py-4 hover:no-underline">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-5">
+              <AccordionContent className="text-[13px] text-muted-foreground leading-relaxed pb-4">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>

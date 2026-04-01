@@ -16,25 +16,23 @@ const SocialProofBanner = () => {
     <section
       ref={ref}
       className={cn(
-        "py-12 transition-all duration-700",
-        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+        "py-10 transition-all duration-600",
+        isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
       )}
     >
-      <div className="glass-card rounded-2xl p-8 md:p-10">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
-          {proofs.map((proof) => {
-            const Icon = proof.icon;
-            return (
-              <div key={proof.label} className="text-center group">
-                <div className="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center mx-auto mb-3 group-hover:bg-primary/12 group-hover:scale-110 transition-all duration-300">
-                  <Icon className="w-5 h-5 text-primary stroke-[1.5]" />
-                </div>
-                <p className="text-2xl font-bold text-foreground mb-0.5">{proof.value}</p>
-                <p className="text-[11px] text-muted-foreground uppercase tracking-widest">{proof.label}</p>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
+        {proofs.map((proof) => {
+          const Icon = proof.icon;
+          return (
+            <div key={proof.label} className="text-center">
+              <div className="w-9 h-9 rounded-lg bg-primary/6 flex items-center justify-center mx-auto mb-2.5">
+                <Icon className="w-4 h-4 text-primary" />
               </div>
-            );
-          })}
-        </div>
+              <p className="text-xl font-bold text-foreground">{proof.value}</p>
+              <p className="text-[10px] text-muted-foreground uppercase tracking-widest mt-0.5">{proof.label}</p>
+            </div>
+          );
+        })}
       </div>
     </section>
   );
