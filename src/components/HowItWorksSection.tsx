@@ -25,52 +25,48 @@ const steps = [
 
 const HowItWorksSection = () => {
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
-  const { ref: gridRef, isVisible: gridVisible, getItemStyle } = useStaggerAnimation(steps.length, 120);
+  const { ref: gridRef, isVisible: gridVisible, getItemStyle } = useStaggerAnimation(steps.length, 100);
 
   return (
     <section className="py-20 lg:py-28">
       <div
         ref={headerRef}
         className={cn(
-          "text-center mb-16 transition-all duration-700",
-          headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          "text-center mb-14 transition-all duration-600",
+          headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
-        <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-3">How It Works</p>
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
+        <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.18em] mb-2.5">How It Works</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-3">
           Three Simple Steps
         </h2>
-        <p className="text-muted-foreground text-base max-w-lg mx-auto leading-relaxed">
+        <p className="text-muted-foreground text-[14px] max-w-md mx-auto leading-relaxed">
           Getting started takes less than 2 minutes. No guesswork, just results.
         </p>
       </div>
 
-      <div ref={gridRef} className="grid md:grid-cols-3 gap-6 relative">
-        {/* Connector line */}
-        <div className="hidden md:block absolute top-16 left-[20%] right-[20%] h-px bg-gradient-to-r from-transparent via-border to-transparent" />
+      <div ref={gridRef} className="grid md:grid-cols-3 gap-4 relative">
+        {/* Connector */}
+        <div className="hidden md:block absolute top-14 left-[20%] right-[20%] h-px bg-border" />
 
         {steps.map((step, i) => {
           const Icon = step.icon;
           return (
             <div
               key={step.step}
-              className={cn(
-                "relative text-center p-8 rounded-2xl glass-card",
-                "hover:shadow-lg hover:shadow-primary/8 hover:-translate-y-1.5",
-                "transition-all duration-300 ease-out group"
-              )}
+              className="relative text-center p-6 rounded-xl bg-card border border-border hover:border-primary/20 hover:shadow-md transition-all duration-200 group"
               style={getItemStyle(i)}
             >
-              <div className="relative mx-auto w-14 h-14 rounded-2xl bg-primary/8 flex items-center justify-center mb-6 group-hover:bg-primary/12 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                <Icon className="w-6 h-6 text-primary stroke-[1.5]" />
-                <span className="absolute -top-2 -right-2 w-6 h-6 rounded-full bg-primary text-primary-foreground text-[10px] font-bold flex items-center justify-center">
+              <div className="relative mx-auto w-12 h-12 rounded-xl bg-primary/6 flex items-center justify-center mb-5 group-hover:bg-primary/10 transition-colors duration-200">
+                <Icon className="w-5 h-5 text-primary" />
+                <span className="absolute -top-1.5 -right-1.5 w-5 h-5 rounded-md bg-primary text-primary-foreground text-[9px] font-bold flex items-center justify-center">
                   {step.step}
                 </span>
               </div>
-              <h3 className="text-base font-semibold text-foreground mb-2 group-hover:text-primary transition-colors duration-200">
+              <h3 className="text-[14px] font-semibold text-foreground mb-1.5">
                 {step.title}
               </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+              <p className="text-muted-foreground text-[13px] leading-relaxed">
                 {step.description}
               </p>
             </div>

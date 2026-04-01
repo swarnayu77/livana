@@ -14,52 +14,48 @@ const features = [
 
 const FeaturesSection = () => {
   const { ref: headerRef, isVisible: headerVisible } = useScrollAnimation();
-  const { ref: gridRef, isVisible: gridVisible, getItemStyle } = useStaggerAnimation(features.length, 80);
+  const { ref: gridRef, isVisible: gridVisible, getItemStyle } = useStaggerAnimation(features.length, 60);
 
   return (
     <section id="features" className="py-20 lg:py-28">
       <div
         ref={headerRef}
         className={cn(
-          "text-center mb-16 transition-all duration-700",
-          headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+          "text-center mb-14 transition-all duration-600",
+          headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
-        <p className="text-primary text-xs font-semibold uppercase tracking-[0.2em] mb-3">Features</p>
-        <h2 className="text-3xl md:text-4xl font-display font-bold text-foreground tracking-tight mb-4">
+        <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.18em] mb-2.5">Features</p>
+        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-3">
           Everything You Need
         </h2>
-        <p className="text-muted-foreground text-base max-w-lg mx-auto leading-relaxed">
+        <p className="text-muted-foreground text-[14px] max-w-md mx-auto leading-relaxed">
           Comprehensive tools to transform your nutrition and health journey.
         </p>
       </div>
 
-      <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5">
+      <div ref={gridRef} className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
         {features.map((feature, i) => {
           const Icon = feature.icon;
           return (
             <Link
               key={feature.title}
               to={feature.href}
-              className={cn(
-                "group relative p-6 rounded-2xl glass-card",
-                "hover:shadow-lg hover:shadow-primary/8 hover:-translate-y-1.5 hover:scale-[1.02]",
-                "transition-all duration-300 ease-out",
-              )}
+              className="group relative p-5 rounded-xl bg-card border border-border hover:border-primary/20 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200"
               style={getItemStyle(i)}
             >
               {feature.badge && (
-                <span className="absolute top-4 right-4 px-2.5 py-0.5 bg-primary/10 text-primary text-[10px] font-semibold rounded-full">
+                <span className="absolute top-4 right-4 px-2 py-0.5 bg-primary/8 text-primary text-[9px] font-semibold rounded-md uppercase tracking-wider">
                   {feature.badge}
                 </span>
               )}
-              <div className="w-12 h-12 rounded-2xl bg-primary/8 flex items-center justify-center mb-5 group-hover:bg-primary/12 group-hover:scale-110 group-hover:rotate-3 transition-all duration-300">
-                <Icon className="w-5.5 h-5.5 text-primary stroke-[1.5]" />
+              <div className="w-10 h-10 rounded-xl bg-primary/6 flex items-center justify-center mb-4 group-hover:bg-primary/10 transition-colors duration-200">
+                <Icon className="w-5 h-5 text-primary" />
               </div>
-              <h3 className="text-base font-semibold text-foreground mb-2 group-hover:text-primary transition-colors duration-200">
+              <h3 className="text-[14px] font-semibold text-foreground mb-1.5 group-hover:text-primary transition-colors duration-150">
                 {feature.title}
               </h3>
-              <p className="text-muted-foreground text-sm leading-relaxed">
+              <p className="text-muted-foreground text-[13px] leading-relaxed">
                 {feature.description}
               </p>
             </Link>
