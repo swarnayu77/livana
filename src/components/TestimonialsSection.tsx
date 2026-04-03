@@ -17,39 +17,39 @@ const TestimonialsSection = () => {
   const { ref: gridRef, isVisible: gridVisible, getItemStyle } = useStaggerAnimation(testimonials.length, 60);
 
   return (
-    <section className="py-20 lg:py-28">
+    <section className="py-24 lg:py-32">
       <div
         ref={headerRef}
         className={cn(
-          "text-center mb-12 transition-all duration-600",
+          "text-center mb-14 transition-all duration-600",
           headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
-        <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.18em] mb-2.5">Testimonials</p>
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-3">
+        <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.2em] mb-3">Testimonials</p>
+        <h2 className="text-[28px] md:text-[32px] font-bold text-foreground tracking-[-0.025em] mb-4">
           Loved by <span className="text-gradient">Thousands</span>
         </h2>
-        <p className="text-muted-foreground text-[13px] leading-relaxed max-w-md mx-auto">
+        <p className="text-muted-foreground text-[15px] leading-relaxed max-w-lg mx-auto">
           See how LIVANA is helping people achieve their health and nutrition goals.
         </p>
       </div>
 
-      <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div ref={gridRef} className="grid md:grid-cols-2 lg:grid-cols-3 gap-5">
         {testimonials.map((t, i) => (
           <div
             key={t.name}
-            className="group p-5 rounded-xl bg-card border border-border hover:border-primary/15 hover:shadow-sm transition-all duration-200"
+            className="group p-6 rounded-xl bg-card border border-border hover:border-primary/12 hover:shadow-[0_4px_20px_-8px_hsl(var(--primary)/0.08)] transition-all duration-300"
             style={getItemStyle(i)}
           >
-            <Quote className="w-5 h-5 text-primary/12 mb-3" />
-            <p className="text-[13px] text-foreground/80 leading-relaxed mb-5">"{t.text}"</p>
-            <div className="flex items-center gap-2.5 pt-3.5 border-t border-border">
-              <Avatar className="h-8 w-8">
+            <Quote className="w-5 h-5 text-primary/10 mb-4" />
+            <p className="text-[14px] text-foreground/80 leading-[1.7] mb-6">"{t.text}"</p>
+            <div className="flex items-center gap-3 pt-4 border-t border-border/60">
+              <Avatar className="h-9 w-9">
                 <AvatarFallback className="bg-primary/6 text-primary text-[10px] font-semibold">{t.avatar}</AvatarFallback>
               </Avatar>
               <div className="flex-1">
                 <p className="text-[13px] font-semibold text-foreground">{t.name}</p>
-                <p className="text-[11px] text-muted-foreground">{t.role}</p>
+                <p className="text-[11px] text-muted-foreground mt-0.5">{t.role}</p>
               </div>
               <div className="flex gap-0.5">
                 {Array.from({ length: t.rating }).map((_, i) => (

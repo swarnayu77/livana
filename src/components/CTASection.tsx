@@ -10,58 +10,58 @@ const CTASection = () => {
   const { ref, isVisible } = useScrollAnimation();
 
   return (
-    <section className="py-20 lg:py-28">
+    <section className="py-24 lg:py-32">
       <div
         ref={ref}
         className={cn(
-          "relative p-8 md:p-14 rounded-2xl text-center bg-card border border-border overflow-hidden transition-all duration-600",
+          "relative p-10 md:p-16 rounded-2xl text-center bg-card border border-border overflow-hidden transition-all duration-600",
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
         )}
       >
         {/* Ambient */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[400px] h-[400px] rounded-full bg-primary/4 blur-[140px] pointer-events-none" />
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-primary/3 blur-[160px] pointer-events-none" />
 
         <div className="relative">
-          <h2 className="text-2xl md:text-3xl lg:text-4xl font-bold text-foreground tracking-tight mb-3">
+          <h2 className="text-[28px] md:text-[36px] lg:text-[40px] font-bold text-foreground tracking-[-0.03em] mb-4">
             Ready to Transform{" "}
             <span className="text-gradient">Your Health?</span>
           </h2>
 
-          <p className="text-muted-foreground text-[14px] leading-relaxed mb-8 max-w-md mx-auto">
+          <p className="text-muted-foreground text-[15px] leading-[1.7] mb-10 max-w-md mx-auto">
             Join thousands who have improved their nutrition with LIVANA. No credit card required.
           </p>
 
-          <div className="flex flex-wrap justify-center gap-x-5 gap-y-2.5 mb-8">
+          <div className="flex flex-wrap justify-center gap-x-6 gap-y-3 mb-10">
             {benefits.map((b, i) => (
               <span
                 key={b}
-                className="flex items-center gap-1.5 text-[12px] text-muted-foreground"
+                className="flex items-center gap-2 text-[13px] text-muted-foreground"
                 style={{
                   opacity: isVisible ? 1 : 0,
                   transform: isVisible ? "translateY(0)" : "translateY(6px)",
                   transition: `all 0.4s ease ${300 + i * 60}ms`,
                 }}
               >
-                <Check className="w-3.5 h-3.5 text-primary flex-shrink-0" />{b}
+                <Check className="w-4 h-4 text-primary flex-shrink-0" />{b}
               </span>
             ))}
           </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-2.5">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
             <Link to="/auth?mode=signup">
-              <Button size="lg" className="group rounded-lg text-[13px] px-6 h-10 btn-glow-hover">
+              <Button size="lg" className="group rounded-lg text-[13px] px-7 h-11 font-medium btn-glow-hover">
                 Get Started Free
-                <ArrowRight className="ml-1.5 w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight className="ml-2 w-4 h-4 group-hover:translate-x-0.5 transition-transform" />
               </Button>
             </Link>
             <a href="/#features">
-              <Button variant="outline" size="lg" className="rounded-lg text-[13px] px-6 h-10">
+              <Button variant="outline" size="lg" className="rounded-lg text-[13px] px-7 h-11 font-medium">
                 Learn More
               </Button>
             </a>
           </div>
 
-          <p className="mt-6 text-[11px] text-muted-foreground">
+          <p className="mt-8 text-[12px] text-muted-foreground">
             Free forever for basic features · No credit card required
           </p>
         </div>
