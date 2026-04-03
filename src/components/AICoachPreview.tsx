@@ -14,8 +14,8 @@ const AICoachPreview = () => {
   const { ref: chatRef, isVisible: chatVisible } = useScrollAnimation();
 
   return (
-    <section className="py-20 lg:py-28">
-      <div className="grid lg:grid-cols-2 gap-12 items-center">
+    <section className="py-24 lg:py-32">
+      <div className="grid lg:grid-cols-2 gap-16 items-center">
         <div
           ref={textRef}
           className={cn(
@@ -23,22 +23,22 @@ const AICoachPreview = () => {
             textVisible ? "opacity-100 translate-x-0" : "opacity-0 -translate-x-6"
           )}
         >
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/6 border border-primary/10 mb-5">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-primary/6 border border-primary/8 mb-6">
             <Bot className="w-3 h-3 text-primary" />
-            <span className="text-primary text-[11px] font-semibold">AI Coach</span>
+            <span className="text-primary text-[11px] font-medium">AI Coach</span>
           </div>
-          <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-3">
+          <h2 className="text-[28px] md:text-[32px] font-bold text-foreground tracking-[-0.025em] mb-4">
             Your Personal{" "}
             <span className="text-gradient">Nutrition Expert</span>
           </h2>
-          <p className="text-muted-foreground text-[13px] leading-relaxed mb-7 max-w-md">
+          <p className="text-muted-foreground text-[15px] leading-[1.7] mb-8 max-w-[440px]">
             Get instant answers to all your nutrition questions. Personalized, science-backed advice available 24/7.
           </p>
-          <ul className="space-y-2.5 mb-7">
+          <ul className="space-y-3 mb-8">
             {["Instant answers to nutrition questions", "Personalized recommendations for your goals", "Science-backed advice from latest research", "Available 24/7, no appointments needed"].map((item, i) => (
               <li
                 key={item}
-                className="flex items-center gap-2 text-[13px] text-muted-foreground"
+                className="flex items-center gap-2.5 text-[14px] text-muted-foreground"
                 style={{
                   opacity: textVisible ? 1 : 0,
                   transform: textVisible ? "translateX(0)" : "translateX(-8px)",
@@ -50,9 +50,9 @@ const AICoachPreview = () => {
             ))}
           </ul>
           <Link to="/coach">
-            <Button variant="outline" size="default" className="rounded-lg text-[13px] h-9 group">
+            <Button variant="outline" className="rounded-lg text-[13px] h-10 px-5 font-medium group">
               Try AI Coach
-              <ArrowRight className="ml-1.5 w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              <ArrowRight className="ml-2 w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
             </Button>
           </Link>
         </div>
@@ -60,34 +60,34 @@ const AICoachPreview = () => {
         <div
           ref={chatRef}
           className={cn(
-            "bg-card border border-border rounded-2xl p-5 transition-all duration-600 delay-100",
-            chatVisible ? "opacity-100 translate-x-0 scale-100" : "opacity-0 translate-x-6 scale-98"
+            "bg-card border border-border rounded-2xl p-6 transition-all duration-600 delay-100",
+            chatVisible ? "opacity-100 translate-x-0 scale-100" : "opacity-0 translate-x-6 scale-[0.98]"
           )}
         >
           {/* Chat header */}
-          <div className="flex items-center gap-3 pb-3.5 border-b border-border mb-4">
-            <div className="w-9 h-9 rounded-xl bg-primary/8 flex items-center justify-center">
-              <Bot className="w-4.5 h-4.5 text-primary" />
+          <div className="flex items-center gap-3 pb-4 border-b border-border mb-5">
+            <div className="w-10 h-10 rounded-xl bg-primary/8 flex items-center justify-center">
+              <Bot className="w-5 h-5 text-primary" />
             </div>
             <div className="flex-1">
-              <h4 className="font-semibold text-[13px] text-foreground">Mr. Livana</h4>
+              <h4 className="font-semibold text-[14px] text-foreground">Mr. Livana</h4>
               <div className="flex items-center gap-1.5">
                 <span className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse-soft" />
                 <span className="text-[11px] text-muted-foreground">Online</span>
               </div>
             </div>
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-primary/6 border border-primary/10">
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-primary/6 border border-primary/8">
               <span className="w-1 h-1 rounded-full bg-primary" />
               <span className="text-[9px] font-semibold text-primary">10+ active</span>
             </div>
           </div>
 
           {/* Messages */}
-          <div className="space-y-3">
+          <div className="space-y-3.5">
             {messages.map((msg, i) => (
               <div
                 key={i}
-                className={cn("flex gap-2.5", msg.role === "user" && "flex-row-reverse")}
+                className={cn("flex gap-3", msg.role === "user" && "flex-row-reverse")}
                 style={{
                   opacity: chatVisible ? 1 : 0,
                   transform: chatVisible ? "translateY(0)" : "translateY(12px)",
@@ -95,16 +95,16 @@ const AICoachPreview = () => {
                 }}
               >
                 <div className={cn(
-                  "w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0",
-                  msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted/60"
+                  "w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0",
+                  msg.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted/50"
                 )}>
                   {msg.role === "user" ? <User className="w-3.5 h-3.5" /> : <Bot className="w-3.5 h-3.5 text-muted-foreground" />}
                 </div>
                 <div className={cn(
-                  "flex-1 px-3.5 py-2.5 rounded-xl text-[13px] leading-relaxed",
+                  "flex-1 px-4 py-3 rounded-xl text-[13px] leading-[1.65]",
                   msg.role === "user"
                     ? "bg-primary text-primary-foreground"
-                    : "bg-muted/40 text-foreground"
+                    : "bg-muted/30 text-foreground"
                 )}>
                   {msg.content}
                 </div>
@@ -113,10 +113,10 @@ const AICoachPreview = () => {
           </div>
 
           {/* Input */}
-          <div className="mt-4 pt-3.5 border-t border-border">
-            <div className="flex items-center gap-2 p-2.5 rounded-xl bg-muted/30 border border-border">
+          <div className="mt-5 pt-4 border-t border-border">
+            <div className="flex items-center gap-2.5 p-3 rounded-xl bg-muted/25 border border-border">
               <input type="text" placeholder="Ask your AI coach..." className="flex-1 bg-transparent text-[13px] text-foreground placeholder:text-muted-foreground outline-none" readOnly />
-              <button className="w-7 h-7 rounded-lg bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors duration-150">
+              <button className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors duration-150">
                 <Sparkles className="w-3.5 h-3.5 text-primary-foreground" />
               </button>
             </div>

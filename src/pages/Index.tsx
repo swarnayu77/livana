@@ -16,9 +16,9 @@ const Index = () => {
   return (
     <div className="min-h-screen bg-background">
       <Navbar />
-      <main className="pt-14">
+      <main className="pt-[60px]">
         <PageTransition>
-          <div className="max-w-[1120px] mx-auto px-5 sm:px-6">
+          <div className="max-w-[1200px] mx-auto px-6 lg:px-8">
             <HeroSection />
             <SocialProofBanner />
             <FeaturesSection />

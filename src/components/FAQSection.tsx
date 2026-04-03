@@ -35,19 +35,19 @@ const FAQSection = () => {
   const { ref: contentRef, isVisible: contentVisible } = useScrollAnimation();
 
   return (
-    <section className="py-20 lg:py-28">
+    <section className="py-24 lg:py-32">
       <div
         ref={headerRef}
         className={cn(
-          "text-center mb-10 transition-all duration-600",
+          "text-center mb-12 transition-all duration-600",
           headerVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
-        <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.18em] mb-2.5">FAQ</p>
-        <h2 className="text-2xl md:text-3xl font-bold text-foreground tracking-tight mb-3">
+        <p className="text-primary text-[11px] font-semibold uppercase tracking-[0.2em] mb-3">FAQ</p>
+        <h2 className="text-[28px] md:text-[32px] font-bold text-foreground tracking-[-0.025em] mb-4">
           Common Questions
         </h2>
-        <p className="text-muted-foreground text-[14px] max-w-md mx-auto leading-relaxed">
+        <p className="text-muted-foreground text-[15px] max-w-lg mx-auto leading-relaxed">
           Everything you need to know about getting started with Livana.
         </p>
       </div>
@@ -59,17 +59,17 @@ const FAQSection = () => {
           contentVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         )}
       >
-        <Accordion type="single" collapsible className="space-y-2">
+        <Accordion type="single" collapsible className="space-y-2.5">
           {faqs.map((faq, i) => (
             <AccordionItem
               key={i}
               value={`item-${i}`}
-              className="bg-card border border-border rounded-xl px-5 data-[state=open]:border-primary/15 transition-colors duration-200"
+              className="bg-card border border-border rounded-xl px-6 data-[state=open]:border-primary/12 transition-colors duration-200"
             >
-              <AccordionTrigger className="text-[13px] font-semibold text-foreground hover:text-primary transition-colors py-4 hover:no-underline">
+              <AccordionTrigger className="text-[14px] font-semibold text-foreground hover:text-primary transition-colors py-5 hover:no-underline">
                 {faq.question}
               </AccordionTrigger>
-              <AccordionContent className="text-[13px] text-muted-foreground leading-relaxed pb-4">
+              <AccordionContent className="text-[14px] text-muted-foreground leading-[1.7] pb-5">
                 {faq.answer}
               </AccordionContent>
             </AccordionItem>
